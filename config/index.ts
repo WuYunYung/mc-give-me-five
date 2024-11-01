@@ -1,4 +1,5 @@
 import { defineConfig, type UserConfigExport } from "@tarojs/cli";
+import * as path from "node:path";
 
 import devConfig from "./dev";
 import prodConfig from "./prod";
@@ -53,6 +54,10 @@ export default defineConfig<"vite">(async (merge) => {
 						process.env.TARO_ENV === "rn",
 				}),
 			] as Plugin[], // 从 vite 引入 type, 为了智能提示
+		},
+		alias: {
+			"@/api": path.resolve(__dirname, "../assets/api"),
+			axios: "taro-axios",
 		},
 		mini: {
 			postcss: {
