@@ -1,0 +1,21 @@
+diff --git a/styles/_variables.scss b/styles/_variables.scss
+index a41d124c51d4aae7f4820e6790be4747fc1a0594..d9bf24dc1a2e1774a3fc91cb3aa51c9da762ac80 100644
+--- a/styles/_variables.scss
++++ b/styles/_variables.scss
+@@ -17,6 +17,7 @@ $blue: #1989fa;
+ $cyan: #2db7f5;
+ $green: #07c160;
+ $orange: #ff976a;
++$rose: #da137a;
+ 
+ $orange-dark: #ed6a0c;
+ $orange-light: #fffbe8;
+@@ -29,7 +30,7 @@ $gradient-red: linear-gradient(to right, #ff6034, #ee0a24);
+ $gradient-orange: linear-gradient(to right, #ffd01e, #ff8917);
+ 
+ // Component Colors
+-$primary-color: var(--primary-color, $blue);
++$primary-color: var(--primary-color, $rose);
+ $info-color: var(--cyan, $cyan);
+ $success-color: var(--green, $green);
+ $warning-color: var(--orange, $orange);
