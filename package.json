@@ -39,6 +39,7 @@
 	"author": "",
 	"dependencies": {
 		"@babel/runtime": "^7.24.4",
+		"@taroify/core": "0.5.1-alpha.0",
 		"@tarojs/components": "4.0.7",
 		"@tarojs/helper": "4.0.7",
 		"@tarojs/plugin-framework-react": "4.0.7",
@@ -70,6 +71,7 @@
 		"@types/react": "^18.0.0",
 		"@vitejs/plugin-react": "^4.3.0",
 		"axios": "^1.7.7",
+		"babel-plugin-import": "^1.13.8",
 		"babel-preset-taro": "4.0.7",
 		"fs-extra": "^11.2.0",
 		"postcss": "^8.4.38",
@@ -81,5 +83,10 @@
 		"typescript": "^5.4.5",
 		"vite": "^4.2.0",
 		"weapp-tailwindcss": "^3.6.2"
+	},
+	"pnpm": {
+		"patchedDependencies": {
+			"@taroify/core@0.5.1-alpha.0": "patches/@taroify__core@0.5.1-alpha.0.patch"
+		}
 	}
 }
