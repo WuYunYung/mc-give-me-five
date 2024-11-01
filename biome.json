@@ -1,0 +1,125 @@
+{
+	"$schema": "https://biomejs.dev/schemas/1.9.4/schema.json",
+	"vcs": { "enabled": false, "clientKind": "git", "useIgnoreFile": false },
+	"files": { "ignoreUnknown": false, "ignore": [] },
+	"formatter": { "enabled": true, "indentStyle": "tab" },
+	"organizeImports": { "enabled": true },
+	"linter": {
+		"enabled": true,
+		"rules": {
+			"recommended": false,
+			"complexity": { "noUselessUndefinedInitialization": "error" },
+			"correctness": {
+				"noChildrenProp": "error",
+				"noInvalidUseBeforeDeclaration": "error",
+				"noNodejsModules": "off",
+				"noUndeclaredVariables": "error",
+				"noUnusedVariables": "error",
+				"useExhaustiveDependencies": "warn",
+				"useHookAtTopLevel": "error",
+				"useJsxKeyInIterable": "warn"
+			},
+			"security": {
+				"noDangerouslySetInnerHtml": "error",
+				"noDangerouslySetInnerHtmlWithChildren": "error"
+			},
+			"style": {
+				"noRestrictedGlobals": {
+					"level": "error",
+					"options": {
+						"deniedGlobals": [
+							"isFinite",
+							"isNaN",
+							"addEventListener",
+							"blur",
+							"close",
+							"closed",
+							"confirm",
+							"defaultStatus",
+							"event",
+							"external",
+							"defaultstatus",
+							"find",
+							"focus",
+							"frameElement",
+							"frames",
+							"history",
+							"innerHeight",
+							"innerWidth",
+							"length",
+							"location",
+							"locationbar",
+							"menubar",
+							"moveBy",
+							"moveTo",
+							"name",
+							"onblur",
+							"onerror",
+							"onfocus",
+							"onload",
+							"onresize",
+							"onunload",
+							"open",
+							"opener",
+							"opera",
+							"outerHeight",
+							"outerWidth",
+							"pageXOffset",
+							"pageYOffset",
+							"parent",
+							"print",
+							"removeEventListener",
+							"resizeBy",
+							"resizeTo",
+							"screen",
+							"screenLeft",
+							"screenTop",
+							"screenX",
+							"screenY",
+							"scroll",
+							"scrollbars",
+							"scrollBy",
+							"scrollTo",
+							"scrollX",
+							"scrollY",
+							"self",
+							"status",
+							"statusbar",
+							"stop",
+							"toolbar",
+							"top"
+						]
+					}
+				}
+			},
+			"suspicious": {
+				"noCommentText": "error",
+				"noDuplicateJsxProps": "error",
+				"noLabelVar": "error",
+				"noShadowRestrictedNames": "error"
+			}
+		}
+	},
+	"javascript": {
+		"formatter": { "quoteStyle": "double" },
+		"globals": ["definePageConfig", "defineAppConfig"]
+	},
+	"overrides": [
+		{
+			"include": ["**/*.ts?(x)"],
+			"linter": {
+				"rules": {
+					"complexity": { "noUselessConstructor": "warn" },
+					"correctness": {
+						"noInvalidUseBeforeDeclaration": "warn",
+						"noUndeclaredVariables": "off",
+						"noUnusedVariables": "warn",
+						"useArrayLiterals": "off"
+					},
+					"style": { "useDefaultSwitchClause": "off" },
+					"suspicious": { "noDuplicateClassMembers": "off" }
+				}
+			}
+		}
+	]
+}
