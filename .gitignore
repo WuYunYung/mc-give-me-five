@@ -9,3 +9,5 @@ node_modules/
 
 output/
 project.private.config.json
+
+.idea/
