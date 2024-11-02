@@ -29,8 +29,9 @@
 		"dev:jd": "npm run build:jd -- --watch",
 		"dev:harmony-hybrid": "npm run build:harmony-hybrid -- --watch",
 		"lint": "pnpm biome lint --fix",
-		"api": "pnpm ts-node ./scripts/api",
-		"postinstall": "pnpm api"
+		"api": "pnpm ts-node ./scripts/api/index && pnpm lint",
+		"postinstall": "pnpm api",
+		"dev": "pnpm dev:weapp"
 	},
 	"browserslist": [
 		"defaults and fully supports es6-module",
@@ -56,9 +57,9 @@
 		"@tarojs/shared": "4.0.7",
 		"@tarojs/taro": "4.0.7",
 		"ahooks": "^3.8.1",
+		"axios": "^1.7.7",
 		"react": "^18.0.0",
-		"react-dom": "^18.0.0",
-		"taro-axios": "^1.1.1"
+		"react-dom": "^18.0.0"
 	},
 	"devDependencies": {
 		"@babel/core": "^7.24.4",
@@ -70,7 +71,6 @@
 		"@types/node": "^22.8.6",
 		"@types/react": "^18.0.0",
 		"@vitejs/plugin-react": "^4.3.0",
-		"axios": "^1.7.7",
 		"babel-plugin-import": "^1.13.8",
 		"babel-preset-taro": "4.0.7",
 		"fs-extra": "^11.2.0",

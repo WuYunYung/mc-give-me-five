@@ -57,7 +57,6 @@ export default defineConfig<"vite">(async (merge) => {
 		},
 		alias: {
 			"@/api": path.resolve(__dirname, "../assets/api"),
-			axios: "taro-axios",
 		},
 		mini: {
 			postcss: {
