@@ -408,1210 +408,1196 @@ export class HttpClient<SecurityDataType = unknown> {
 }
 
 /**
- * @title API
- * @version v1
- * @baseUrl http://django-9h64-123700-7-1329444134.sh.run.tcloudbase.com/api
+ * No description
  *
- * API文档
+ * @tags activity
+ * @name ActivityList
+ * @request GET:/activity/
+ * @secure
  */
-export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDataType> {
-  activity = {
-    /**
-     * No description
-     *
-     * @tags activity
-     * @name ActivityList
-     * @request GET:/activity/
-     * @secure
-     */
-    activityList: (
-      query?: {
-        /** id__gt */
-        id__gt?: string;
-        /** id__gte */
-        id__gte?: string;
-        /** id__lt */
-        id__lt?: string;
-        /** id__lte */
-        id__lte?: string;
-        /** id__in */
-        id__in?: string;
-        /** id */
-        id?: string;
-        /** creator_id */
-        creator_id?: string;
-        /** type__in */
-        type__in?: string;
-        /** type */
-        type?: "0" | "1" | "2" | "3";
-        /** start_time */
-        start_time?: string;
-        /** end_time */
-        end_time?: string;
-        /** status */
-        status?: string;
-        /** A search term. */
-        search?: string;
-        /** Number of results to return per page. */
-        limit?: number;
-        /** The initial index from which to return the results. */
-        offset?: number;
-      },
-      params: RequestParams = {},
-    ) =>
-      this.request<
-        {
-          count: number;
-          /** @format uri */
-          next?: string | null;
-          /** @format uri */
-          previous?: string | null;
-          results: ActivityRead[];
-        },
-        any
-      >({
-        path: `/activity/`,
-        method: "GET",
-        query: query,
-        secure: true,
-        format: "json",
-        ...params,
-      }),
+export const activityList = (
+  query?: {
+    /** id__gt */
+    id__gt?: string;
+    /** id__gte */
+    id__gte?: string;
+    /** id__lt */
+    id__lt?: string;
+    /** id__lte */
+    id__lte?: string;
+    /** id__in */
+    id__in?: string;
+    /** id */
+    id?: string;
+    /** creator_id */
+    creator_id?: string;
+    /** type__in */
+    type__in?: string;
+    /** type */
+    type?: "0" | "1" | "2" | "3";
+    /** start_time */
+    start_time?: string;
+    /** end_time */
+    end_time?: string;
+    /** status */
+    status?: string;
+    /** A search term. */
+    search?: string;
+    /** Number of results to return per page. */
+    limit?: number;
+    /** The initial index from which to return the results. */
+    offset?: number;
+  },
+  params: RequestParams = {},
+) =>
+  new HttpClient().request<
+    {
+      count: number;
+      /** @format uri */
+      next?: string | null;
+      /** @format uri */
+      previous?: string | null;
+      results: ActivityRead[];
+    },
+    any
+  >({
+    path: `/activity/`,
+    method: "GET",
+    query: query,
+    secure: true,
+    format: "json",
+    ...params,
+  });
 
-    /**
-     * No description
-     *
-     * @tags activity
-     * @name ActivityCountByType
-     * @request GET:/activity/count_by_type/
-     * @secure
-     */
-    activityCountByType: (
-      query?: {
-        /** id__gt */
-        id__gt?: string;
-        /** id__gte */
-        id__gte?: string;
-        /** id__lt */
-        id__lt?: string;
-        /** id__lte */
-        id__lte?: string;
-        /** id__in */
-        id__in?: string;
-        /** id */
-        id?: string;
-        /** creator_id */
-        creator_id?: string;
-        /** type__in */
-        type__in?: string;
-        /** type */
-        type?: "0" | "1" | "2" | "3";
-        /** start_time */
-        start_time?: string;
-        /** end_time */
-        end_time?: string;
-        /** status */
-        status?: string;
-        /** A search term. */
-        search?: string;
-        /** Number of results to return per page. */
-        limit?: number;
-        /** The initial index from which to return the results. */
-        offset?: number;
-      },
-      params: RequestParams = {},
-    ) =>
-      this.request<
-        {
-          count: number;
-          /** @format uri */
-          next?: string | null;
-          /** @format uri */
-          previous?: string | null;
-          results: ActivityRead[];
-        },
-        any
-      >({
-        path: `/activity/count_by_type/`,
-        method: "GET",
-        query: query,
-        secure: true,
-        format: "json",
-        ...params,
-      }),
+/**
+ * No description
+ *
+ * @tags activity
+ * @name ActivityCountByType
+ * @request GET:/activity/count_by_type/
+ * @secure
+ */
+export const activityCountByType = (
+  query?: {
+    /** id__gt */
+    id__gt?: string;
+    /** id__gte */
+    id__gte?: string;
+    /** id__lt */
+    id__lt?: string;
+    /** id__lte */
+    id__lte?: string;
+    /** id__in */
+    id__in?: string;
+    /** id */
+    id?: string;
+    /** creator_id */
+    creator_id?: string;
+    /** type__in */
+    type__in?: string;
+    /** type */
+    type?: "0" | "1" | "2" | "3";
+    /** start_time */
+    start_time?: string;
+    /** end_time */
+    end_time?: string;
+    /** status */
+    status?: string;
+    /** A search term. */
+    search?: string;
+    /** Number of results to return per page. */
+    limit?: number;
+    /** The initial index from which to return the results. */
+    offset?: number;
+  },
+  params: RequestParams = {},
+) =>
+  new HttpClient().request<
+    {
+      count: number;
+      /** @format uri */
+      next?: string | null;
+      /** @format uri */
+      previous?: string | null;
+      results: ActivityRead[];
+    },
+    any
+  >({
+    path: `/activity/count_by_type/`,
+    method: "GET",
+    query: query,
+    secure: true,
+    format: "json",
+    ...params,
+  });
 
-    /**
-     * No description
-     *
-     * @tags activity
-     * @name ActivitySignin
-     * @request GET:/activity/signin/
-     * @secure
-     */
-    activitySignin: (
-      query?: {
-        /** id__gt */
-        id__gt?: string;
-        /** id__gte */
-        id__gte?: string;
-        /** id__lt */
-        id__lt?: string;
-        /** id__lte */
-        id__lte?: string;
-        /** id__in */
-        id__in?: string;
-        /** id */
-        id?: string;
-        /** creator_id */
-        creator_id?: string;
-        /** type__in */
-        type__in?: string;
-        /** type */
-        type?: "0" | "1" | "2" | "3";
-        /** start_time */
-        start_time?: string;
-        /** end_time */
-        end_time?: string;
-        /** status */
-        status?: string;
-        /** A search term. */
-        search?: string;
-        /** Number of results to return per page. */
-        limit?: number;
-        /** The initial index from which to return the results. */
-        offset?: number;
-      },
-      params: RequestParams = {},
-    ) =>
-      this.request<
-        {
-          count: number;
-          /** @format uri */
-          next?: string | null;
-          /** @format uri */
-          previous?: string | null;
-          results: ActivityRead[];
-        },
-        any
-      >({
-        path: `/activity/signin/`,
-        method: "GET",
-        query: query,
-        secure: true,
-        format: "json",
-        ...params,
-      }),
+/**
+ * No description
+ *
+ * @tags activity
+ * @name ActivitySignin
+ * @request GET:/activity/signin/
+ * @secure
+ */
+export const activitySignin = (
+  query?: {
+    /** id__gt */
+    id__gt?: string;
+    /** id__gte */
+    id__gte?: string;
+    /** id__lt */
+    id__lt?: string;
+    /** id__lte */
+    id__lte?: string;
+    /** id__in */
+    id__in?: string;
+    /** id */
+    id?: string;
+    /** creator_id */
+    creator_id?: string;
+    /** type__in */
+    type__in?: string;
+    /** type */
+    type?: "0" | "1" | "2" | "3";
+    /** start_time */
+    start_time?: string;
+    /** end_time */
+    end_time?: string;
+    /** status */
+    status?: string;
+    /** A search term. */
+    search?: string;
+    /** Number of results to return per page. */
+    limit?: number;
+    /** The initial index from which to return the results. */
+    offset?: number;
+  },
+  params: RequestParams = {},
+) =>
+  new HttpClient().request<
+    {
+      count: number;
+      /** @format uri */
+      next?: string | null;
+      /** @format uri */
+      previous?: string | null;
+      results: ActivityRead[];
+    },
+    any
+  >({
+    path: `/activity/signin/`,
+    method: "GET",
+    query: query,
+    secure: true,
+    format: "json",
+    ...params,
+  });
 
-    /**
-     * No description
-     *
-     * @tags activity
-     * @name ActivityRead
-     * @request GET:/activity/{id}/
-     * @secure
-     */
-    activityRead: (id: number, params: RequestParams = {}) =>
-      this.request<ActivityRead, any>({
-        path: `/activity/${id}/`,
-        method: "GET",
-        secure: true,
-        format: "json",
-        ...params,
-      }),
+/**
+ * No description
+ *
+ * @tags activity
+ * @name ActivityRead
+ * @request GET:/activity/{id}/
+ * @secure
+ */
+export const activityRead = (id: number, params: RequestParams = {}) =>
+  new HttpClient().request<ActivityRead, any>({
+    path: `/activity/${id}/`,
+    method: "GET",
+    secure: true,
+    format: "json",
+    ...params,
+  });
 
-    /**
-     * No description
-     *
-     * @tags activity
-     * @name ActivityAttend
-     * @request GET:/activity/{id}/attend/
-     * @secure
-     */
-    activityAttend: (id: number, params: RequestParams = {}) =>
-      this.request<ActivityRead, any>({
-        path: `/activity/${id}/attend/`,
-        method: "GET",
-        secure: true,
-        format: "json",
-        ...params,
-      }),
-  };
-  manage = {
-    /**
-     * No description
-     *
-     * @tags manage
-     * @name ManageActivityList
-     * @request GET:/manage/activity/
-     * @secure
-     */
-    manageActivityList: (
-      query?: {
-        /** id__gt */
-        id__gt?: string;
-        /** id__gte */
-        id__gte?: string;
-        /** id__lt */
-        id__lt?: string;
-        /** id__lte */
-        id__lte?: string;
-        /** id__in */
-        id__in?: string;
-        /** id */
-        id?: string;
-        /** creator_id */
-        creator_id?: string;
-        /** type__in */
-        type__in?: string;
-        /** type */
-        type?: "0" | "1" | "2" | "3";
-        /** start_time */
-        start_time?: string;
-        /** end_time */
-        end_time?: string;
-        /** status */
-        status?: string;
-        /** A search term. */
-        search?: string;
-        /** Number of results to return per page. */
-        limit?: number;
-        /** The initial index from which to return the results. */
-        offset?: number;
-      },
-      params: RequestParams = {},
-    ) =>
-      this.request<
-        {
-          count: number;
-          /** @format uri */
-          next?: string | null;
-          /** @format uri */
-          previous?: string | null;
-          results: ActivityRead[];
-        },
-        any
-      >({
-        path: `/manage/activity/`,
-        method: "GET",
-        query: query,
-        secure: true,
-        format: "json",
-        ...params,
-      }),
+/**
+ * No description
+ *
+ * @tags activity
+ * @name ActivityAttend
+ * @request GET:/activity/{id}/attend/
+ * @secure
+ */
+export const activityAttend = (id: number, params: RequestParams = {}) =>
+  new HttpClient().request<ActivityRead, any>({
+    path: `/activity/${id}/attend/`,
+    method: "GET",
+    secure: true,
+    format: "json",
+    ...params,
+  });
 
-    /**
-     * No description
-     *
-     * @tags manage
-     * @name ManageActivityCreate
-     * @request POST:/manage/activity/
-     * @secure
-     */
-    manageActivityCreate: (data: ActivityCreate, params: RequestParams = {}) =>
-      this.request<ActivityCreate, any>({
-        path: `/manage/activity/`,
-        method: "POST",
-        body: data,
-        secure: true,
-        format: "json",
-        ...params,
-      }),
+/**
+ * No description
+ *
+ * @tags manage
+ * @name ManageActivityList
+ * @request GET:/manage/activity/
+ * @secure
+ */
+export const manageActivityList = (
+  query?: {
+    /** id__gt */
+    id__gt?: string;
+    /** id__gte */
+    id__gte?: string;
+    /** id__lt */
+    id__lt?: string;
+    /** id__lte */
+    id__lte?: string;
+    /** id__in */
+    id__in?: string;
+    /** id */
+    id?: string;
+    /** creator_id */
+    creator_id?: string;
+    /** type__in */
+    type__in?: string;
+    /** type */
+    type?: "0" | "1" | "2" | "3";
+    /** start_time */
+    start_time?: string;
+    /** end_time */
+    end_time?: string;
+    /** status */
+    status?: string;
+    /** A search term. */
+    search?: string;
+    /** Number of results to return per page. */
+    limit?: number;
+    /** The initial index from which to return the results. */
+    offset?: number;
+  },
+  params: RequestParams = {},
+) =>
+  new HttpClient().request<
+    {
+      count: number;
+      /** @format uri */
+      next?: string | null;
+      /** @format uri */
+      previous?: string | null;
+      results: ActivityRead[];
+    },
+    any
+  >({
+    path: `/manage/activity/`,
+    method: "GET",
+    query: query,
+    secure: true,
+    format: "json",
+    ...params,
+  });
 
-    /**
-     * No description
-     *
-     * @tags manage
-     * @name ManageActivityRead
-     * @request GET:/manage/activity/{id}/
-     * @secure
-     */
-    manageActivityRead: (id: number, params: RequestParams = {}) =>
-      this.request<ActivityRead, any>({
-        path: `/manage/activity/${id}/`,
-        method: "GET",
-        secure: true,
-        format: "json",
-        ...params,
-      }),
+/**
+ * No description
+ *
+ * @tags manage
+ * @name ManageActivityCreate
+ * @request POST:/manage/activity/
+ * @secure
+ */
+export const manageActivityCreate = (data: ActivityCreate, params: RequestParams = {}) =>
+  new HttpClient().request<ActivityCreate, any>({
+    path: `/manage/activity/`,
+    method: "POST",
+    body: data,
+    secure: true,
+    format: "json",
+    ...params,
+  });
 
-    /**
-     * No description
-     *
-     * @tags manage
-     * @name ManageActivityUpdate
-     * @request PUT:/manage/activity/{id}/
-     * @secure
-     */
-    manageActivityUpdate: (id: number, data: ActivityUpdate, params: RequestParams = {}) =>
-      this.request<ActivityUpdate, any>({
-        path: `/manage/activity/${id}/`,
-        method: "PUT",
-        body: data,
-        secure: true,
-        format: "json",
-        ...params,
-      }),
+/**
+ * No description
+ *
+ * @tags manage
+ * @name ManageActivityRead
+ * @request GET:/manage/activity/{id}/
+ * @secure
+ */
+export const manageActivityRead = (id: number, params: RequestParams = {}) =>
+  new HttpClient().request<ActivityRead, any>({
+    path: `/manage/activity/${id}/`,
+    method: "GET",
+    secure: true,
+    format: "json",
+    ...params,
+  });
 
-    /**
-     * No description
-     *
-     * @tags manage
-     * @name ManageActivityPartialUpdate
-     * @request PATCH:/manage/activity/{id}/
-     * @secure
-     */
-    manageActivityPartialUpdate: (id: number, data: ActivityUpdate, params: RequestParams = {}) =>
-      this.request<ActivityUpdate, any>({
-        path: `/manage/activity/${id}/`,
-        method: "PATCH",
-        body: data,
-        secure: true,
-        format: "json",
-        ...params,
-      }),
+/**
+ * No description
+ *
+ * @tags manage
+ * @name ManageActivityUpdate
+ * @request PUT:/manage/activity/{id}/
+ * @secure
+ */
+export const manageActivityUpdate = (id: number, data: ActivityUpdate, params: RequestParams = {}) =>
+  new HttpClient().request<ActivityUpdate, any>({
+    path: `/manage/activity/${id}/`,
+    method: "PUT",
+    body: data,
+    secure: true,
+    format: "json",
+    ...params,
+  });
 
-    /**
-     * No description
-     *
-     * @tags manage
-     * @name ManageActivityDelete
-     * @request DELETE:/manage/activity/{id}/
-     * @secure
-     */
-    manageActivityDelete: (id: number, params: RequestParams = {}) =>
-      this.request<void, any>({
-        path: `/manage/activity/${id}/`,
-        method: "DELETE",
-        secure: true,
-        ...params,
-      }),
+/**
+ * No description
+ *
+ * @tags manage
+ * @name ManageActivityPartialUpdate
+ * @request PATCH:/manage/activity/{id}/
+ * @secure
+ */
+export const manageActivityPartialUpdate = (id: number, data: ActivityUpdate, params: RequestParams = {}) =>
+  new HttpClient().request<ActivityUpdate, any>({
+    path: `/manage/activity/${id}/`,
+    method: "PATCH",
+    body: data,
+    secure: true,
+    format: "json",
+    ...params,
+  });
 
-    /**
-     * No description
-     *
-     * @tags manage
-     * @name ManageActivityAttenderRead
-     * @request GET:/manage/activity/{id}/attender/
-     * @secure
-     */
-    manageActivityAttenderRead: (id: number, params: RequestParams = {}) =>
-      this.request<ActivityRead, any>({
-        path: `/manage/activity/${id}/attender/`,
-        method: "GET",
-        secure: true,
-        format: "json",
-        ...params,
-      }),
+/**
+ * No description
+ *
+ * @tags manage
+ * @name ManageActivityDelete
+ * @request DELETE:/manage/activity/{id}/
+ * @secure
+ */
+export const manageActivityDelete = (id: number, params: RequestParams = {}) =>
+  new HttpClient().request<void, any>({
+    path: `/manage/activity/${id}/`,
+    method: "DELETE",
+    secure: true,
+    ...params,
+  });
 
-    /**
-     * No description
-     *
-     * @tags manage
-     * @name ManageActivityAttenderCreate
-     * @request POST:/manage/activity/{id}/attender/
-     * @secure
-     */
-    manageActivityAttenderCreate: (id: number, data: ActivityCreate, params: RequestParams = {}) =>
-      this.request<ActivityCreate, any>({
-        path: `/manage/activity/${id}/attender/`,
-        method: "POST",
-        body: data,
-        secure: true,
-        format: "json",
-        ...params,
-      }),
+/**
+ * No description
+ *
+ * @tags manage
+ * @name ManageActivityAttenderRead
+ * @request GET:/manage/activity/{id}/attender/
+ * @secure
+ */
+export const manageActivityAttenderRead = (id: number, params: RequestParams = {}) =>
+  new HttpClient().request<ActivityRead, any>({
+    path: `/manage/activity/${id}/attender/`,
+    method: "GET",
+    secure: true,
+    format: "json",
+    ...params,
+  });
 
-    /**
-     * No description
-     *
-     * @tags manage
-     * @name ManageActivityAttenderDelete
-     * @request DELETE:/manage/activity/{id}/attender/
-     * @secure
-     */
-    manageActivityAttenderDelete: (id: number, params: RequestParams = {}) =>
-      this.request<void, any>({
-        path: `/manage/activity/${id}/attender/`,
-        method: "DELETE",
-        secure: true,
-        ...params,
-      }),
+/**
+ * No description
+ *
+ * @tags manage
+ * @name ManageActivityAttenderCreate
+ * @request POST:/manage/activity/{id}/attender/
+ * @secure
+ */
+export const manageActivityAttenderCreate = (id: number, data: ActivityCreate, params: RequestParams = {}) =>
+  new HttpClient().request<ActivityCreate, any>({
+    path: `/manage/activity/${id}/attender/`,
+    method: "POST",
+    body: data,
+    secure: true,
+    format: "json",
+    ...params,
+  });
 
-    /**
-     * No description
-     *
-     * @tags manage
-     * @name ManageActivityGenerateCode
-     * @request GET:/manage/activity/{id}/generate_code/
-     * @secure
-     */
-    manageActivityGenerateCode: (id: number, params: RequestParams = {}) =>
-      this.request<ActivityRead, any>({
-        path: `/manage/activity/${id}/generate_code/`,
-        method: "GET",
-        secure: true,
-        format: "json",
-        ...params,
-      }),
+/**
+ * No description
+ *
+ * @tags manage
+ * @name ManageActivityAttenderDelete
+ * @request DELETE:/manage/activity/{id}/attender/
+ * @secure
+ */
+export const manageActivityAttenderDelete = (id: number, params: RequestParams = {}) =>
+  new HttpClient().request<void, any>({
+    path: `/manage/activity/${id}/attender/`,
+    method: "DELETE",
+    secure: true,
+    ...params,
+  });
 
-    /**
-     * No description
-     *
-     * @tags manage
-     * @name ManageGradeList
-     * @request GET:/manage/grade/
-     * @secure
-     */
-    manageGradeList: (
-      query?: {
-        /** A search term. */
-        search?: string;
-        /** Number of results to return per page. */
-        limit?: number;
-        /** The initial index from which to return the results. */
-        offset?: number;
-      },
-      params: RequestParams = {},
-    ) =>
-      this.request<
-        {
-          count: number;
-          /** @format uri */
-          next?: string | null;
-          /** @format uri */
-          previous?: string | null;
-          results: Grade[];
-        },
-        any
-      >({
-        path: `/manage/grade/`,
-        method: "GET",
-        query: query,
-        secure: true,
-        format: "json",
-        ...params,
-      }),
+/**
+ * No description
+ *
+ * @tags manage
+ * @name ManageActivityGenerateCode
+ * @request GET:/manage/activity/{id}/generate_code/
+ * @secure
+ */
+export const manageActivityGenerateCode = (id: number, params: RequestParams = {}) =>
+  new HttpClient().request<ActivityRead, any>({
+    path: `/manage/activity/${id}/generate_code/`,
+    method: "GET",
+    secure: true,
+    format: "json",
+    ...params,
+  });
 
-    /**
-     * No description
-     *
-     * @tags manage
-     * @name ManageGradeCreate
-     * @request POST:/manage/grade/
-     * @secure
-     */
-    manageGradeCreate: (data: Grade, params: RequestParams = {}) =>
-      this.request<Grade, any>({
-        path: `/manage/grade/`,
-        method: "POST",
-        body: data,
-        secure: true,
-        format: "json",
-        ...params,
-      }),
+/**
+ * No description
+ *
+ * @tags manage
+ * @name ManageGradeList
+ * @request GET:/manage/grade/
+ * @secure
+ */
+export const manageGradeList = (
+  query?: {
+    /** A search term. */
+    search?: string;
+    /** Number of results to return per page. */
+    limit?: number;
+    /** The initial index from which to return the results. */
+    offset?: number;
+  },
+  params: RequestParams = {},
+) =>
+  new HttpClient().request<
+    {
+      count: number;
+      /** @format uri */
+      next?: string | null;
+      /** @format uri */
+      previous?: string | null;
+      results: Grade[];
+    },
+    any
+  >({
+    path: `/manage/grade/`,
+    method: "GET",
+    query: query,
+    secure: true,
+    format: "json",
+    ...params,
+  });
 
-    /**
-     * No description
-     *
-     * @tags manage
-     * @name ManageGradeUpdate
-     * @request PUT:/manage/grade/
-     * @secure
-     */
-    manageGradeUpdate: (data: Grade, params: RequestParams = {}) =>
-      this.request<Grade, any>({
-        path: `/manage/grade/`,
-        method: "PUT",
-        body: data,
-        secure: true,
-        format: "json",
-        ...params,
-      }),
+/**
+ * No description
+ *
+ * @tags manage
+ * @name ManageGradeCreate
+ * @request POST:/manage/grade/
+ * @secure
+ */
+export const manageGradeCreate = (data: Grade, params: RequestParams = {}) =>
+  new HttpClient().request<Grade, any>({
+    path: `/manage/grade/`,
+    method: "POST",
+    body: data,
+    secure: true,
+    format: "json",
+    ...params,
+  });
 
-    /**
-     * No description
-     *
-     * @tags manage
-     * @name ManageGradePartialUpdate
-     * @request PATCH:/manage/grade/
-     * @secure
-     */
-    manageGradePartialUpdate: (data: Grade, params: RequestParams = {}) =>
-      this.request<Grade, any>({
-        path: `/manage/grade/`,
-        method: "PATCH",
-        body: data,
-        secure: true,
-        format: "json",
-        ...params,
-      }),
+/**
+ * No description
+ *
+ * @tags manage
+ * @name ManageGradeUpdate
+ * @request PUT:/manage/grade/
+ * @secure
+ */
+export const manageGradeUpdate = (data: Grade, params: RequestParams = {}) =>
+  new HttpClient().request<Grade, any>({
+    path: `/manage/grade/`,
+    method: "PUT",
+    body: data,
+    secure: true,
+    format: "json",
+    ...params,
+  });
 
-    /**
-     * No description
-     *
-     * @tags manage
-     * @name ManageGradeDelete
-     * @request DELETE:/manage/grade/
-     * @secure
-     */
-    manageGradeDelete: (params: RequestParams = {}) =>
-      this.request<void, any>({
-        path: `/manage/grade/`,
-        method: "DELETE",
-        secure: true,
-        ...params,
-      }),
+/**
+ * No description
+ *
+ * @tags manage
+ * @name ManageGradePartialUpdate
+ * @request PATCH:/manage/grade/
+ * @secure
+ */
+export const manageGradePartialUpdate = (data: Grade, params: RequestParams = {}) =>
+  new HttpClient().request<Grade, any>({
+    path: `/manage/grade/`,
+    method: "PATCH",
+    body: data,
+    secure: true,
+    format: "json",
+    ...params,
+  });
 
-    /**
-     * No description
-     *
-     * @tags manage
-     * @name ManageGradeRead
-     * @request GET:/manage/grade/{id}/
-     * @secure
-     */
-    manageGradeRead: (id: number, params: RequestParams = {}) =>
-      this.request<Grade, any>({
-        path: `/manage/grade/${id}/`,
-        method: "GET",
-        secure: true,
-        format: "json",
-        ...params,
-      }),
+/**
+ * No description
+ *
+ * @tags manage
+ * @name ManageGradeDelete
+ * @request DELETE:/manage/grade/
+ * @secure
+ */
+export const manageGradeDelete = (params: RequestParams = {}) =>
+  new HttpClient().request<void, any>({
+    path: `/manage/grade/`,
+    method: "DELETE",
+    secure: true,
+    ...params,
+  });
 
-    /**
-     * No description
-     *
-     * @tags manage
-     * @name ManageGradeUpdate2
-     * @request PUT:/manage/grade/{id}/
-     * @originalName manageGradeUpdate
-     * @duplicate
-     * @secure
-     */
-    manageGradeUpdate2: (id: number, data: Grade, params: RequestParams = {}) =>
-      this.request<Grade, any>({
-        path: `/manage/grade/${id}/`,
-        method: "PUT",
-        body: data,
-        secure: true,
-        format: "json",
-        ...params,
-      }),
+/**
+ * No description
+ *
+ * @tags manage
+ * @name ManageGradeRead
+ * @request GET:/manage/grade/{id}/
+ * @secure
+ */
+export const manageGradeRead = (id: number, params: RequestParams = {}) =>
+  new HttpClient().request<Grade, any>({
+    path: `/manage/grade/${id}/`,
+    method: "GET",
+    secure: true,
+    format: "json",
+    ...params,
+  });
 
-    /**
-     * No description
-     *
-     * @tags manage
-     * @name ManageGradePartialUpdate2
-     * @request PATCH:/manage/grade/{id}/
-     * @originalName manageGradePartialUpdate
-     * @duplicate
-     * @secure
-     */
-    manageGradePartialUpdate2: (id: number, data: Grade, params: RequestParams = {}) =>
-      this.request<Grade, any>({
-        path: `/manage/grade/${id}/`,
-        method: "PATCH",
-        body: data,
-        secure: true,
-        format: "json",
-        ...params,
-      }),
+/**
+ * No description
+ *
+ * @tags manage
+ * @name ManageGradeUpdate2
+ * @request PUT:/manage/grade/{id}/
+ * @originalName manageGradeUpdate
+ * @duplicate
+ * @secure
+ */
+export const manageGradeUpdate2 = (id: number, data: Grade, params: RequestParams = {}) =>
+  new HttpClient().request<Grade, any>({
+    path: `/manage/grade/${id}/`,
+    method: "PUT",
+    body: data,
+    secure: true,
+    format: "json",
+    ...params,
+  });
 
-    /**
-     * No description
-     *
-     * @tags manage
-     * @name ManageGradeDelete2
-     * @request DELETE:/manage/grade/{id}/
-     * @originalName manageGradeDelete
-     * @duplicate
-     * @secure
-     */
-    manageGradeDelete2: (id: number, params: RequestParams = {}) =>
-      this.request<void, any>({
-        path: `/manage/grade/${id}/`,
-        method: "DELETE",
-        secure: true,
-        ...params,
-      }),
+/**
+ * No description
+ *
+ * @tags manage
+ * @name ManageGradePartialUpdate2
+ * @request PATCH:/manage/grade/{id}/
+ * @originalName manageGradePartialUpdate
+ * @duplicate
+ * @secure
+ */
+export const manageGradePartialUpdate2 = (id: number, data: Grade, params: RequestParams = {}) =>
+  new HttpClient().request<Grade, any>({
+    path: `/manage/grade/${id}/`,
+    method: "PATCH",
+    body: data,
+    secure: true,
+    format: "json",
+    ...params,
+  });
 
-    /**
-     * No description
-     *
-     * @tags manage
-     * @name ManageGroupList
-     * @request GET:/manage/group/
-     * @secure
-     */
-    manageGroupList: (
-      query?: {
-        /** grade__id */
-        grade__id?: string;
-        /** grade__name */
-        grade__name?: string;
-        /** A search term. */
-        search?: string;
-        /** Number of results to return per page. */
-        limit?: number;
-        /** The initial index from which to return the results. */
-        offset?: number;
-      },
-      params: RequestParams = {},
-    ) =>
-      this.request<
-        {
-          count: number;
-          /** @format uri */
-          next?: string | null;
-          /** @format uri */
-          previous?: string | null;
-          results: Group[];
-        },
-        any
-      >({
-        path: `/manage/group/`,
-        method: "GET",
-        query: query,
-        secure: true,
-        format: "json",
-        ...params,
-      }),
+/**
+ * No description
+ *
+ * @tags manage
+ * @name ManageGradeDelete2
+ * @request DELETE:/manage/grade/{id}/
+ * @originalName manageGradeDelete
+ * @duplicate
+ * @secure
+ */
+export const manageGradeDelete2 = (id: number, params: RequestParams = {}) =>
+  new HttpClient().request<void, any>({
+    path: `/manage/grade/${id}/`,
+    method: "DELETE",
+    secure: true,
+    ...params,
+  });
 
-    /**
-     * No description
-     *
-     * @tags manage
-     * @name ManageGroupCreate
-     * @request POST:/manage/group/
-     * @secure
-     */
-    manageGroupCreate: (data: GroupUpdate, params: RequestParams = {}) =>
-      this.request<GroupUpdate, any>({
-        path: `/manage/group/`,
-        method: "POST",
-        body: data,
-        secure: true,
-        format: "json",
-        ...params,
-      }),
+/**
+ * No description
+ *
+ * @tags manage
+ * @name ManageGroupList
+ * @request GET:/manage/group/
+ * @secure
+ */
+export const manageGroupList = (
+  query?: {
+    /** grade__id */
+    grade__id?: string;
+    /** grade__name */
+    grade__name?: string;
+    /** A search term. */
+    search?: string;
+    /** Number of results to return per page. */
+    limit?: number;
+    /** The initial index from which to return the results. */
+    offset?: number;
+  },
+  params: RequestParams = {},
+) =>
+  new HttpClient().request<
+    {
+      count: number;
+      /** @format uri */
+      next?: string | null;
+      /** @format uri */
+      previous?: string | null;
+      results: Group[];
+    },
+    any
+  >({
+    path: `/manage/group/`,
+    method: "GET",
+    query: query,
+    secure: true,
+    format: "json",
+    ...params,
+  });
 
-    /**
-     * No description
-     *
-     * @tags manage
-     * @name ManageGroupUpdate
-     * @request PUT:/manage/group/
-     * @secure
-     */
-    manageGroupUpdate: (data: Group, params: RequestParams = {}) =>
-      this.request<Group, any>({
-        path: `/manage/group/`,
-        method: "PUT",
-        body: data,
-        secure: true,
-        format: "json",
-        ...params,
-      }),
+/**
+ * No description
+ *
+ * @tags manage
+ * @name ManageGroupCreate
+ * @request POST:/manage/group/
+ * @secure
+ */
+export const manageGroupCreate = (data: GroupUpdate, params: RequestParams = {}) =>
+  new HttpClient().request<GroupUpdate, any>({
+    path: `/manage/group/`,
+    method: "POST",
+    body: data,
+    secure: true,
+    format: "json",
+    ...params,
+  });
 
-    /**
-     * No description
-     *
-     * @tags manage
-     * @name ManageGroupPartialUpdate
-     * @request PATCH:/manage/group/
-     * @secure
-     */
-    manageGroupPartialUpdate: (data: Group, params: RequestParams = {}) =>
-      this.request<Group, any>({
-        path: `/manage/group/`,
-        method: "PATCH",
-        body: data,
-        secure: true,
-        format: "json",
-        ...params,
-      }),
+/**
+ * No description
+ *
+ * @tags manage
+ * @name ManageGroupUpdate
+ * @request PUT:/manage/group/
+ * @secure
+ */
+export const manageGroupUpdate = (data: Group, params: RequestParams = {}) =>
+  new HttpClient().request<Group, any>({
+    path: `/manage/group/`,
+    method: "PUT",
+    body: data,
+    secure: true,
+    format: "json",
+    ...params,
+  });
 
-    /**
-     * No description
-     *
-     * @tags manage
-     * @name ManageGroupDelete
-     * @request DELETE:/manage/group/
-     * @secure
-     */
-    manageGroupDelete: (params: RequestParams = {}) =>
-      this.request<void, any>({
-        path: `/manage/group/`,
-        method: "DELETE",
-        secure: true,
-        ...params,
-      }),
+/**
+ * No description
+ *
+ * @tags manage
+ * @name ManageGroupPartialUpdate
+ * @request PATCH:/manage/group/
+ * @secure
+ */
+export const manageGroupPartialUpdate = (data: Group, params: RequestParams = {}) =>
+  new HttpClient().request<Group, any>({
+    path: `/manage/group/`,
+    method: "PATCH",
+    body: data,
+    secure: true,
+    format: "json",
+    ...params,
+  });
 
-    /**
-     * No description
-     *
-     * @tags manage
-     * @name ManageGroupRead
-     * @request GET:/manage/group/{id}/
-     * @secure
-     */
-    manageGroupRead: (id: number, params: RequestParams = {}) =>
-      this.request<Group, any>({
-        path: `/manage/group/${id}/`,
-        method: "GET",
-        secure: true,
-        format: "json",
-        ...params,
-      }),
+/**
+ * No description
+ *
+ * @tags manage
+ * @name ManageGroupDelete
+ * @request DELETE:/manage/group/
+ * @secure
+ */
+export const manageGroupDelete = (params: RequestParams = {}) =>
+  new HttpClient().request<void, any>({
+    path: `/manage/group/`,
+    method: "DELETE",
+    secure: true,
+    ...params,
+  });
 
-    /**
-     * No description
-     *
-     * @tags manage
-     * @name ManageGroupUpdate2
-     * @request PUT:/manage/group/{id}/
-     * @originalName manageGroupUpdate
-     * @duplicate
-     * @secure
-     */
-    manageGroupUpdate2: (id: number, data: GroupUpdate, params: RequestParams = {}) =>
-      this.request<GroupUpdate, any>({
-        path: `/manage/group/${id}/`,
-        method: "PUT",
-        body: data,
-        secure: true,
-        format: "json",
-        ...params,
-      }),
+/**
+ * No description
+ *
+ * @tags manage
+ * @name ManageGroupRead
+ * @request GET:/manage/group/{id}/
+ * @secure
+ */
+export const manageGroupRead = (id: number, params: RequestParams = {}) =>
+  new HttpClient().request<Group, any>({
+    path: `/manage/group/${id}/`,
+    method: "GET",
+    secure: true,
+    format: "json",
+    ...params,
+  });
 
-    /**
-     * No description
-     *
-     * @tags manage
-     * @name ManageGroupPartialUpdate2
-     * @request PATCH:/manage/group/{id}/
-     * @originalName manageGroupPartialUpdate
-     * @duplicate
-     * @secure
-     */
-    manageGroupPartialUpdate2: (id: number, data: GroupUpdate, params: RequestParams = {}) =>
-      this.request<GroupUpdate, any>({
-        path: `/manage/group/${id}/`,
-        method: "PATCH",
-        body: data,
-        secure: true,
-        format: "json",
-        ...params,
-      }),
+/**
+ * No description
+ *
+ * @tags manage
+ * @name ManageGroupUpdate2
+ * @request PUT:/manage/group/{id}/
+ * @originalName manageGroupUpdate
+ * @duplicate
+ * @secure
+ */
+export const manageGroupUpdate2 = (id: number, data: GroupUpdate, params: RequestParams = {}) =>
+  new HttpClient().request<GroupUpdate, any>({
+    path: `/manage/group/${id}/`,
+    method: "PUT",
+    body: data,
+    secure: true,
+    format: "json",
+    ...params,
+  });
 
-    /**
-     * No description
-     *
-     * @tags manage
-     * @name ManageGroupDelete2
-     * @request DELETE:/manage/group/{id}/
-     * @originalName manageGroupDelete
-     * @duplicate
-     * @secure
-     */
-    manageGroupDelete2: (id: number, params: RequestParams = {}) =>
-      this.request<void, any>({
-        path: `/manage/group/${id}/`,
-        method: "DELETE",
-        secure: true,
-        ...params,
-      }),
+/**
+ * No description
+ *
+ * @tags manage
+ * @name ManageGroupPartialUpdate2
+ * @request PATCH:/manage/group/{id}/
+ * @originalName manageGroupPartialUpdate
+ * @duplicate
+ * @secure
+ */
+export const manageGroupPartialUpdate2 = (id: number, data: GroupUpdate, params: RequestParams = {}) =>
+  new HttpClient().request<GroupUpdate, any>({
+    path: `/manage/group/${id}/`,
+    method: "PATCH",
+    body: data,
+    secure: true,
+    format: "json",
+    ...params,
+  });
 
-    /**
-     * No description
-     *
-     * @tags manage
-     * @name ManageRegisterList
-     * @request GET:/manage/register/
-     * @secure
-     */
-    manageRegisterList: (
-      query?: {
-        /** A search term. */
-        search?: string;
-        /** Number of results to return per page. */
-        limit?: number;
-        /** The initial index from which to return the results. */
-        offset?: number;
-      },
-      params: RequestParams = {},
-    ) =>
-      this.request<void, any>({
-        path: `/manage/register/`,
-        method: "GET",
-        query: query,
-        secure: true,
-        ...params,
-      }),
+/**
+ * No description
+ *
+ * @tags manage
+ * @name ManageGroupDelete2
+ * @request DELETE:/manage/group/{id}/
+ * @originalName manageGroupDelete
+ * @duplicate
+ * @secure
+ */
+export const manageGroupDelete2 = (id: number, params: RequestParams = {}) =>
+  new HttpClient().request<void, any>({
+    path: `/manage/group/${id}/`,
+    method: "DELETE",
+    secure: true,
+    ...params,
+  });
 
-    /**
-     * No description
-     *
-     * @tags manage
-     * @name ManageRegisterCreate
-     * @request POST:/manage/register/
-     * @secure
-     */
-    manageRegisterCreate: (params: RequestParams = {}) =>
-      this.request<void, any>({
-        path: `/manage/register/`,
-        method: "POST",
-        secure: true,
-        ...params,
-      }),
+/**
+ * No description
+ *
+ * @tags manage
+ * @name ManageRegisterList
+ * @request GET:/manage/register/
+ * @secure
+ */
+export const manageRegisterList = (
+  query?: {
+    /** A search term. */
+    search?: string;
+    /** Number of results to return per page. */
+    limit?: number;
+    /** The initial index from which to return the results. */
+    offset?: number;
+  },
+  params: RequestParams = {},
+) =>
+  new HttpClient().request<void, any>({
+    path: `/manage/register/`,
+    method: "GET",
+    query: query,
+    secure: true,
+    ...params,
+  });
 
-    /**
-     * No description
-     *
-     * @tags manage
-     * @name ManageRegisterBatchRegister
-     * @request POST:/manage/register/batch-register/
-     * @secure
-     */
-    manageRegisterBatchRegister: (params: RequestParams = {}) =>
-      this.request<void, any>({
-        path: `/manage/register/batch-register/`,
-        method: "POST",
-        secure: true,
-        ...params,
-      }),
+/**
+ * No description
+ *
+ * @tags manage
+ * @name ManageRegisterCreate
+ * @request POST:/manage/register/
+ * @secure
+ */
+export const manageRegisterCreate = (params: RequestParams = {}) =>
+  new HttpClient().request<void, any>({
+    path: `/manage/register/`,
+    method: "POST",
+    secure: true,
+    ...params,
+  });
 
-    /**
-     * No description
-     *
-     * @tags manage
-     * @name ManageRegisterRead
-     * @request GET:/manage/register/{id}/
-     * @secure
-     */
-    manageRegisterRead: (id: number, params: RequestParams = {}) =>
-      this.request<void, any>({
-        path: `/manage/register/${id}/`,
-        method: "GET",
-        secure: true,
-        ...params,
-      }),
+/**
+ * No description
+ *
+ * @tags manage
+ * @name ManageRegisterBatchRegister
+ * @request POST:/manage/register/batch-register/
+ * @secure
+ */
+export const manageRegisterBatchRegister = (params: RequestParams = {}) =>
+  new HttpClient().request<void, any>({
+    path: `/manage/register/batch-register/`,
+    method: "POST",
+    secure: true,
+    ...params,
+  });
 
-    /**
-     * No description
-     *
-     * @tags manage
-     * @name ManageRegisterUpdate
-     * @request PUT:/manage/register/{id}/
-     * @secure
-     */
-    manageRegisterUpdate: (id: number, params: RequestParams = {}) =>
-      this.request<void, any>({
-        path: `/manage/register/${id}/`,
-        method: "PUT",
-        secure: true,
-        ...params,
-      }),
+/**
+ * No description
+ *
+ * @tags manage
+ * @name ManageRegisterRead
+ * @request GET:/manage/register/{id}/
+ * @secure
+ */
+export const manageRegisterRead = (id: number, params: RequestParams = {}) =>
+  new HttpClient().request<void, any>({
+    path: `/manage/register/${id}/`,
+    method: "GET",
+    secure: true,
+    ...params,
+  });
 
-    /**
-     * No description
-     *
-     * @tags manage
-     * @name ManageRegisterPartialUpdate
-     * @request PATCH:/manage/register/{id}/
-     * @secure
-     */
-    manageRegisterPartialUpdate: (id: number, params: RequestParams = {}) =>
-      this.request<void, any>({
-        path: `/manage/register/${id}/`,
-        method: "PATCH",
-        secure: true,
-        ...params,
-      }),
+/**
+ * No description
+ *
+ * @tags manage
+ * @name ManageRegisterUpdate
+ * @request PUT:/manage/register/{id}/
+ * @secure
+ */
+export const manageRegisterUpdate = (id: number, params: RequestParams = {}) =>
+  new HttpClient().request<void, any>({
+    path: `/manage/register/${id}/`,
+    method: "PUT",
+    secure: true,
+    ...params,
+  });
 
-    /**
-     * No description
-     *
-     * @tags manage
-     * @name ManageRegisterDelete
-     * @request DELETE:/manage/register/{id}/
-     * @secure
-     */
-    manageRegisterDelete: (id: number, params: RequestParams = {}) =>
-      this.request<void, any>({
-        path: `/manage/register/${id}/`,
-        method: "DELETE",
-        secure: true,
-        ...params,
-      }),
+/**
+ * No description
+ *
+ * @tags manage
+ * @name ManageRegisterPartialUpdate
+ * @request PATCH:/manage/register/{id}/
+ * @secure
+ */
+export const manageRegisterPartialUpdate = (id: number, params: RequestParams = {}) =>
+  new HttpClient().request<void, any>({
+    path: `/manage/register/${id}/`,
+    method: "PATCH",
+    secure: true,
+    ...params,
+  });
 
-    /**
-     * No description
-     *
-     * @tags manage
-     * @name ManageUserList
-     * @request GET:/manage/user/
-     * @secure
-     */
-    manageUserList: (
-      query?: {
-        /** username */
-        username?: string;
-        /** username__in */
-        username__in?: string;
-        /** isAdmin */
-        isAdmin?: string;
-        /** id__gte */
-        id__gte?: string;
-        /** id__lte */
-        id__lte?: string;
-        /** id */
-        id?: string;
-        /** id__gt */
-        id__gt?: string;
-        /** id__lt */
-        id__lt?: string;
-        /** id__in */
-        id__in?: string;
-        /** A search term. */
-        search?: string;
-        /** Which field to use when ordering the results. */
-        ordering?: string;
-        /** Number of results to return per page. */
-        limit?: number;
-        /** The initial index from which to return the results. */
-        offset?: number;
-      },
-      params: RequestParams = {},
-    ) =>
-      this.request<void, any>({
-        path: `/manage/user/`,
-        method: "GET",
-        query: query,
-        secure: true,
-        ...params,
-      }),
+/**
+ * No description
+ *
+ * @tags manage
+ * @name ManageRegisterDelete
+ * @request DELETE:/manage/register/{id}/
+ * @secure
+ */
+export const manageRegisterDelete = (id: number, params: RequestParams = {}) =>
+  new HttpClient().request<void, any>({
+    path: `/manage/register/${id}/`,
+    method: "DELETE",
+    secure: true,
+    ...params,
+  });
 
-    /**
-     * No description
-     *
-     * @tags manage
-     * @name ManageUserRead
-     * @request GET:/manage/user/{id}/
-     * @secure
-     */
-    manageUserRead: (id: number, params: RequestParams = {}) =>
-      this.request<void, any>({
-        path: `/manage/user/${id}/`,
-        method: "GET",
-        secure: true,
-        ...params,
-      }),
+/**
+ * No description
+ *
+ * @tags manage
+ * @name ManageUserList
+ * @request GET:/manage/user/
+ * @secure
+ */
+export const manageUserList = (
+  query?: {
+    /** username */
+    username?: string;
+    /** username__in */
+    username__in?: string;
+    /** isAdmin */
+    isAdmin?: string;
+    /** id__gte */
+    id__gte?: string;
+    /** id__lte */
+    id__lte?: string;
+    /** id */
+    id?: string;
+    /** id__gt */
+    id__gt?: string;
+    /** id__lt */
+    id__lt?: string;
+    /** id__in */
+    id__in?: string;
+    /** A search term. */
+    search?: string;
+    /** Which field to use when ordering the results. */
+    ordering?: string;
+    /** Number of results to return per page. */
+    limit?: number;
+    /** The initial index from which to return the results. */
+    offset?: number;
+  },
+  params: RequestParams = {},
+) =>
+  new HttpClient().request<void, any>({
+    path: `/manage/user/`,
+    method: "GET",
+    query: query,
+    secure: true,
+    ...params,
+  });
 
-    /**
-     * No description
-     *
-     * @tags manage
-     * @name ManageUserUpdate
-     * @request PUT:/manage/user/{id}/
-     * @secure
-     */
-    manageUserUpdate: (id: number, params: RequestParams = {}) =>
-      this.request<void, any>({
-        path: `/manage/user/${id}/`,
-        method: "PUT",
-        secure: true,
-        ...params,
-      }),
+/**
+ * No description
+ *
+ * @tags manage
+ * @name ManageUserRead
+ * @request GET:/manage/user/{id}/
+ * @secure
+ */
+export const manageUserRead = (id: number, params: RequestParams = {}) =>
+  new HttpClient().request<void, any>({
+    path: `/manage/user/${id}/`,
+    method: "GET",
+    secure: true,
+    ...params,
+  });
 
-    /**
-     * No description
-     *
-     * @tags manage
-     * @name ManageUserPartialUpdate
-     * @request PATCH:/manage/user/{id}/
-     * @secure
-     */
-    manageUserPartialUpdate: (id: number, params: RequestParams = {}) =>
-      this.request<void, any>({
-        path: `/manage/user/${id}/`,
-        method: "PATCH",
-        secure: true,
-        ...params,
-      }),
+/**
+ * No description
+ *
+ * @tags manage
+ * @name ManageUserUpdate
+ * @request PUT:/manage/user/{id}/
+ * @secure
+ */
+export const manageUserUpdate = (id: number, params: RequestParams = {}) =>
+  new HttpClient().request<void, any>({
+    path: `/manage/user/${id}/`,
+    method: "PUT",
+    secure: true,
+    ...params,
+  });
 
-    /**
-     * No description
-     *
-     * @tags manage
-     * @name ManageUserDelete
-     * @request DELETE:/manage/user/{id}/
-     * @secure
-     */
-    manageUserDelete: (id: number, params: RequestParams = {}) =>
-      this.request<void, any>({
-        path: `/manage/user/${id}/`,
-        method: "DELETE",
-        secure: true,
-        ...params,
-      }),
-  };
-  sys = {
-    /**
-     * @description 获取删除文件的url : param file_id: 文件id的列表
-     *
-     * @tags sys
-     * @name SysDeleteList
-     * @request GET:/sys/delete/
-     * @secure
-     */
-    sysDeleteList: (params: RequestParams = {}) =>
-      this.request<void, any>({
-        path: `/sys/delete/`,
-        method: "GET",
-        secure: true,
-        ...params,
-      }),
+/**
+ * No description
+ *
+ * @tags manage
+ * @name ManageUserPartialUpdate
+ * @request PATCH:/manage/user/{id}/
+ * @secure
+ */
+export const manageUserPartialUpdate = (id: number, params: RequestParams = {}) =>
+  new HttpClient().request<void, any>({
+    path: `/manage/user/${id}/`,
+    method: "PATCH",
+    secure: true,
+    ...params,
+  });
 
-    /**
-     * @description 获取下载文件的url : param file_id: 文件id的列表
-     *
-     * @tags sys
-     * @name SysDownloadList
-     * @request GET:/sys/download/
-     * @secure
-     */
-    sysDownloadList: (params: RequestParams = {}) =>
-      this.request<void, any>({
-        path: `/sys/download/`,
-        method: "GET",
-        secure: true,
-        ...params,
-      }),
+/**
+ * No description
+ *
+ * @tags manage
+ * @name ManageUserDelete
+ * @request DELETE:/manage/user/{id}/
+ * @secure
+ */
+export const manageUserDelete = (id: number, params: RequestParams = {}) =>
+  new HttpClient().request<void, any>({
+    path: `/manage/user/${id}/`,
+    method: "DELETE",
+    secure: true,
+    ...params,
+  });
 
-    /**
-     * No description
-     *
-     * @tags sys
-     * @name SysEnvList
-     * @request GET:/sys/env/
-     * @secure
-     */
-    sysEnvList: (params: RequestParams = {}) =>
-      this.request<void, any>({
-        path: `/sys/env/`,
-        method: "GET",
-        secure: true,
-        ...params,
-      }),
+/**
+ * @description 获取删除文件的url : param file_id: 文件id的列表
+ *
+ * @tags sys
+ * @name SysDeleteList
+ * @request GET:/sys/delete/
+ * @secure
+ */
+export const sysDeleteList = (params: RequestParams = {}) =>
+  new HttpClient().request<void, any>({
+    path: `/sys/delete/`,
+    method: "GET",
+    secure: true,
+    ...params,
+  });
 
-    /**
-     * @description 获取服务器本地时间
-     *
-     * @tags sys
-     * @name SysTimeList
-     * @request GET:/sys/time/
-     * @secure
-     */
-    sysTimeList: (params: RequestParams = {}) =>
-      this.request<void, any>({
-        path: `/sys/time/`,
-        method: "GET",
-        secure: true,
-        ...params,
-      }),
+/**
+ * @description 获取下载文件的url : param file_id: 文件id的列表
+ *
+ * @tags sys
+ * @name SysDownloadList
+ * @request GET:/sys/download/
+ * @secure
+ */
+export const sysDownloadList = (params: RequestParams = {}) =>
+  new HttpClient().request<void, any>({
+    path: `/sys/download/`,
+    method: "GET",
+    secure: true,
+    ...params,
+  });
 
-    /**
-     * @description 获取上传文件的url
-     *
-     * @tags sys
-     * @name SysUploadList
-     * @request GET:/sys/upload/
-     * @secure
-     */
-    sysUploadList: (params: RequestParams = {}) =>
-      this.request<void, any>({
-        path: `/sys/upload/`,
-        method: "GET",
-        secure: true,
-        ...params,
-      }),
-  };
-  user = {
-    /**
-     * @description 获取/修改当前用户信息
-     *
-     * @tags user
-     * @name UserProfileRead
-     * @request GET:/user/profile/
-     * @secure
-     */
-    userProfileRead: (
-      query?: {
-        /** Number of results to return per page. */
-        limit?: number;
-        /** The initial index from which to return the results. */
-        offset?: number;
-      },
-      params: RequestParams = {},
-    ) =>
-      this.request<
-        {
-          count: number;
-          /** @format uri */
-          next?: string | null;
-          /** @format uri */
-          previous?: string | null;
-          results: UserProfileUpdate[];
-        },
-        any
-      >({
-        path: `/user/profile/`,
-        method: "GET",
-        query: query,
-        secure: true,
-        format: "json",
-        ...params,
-      }),
+/**
+ * No description
+ *
+ * @tags sys
+ * @name SysEnvList
+ * @request GET:/sys/env/
+ * @secure
+ */
+export const sysEnvList = (params: RequestParams = {}) =>
+  new HttpClient().request<void, any>({
+    path: `/sys/env/`,
+    method: "GET",
+    secure: true,
+    ...params,
+  });
 
-    /**
-     * @description 获取/修改当前用户信息
-     *
-     * @tags user
-     * @name UserProfileUpdate
-     * @request PUT:/user/profile/
-     * @secure
-     */
-    userProfileUpdate: (data: UserProfileUpdate, params: RequestParams = {}) =>
-      this.request<UserProfileUpdate, any>({
-        path: `/user/profile/`,
-        method: "PUT",
-        body: data,
-        secure: true,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
+/**
+ * @description 获取服务器本地时间
+ *
+ * @tags sys
+ * @name SysTimeList
+ * @request GET:/sys/time/
+ * @secure
+ */
+export const sysTimeList = (params: RequestParams = {}) =>
+  new HttpClient().request<void, any>({
+    path: `/sys/time/`,
+    method: "GET",
+    secure: true,
+    ...params,
+  });
 
-    /**
-     * No description
-     *
-     * @tags user
-     * @name UserRegister
-     * @request POST:/user/register/
-     * @secure
-     */
-    userRegister: (data: UserRegister, params: RequestParams = {}) =>
-      this.request<UserRegister, any>({
-        path: `/user/register/`,
-        method: "POST",
-        body: data,
-        secure: true,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-  };
-}
+/**
+ * @description 获取上传文件的url
+ *
+ * @tags sys
+ * @name SysUploadList
+ * @request GET:/sys/upload/
+ * @secure
+ */
+export const sysUploadList = (params: RequestParams = {}) =>
+  new HttpClient().request<void, any>({
+    path: `/sys/upload/`,
+    method: "GET",
+    secure: true,
+    ...params,
+  });
+
+/**
+ * @description 获取/修改当前用户信息
+ *
+ * @tags user
+ * @name UserProfileRead
+ * @request GET:/user/profile/
+ * @secure
+ */
+export const userProfileRead = (
+  query?: {
+    /** Number of results to return per page. */
+    limit?: number;
+    /** The initial index from which to return the results. */
+    offset?: number;
+  },
+  params: RequestParams = {},
+) =>
+  new HttpClient().request<
+    {
+      count: number;
+      /** @format uri */
+      next?: string | null;
+      /** @format uri */
+      previous?: string | null;
+      results: UserProfileUpdate[];
+    },
+    any
+  >({
+    path: `/user/profile/`,
+    method: "GET",
+    query: query,
+    secure: true,
+    format: "json",
+    ...params,
+  });
+
+/**
+ * @description 获取/修改当前用户信息
+ *
+ * @tags user
+ * @name UserProfileUpdate
+ * @request PUT:/user/profile/
+ * @secure
+ */
+export const userProfileUpdate = (data: UserProfileUpdate, params: RequestParams = {}) =>
+  new HttpClient().request<UserProfileUpdate, any>({
+    path: `/user/profile/`,
+    method: "PUT",
+    body: data,
+    secure: true,
+    type: ContentType.Json,
+    format: "json",
+    ...params,
+  });
+
+/**
+ * No description
+ *
+ * @tags user
+ * @name UserRegister
+ * @request POST:/user/register/
+ * @secure
+ */
+export const userRegister = (data: UserRegister, params: RequestParams = {}) =>
+  new HttpClient().request<UserRegister, any>({
+    path: `/user/register/`,
+    method: "POST",
+    body: data,
+    secure: true,
+    type: ContentType.Json,
+    format: "json",
+    ...params,
+  });
