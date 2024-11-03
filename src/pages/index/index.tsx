@@ -3,14 +3,14 @@ import { useLoad } from "@tarojs/taro";
 import "./index.css";
 import { Button } from "@taroify/core";
 import { useRequest } from "ahooks";
-import { activityAttend } from "@/api";
+import { sysTimeList } from "@/api";
 
 export default function Index() {
 	useLoad(() => {
 		console.log("Page loaded.");
 	});
 
-	useRequest(() => activityAttend(1));
+	useRequest(() => sysTimeList());
 
 	return (
 		<View className="index">
