@@ -46,7 +46,7 @@ export default function () {
 	});
 
 	return (
-		<View className="flex flex-col px-4 bg-primary h-screen">
+		<View className="flex flex-col px-4 bg-primary-900 h-screen">
 			<View className="flex-1 flex flex-col justify-between py-4">
 				<Card
 					icon={<ManagerOutlined />}
