@@ -5,6 +5,10 @@ export default defineAppConfig({
 			root: "user",
 			pages: ["pages/identity", "pages/register"],
 		},
+		{
+			root: "activity",
+			pages: ["pages/activitylist", "pages/activitydetail"],
+		},
 	],
 	window: {
 		backgroundTextStyle: "dark",
