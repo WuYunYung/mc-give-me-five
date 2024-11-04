@@ -1,5 +1,6 @@
 import { cloud, getStorageSync } from "@tarojs/taro";
-import axios, { type AxiosAdapter } from "axios";
+import axios, { AxiosResponse, type AxiosAdapter } from "axios";
+import { inRange, isString } from "lodash-es";
 
 namespace CloudRequestConfig {
 	export const CLOUD_ENV = "prod-0gefozow13dd7576";
@@ -51,7 +52,7 @@ const adapter: AxiosAdapter = async (config) => {
 	const wrappedConfig = await getWrappedConfig(config);
 
 	const {
-		params,
+		data: configData,
 		url = "",
 		method = "get",
 		headers,
@@ -67,13 +68,14 @@ const adapter: AxiosAdapter = async (config) => {
 			const cloudMethod = method?.toUpperCase() as Methods;
 			return cloudMethod;
 		},
-		data: params,
-		get header() {
-			console.log("header", {
-				headers,
-				json: headers.toJSON(),
-			});
+		get data() {
+			if (isString(configData)) {
+				return JSON.parse(configData);
+			}
 
+			return configData;
+		},
+		get header() {
 			return headers.toJSON();
 		},
 		timeout,
@@ -88,29 +90,31 @@ const adapter: AxiosAdapter = async (config) => {
 		},
 	});
 
-	return {
+	const response: AxiosResponse = {
 		data,
 		status: statusCode,
 		headers: header,
 		config,
 		statusText: "",
 	};
+
+	if (!inRange(response.status, 200, 299)) {
+		const error: Error & {
+			response?: typeof response;
+		} = new Error(data.detail);
+
+		error.response = response;
+
+		return Promise.reject(error);
+	}
+	return response;
 };
 
 axios.defaults.adapter = adapter;
 
 axios.interceptors.request.use((config) => {
-	console.log("interceptors.request", config);
-
-	const token = getStorageSync("token");
-	if (token) {
-		config.headers["Authorization"] = `bearer ${token}`;
-	}
-
 	config.headers["Content-Type"] = "application/json";
 	config.headers["X-WX-SERVICE"] = CloudRequestConfig.X_WX_SERVICE;
 
 	return config;
 });
-
-// TODO auto login
