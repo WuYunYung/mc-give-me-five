@@ -73,6 +73,9 @@ importers:
       axios:
         specifier: ^1.7.7
         version: 1.7.7
+      query-string:
+        specifier: ^9.1.1
+        version: 9.1.1
       react:
         specifier: ^18.0.0
         version: 18.3.1

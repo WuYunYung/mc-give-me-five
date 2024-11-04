@@ -1,6 +1,9 @@
+import { routeBack, routePush } from "@/shared/route";
 import { Button, SafeArea } from "@taroify/core";
 import { FriendsOutlined, ManagerOutlined } from "@taroify/icons";
 import { View } from "@tarojs/components";
+import { setStorageSync } from "@tarojs/taro";
+import { useMemoizedFn } from "ahooks";
 import { cloneElement, ReactElement } from "react";
 
 function Card(props: {
@@ -23,12 +26,41 @@ function Card(props: {
 }
 
 export default function () {
+	const onClickTeacher = useMemoizedFn(() => {
+		routePush("/user/pages/register", {
+			isTeacher: 1,
+		});
+	});
+
+	const onClickStudent = useMemoizedFn(() => {
+		routePush("/user/pages/register", {
+			isTeacher: 0,
+		});
+	});
+
+	const onClickVisitor = useMemoizedFn(() => {
+		setStorageSync("visitor", true);
+		routeBack();
+	});
+
 	return (
 		<View className="flex flex-col px-4 bg-primary h-screen">
 			<View className="flex-1 flex flex-col justify-between py-4">
-				<Card icon={<ManagerOutlined />} label="我是教师" />
-				<Card icon={<FriendsOutlined />} label="我是学生" />
-				<Button variant="text" className="text-white opacity-75">
+				<Card
+					icon={<ManagerOutlined />}
+					label="我是教师"
+					onClick={onClickTeacher}
+				/>
+				<Card
+					icon={<FriendsOutlined />}
+					label="我是学生"
+					onClick={onClickStudent}
+				/>
+				<Button
+					variant="text"
+					className="text-white opacity-75"
+					onClick={onClickVisitor}
+				>
 					我是访客
 				</Button>
 			</View>

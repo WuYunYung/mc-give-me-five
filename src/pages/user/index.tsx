@@ -1,7 +1,7 @@
 import { Avatar, Cell } from "@taroify/core";
 import { View } from "@tarojs/components";
 import { NotesOutlined } from "@taroify/icons";
-import { navigateTo } from "@tarojs/taro";
+import { routePush } from "@/shared/route";
 
 definePageConfig({
 	navigationBarTitleText: "我的",
@@ -26,9 +26,7 @@ export default function User() {
 				isLink
 				icon={<NotesOutlined />}
 				onClick={() => {
-					navigateTo({
-						url: "/user/pages/identity",
-					});
+					routePush("/user/pages/identity");
 				}}
 			/>
 		</Cell.Group>

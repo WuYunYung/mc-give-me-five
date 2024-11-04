@@ -21,12 +21,11 @@
       "node_modules/@types"
     ],
     "paths": {
-      // TS5090 leading './'
-      "@/*": [
-        "./src/*"
-      ],
       "@/api": [
         "./assets/api"
+      ],
+      "@/shared/*": [
+        "./src/shared/*"
       ]
     }
   },
