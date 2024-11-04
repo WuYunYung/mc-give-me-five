@@ -1,68 +1,64 @@
-import { Image, View } from "@tarojs/components";
-import defaultPage from "../../static/default/default.svg";
+import { activityList, ActivityRead } from "@/api";
 import { List, Loading } from "@taroify/core";
+import { Image, View } from "@tarojs/components";
+import { useRouter } from "@tarojs/taro";
+import { useLatest, useRequest } from "ahooks";
+import { isNil } from "lodash-es";
 import { useState } from "react";
 import ActivityCard from "../../components/ActivityCard";
-import { ActivityRead } from "@/api";
+import defaultPage from "../../static/default/default.svg";
 
 definePageConfig({
 	navigationBarTitleText: "give me five",
 	navigationBarBackgroundColor: "#930a41",
 });
 
+type Type = "0" | "1" | "2" | "3";
+
+const LIMIT = 10;
+
 export default function () {
-	const [hasMore, setHasMore] = useState(true);
-	const [list, setList] = useState<ActivityRead[]>([
-		{
-			id: 0,
-			name: "crazy thursday",
-			description: "what can i say",
-			creator: {
-				name: "teacher ma",
-				username: "1234567890",
-				phone: "13060649844",
-			},
-			get_attenders_count: 62,
-			capacity: 70,
-			location: "shenzhen university",
-			start_time: "",
-			end_time: "",
-			type: 0,
+	const { params } = useRouter<{
+		type?: Type;
+	}>();
+	const { type } = params;
+
+	const [list, setList] = useState<ActivityRead[]>([]);
+
+	const latestList = useLatest(list);
+
+	const [flag, setFlag] = useState<boolean>(true);
+
+	const { run, loading, data } = useRequest(activityList, {
+		ready: !isNil(type),
+		manual: true,
+		onSuccess({ results = [] }) {
+			setFlag(false);
+			setList((prev) => [...prev, ...results]);
 		},
-	]);
-	const [loading, setLoading] = useState(false);
+	});
+
+	const hasMore = !data || data.results?.length === LIMIT;
+
+	const renderDefault = (
+		<View className="flex">
+			<Image className="w-32 h-32 m-auto" src={defaultPage} />
+		</View>
+	);
 
 	const renderList = (
 		<List
 			loading={loading}
 			hasMore={hasMore}
 			onLoad={() => {
-				setLoading(true);
-				setTimeout(() => {
-					for (let i = 0; i < 5; i++) {
-						list.push({
-							id: 0,
-							name: "crazy thursday",
-							description: "what can i say",
-							creator: {
-								name: "teacher ma",
-								username: "1234567890",
-								phone: "13060649844",
-							},
-							get_attenders_count: 62,
-							capacity: 70,
-							location: "shenzhen university",
-							start_time: "",
-							end_time: "",
-							type: 0,
-						});
-					}
-					setList([...list]);
-					setHasMore(list.length < 10);
-					setLoading(false);
-				}, 1000);
+				run({
+					type,
+					limit: LIMIT,
+					offset: latestList.current.length,
+				});
 			}}
 		>
+			{list.length === 0 && !flag && renderDefault}
 			{list.map((item: ActivityRead, index: number) => (
 				<ActivityCard
 					activityDetail={item}
@@ -77,16 +73,9 @@ export default function () {
 		</List>
 	);
 
-	const renderDefault = (
-		<Image className="w-32 h-32 m-auto" src={defaultPage} />
-	);
-
 	return (
 		<View>
-			<View className="flex flex-col p-4">
-				{!list.length && renderDefault}
-				{list.length && renderList}
-			</View>
+			<View className="flex flex-col p-4">{renderList}</View>
 		</View>
 	);
 }

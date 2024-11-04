@@ -1,6 +1,7 @@
 import { cloud, showToast } from "@tarojs/taro";
 import axios, { AxiosResponse, type AxiosAdapter } from "axios";
 import { inRange, isString } from "lodash-es";
+import queryString from "query-string";
 
 namespace CloudRequestConfig {
 	export const CLOUD_ENV = "prod-0gefozow13dd7576";
@@ -83,11 +84,16 @@ const adapter: AxiosAdapter = async (config) => {
 		headers,
 		responseType,
 		timeout,
+		params,
 	} = wrappedConfig;
+
+	console.log({ wrappedConfig });
 
 	const { data, statusCode, header } = await cloud.callContainer({
 		get path() {
-			return "/api" + url;
+			const uri = "/api" + url;
+
+			return queryString.stringifyUrl({ url: uri, query: params });
 		},
 		get method() {
 			const cloudMethod = method?.toUpperCase() as Methods;
