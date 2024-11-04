@@ -472,7 +472,7 @@ export const activityList = (
   });
 
 /**
- * No description
+ * @description 按照类型统计活动数量
  *
  * @tags activity
  * @name ActivityCountByType
@@ -534,7 +534,7 @@ export const activityCountByType = (
   });
 
 /**
- * No description
+ * @description 学生签到 : param code: 签到码
  *
  * @tags activity
  * @name ActivitySignin
@@ -613,7 +613,7 @@ export const activityRead = (id: number, params: RequestParams = {}) =>
   });
 
 /**
- * No description
+ * @description 参加活动
  *
  * @tags activity
  * @name ActivityAttend
@@ -779,7 +779,7 @@ export const manageActivityDelete = (id: number, params: RequestParams = {}) =>
   });
 
 /**
- * No description
+ * @description 参与活动的用户管理 如果是POST请求, 则添加用户到活动中 如果是DELETE请求, 则从活动中删除用户 如果是GET请求, 则返回活动的参与者
  *
  * @tags manage
  * @name ManageActivityAttenderRead
@@ -796,7 +796,7 @@ export const manageActivityAttenderRead = (id: number, params: RequestParams = {
   });
 
 /**
- * No description
+ * @description 参与活动的用户管理 如果是POST请求, 则添加用户到活动中 如果是DELETE请求, 则从活动中删除用户 如果是GET请求, 则返回活动的参与者
  *
  * @tags manage
  * @name ManageActivityAttenderCreate
@@ -814,7 +814,7 @@ export const manageActivityAttenderCreate = (id: number, data: ActivityCreate, p
   });
 
 /**
- * No description
+ * @description 参与活动的用户管理 如果是POST请求, 则添加用户到活动中 如果是DELETE请求, 则从活动中删除用户 如果是GET请求, 则返回活动的参与者
  *
  * @tags manage
  * @name ManageActivityAttenderDelete
@@ -830,7 +830,7 @@ export const manageActivityAttenderDelete = (id: number, params: RequestParams =
   });
 
 /**
- * No description
+ * @description 管理员生成签到码, 每次生成都会覆盖之前的签到码 : param ttl: 有效时间, 单位秒, 默认10秒
  *
  * @tags manage
  * @name ManageActivityGenerateCode
@@ -1260,7 +1260,7 @@ export const manageRegisterCreate = (params: RequestParams = {}) =>
   });
 
 /**
- * No description
+ * @description 用户信息批量导入注册 : param username: 学号列表 : param name: 姓名列表 : param group: Group ID列表
  *
  * @tags manage
  * @name ManageRegisterBatchRegister
@@ -1586,7 +1586,7 @@ export const userProfileUpdate = (data: UserProfileUpdate, params: RequestParams
   });
 
 /**
- * No description
+ * @description 用户注册 : param username: 学号 : param name: 姓名 : param phone: 手机号
  *
  * @tags user
  * @name UserRegister
