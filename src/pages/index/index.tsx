@@ -1,8 +1,9 @@
-import { sysTimeList } from "@/api";
+import { activityCountByType } from "@/api";
 import { routePush } from "@/shared/route";
 import { Text, View } from "@tarojs/components";
 import { useLoad } from "@tarojs/taro";
 import { useRequest } from "ahooks";
+import { useState } from "react";
 
 definePageConfig({
 	navigationBarTitleText: "首页",
@@ -21,17 +22,30 @@ const imageUrl = [
 ];
 
 export default function Index() {
-	useLoad(() => {
-		console.log("Page loaded.");
-	});
-
-	useRequest(() => sysTimeList());
+	const [countByType, setcountByType] = useState<number[]>([]);
 
 	const handleNavigateTo = (type: Type) => {
 		routePush("/activity/pages/activitylist", {
 			type: type,
 		});
 	};
+
+	const { run } = useRequest(activityCountByType, {
+		onSuccess(res) {
+			console.log(res);
+			for (let i = 0; i < type.length; i++) {
+				if (res[i] && Number(type[i]) === res[i].type) {
+					setcountByType((prev) => [...prev, res[i].count]);
+				} else {
+					setcountByType((prev) => [...prev, 0]);
+				}
+			}
+		},
+	});
+
+	useLoad(() => {
+		run();
+	});
 
 	const renderMap = (
 		<View className="flex flex-col p-4 gap-4">
@@ -44,12 +58,17 @@ export default function Index() {
 					}}
 				>
 					<View
-						className="box-border w-full h-32 rounded-t-xl)] bg-center bg-cover bg-no-repeat"
+						className="box-border w-full h-40 rounded-xl bg-center bg-cover bg-no-repeat"
 						style={{
 							backgroundImage: `url(${imageUrl[index]})`,
+							filter: "grayscale(.8)",
 						}}
 					/>
-					<Text className="ml-4 font-bold">{item}</Text>
+					<View className="relative bottom-8">
+						<Text className="absolute ml-4 font-bold text-lg text-white">
+							{"类型" + item + "   " + countByType[index]}
+						</Text>
+					</View>
 				</View>
 			))}
 		</View>
