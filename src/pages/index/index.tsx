@@ -1,9 +1,16 @@
 import { View, Text } from "@tarojs/components";
-import { useLoad } from "@tarojs/taro";
-import "./index.css";
-import { Button } from "@taroify/core";
+import { useLoad, navigateTo } from "@tarojs/taro";
+import { Button, Image } from "@taroify/core";
 import { useRequest } from "ahooks";
 import { sysTimeList } from "@/api";
+import { routePush } from "@/shared/route";
+
+definePageConfig({
+	navigationBarTitleText: "首页",
+	navigationBarBackgroundColor: "#930a41",
+});
+
+const type = ["type1", "type2", "type3", "type4"];
 
 export default function Index() {
 	useLoad(() => {
@@ -12,12 +19,31 @@ export default function Index() {
 
 	useRequest(() => sysTimeList());
 
-	return (
-		<View className="index">
-			<View className="flex flex-col p-4">
-				<Text className="text-red-500">Hello world!</Text>
-				<Button color="primary">Click here!</Button>
-			</View>
+	const handleNavigateTo = (type: string) => {
+		routePush("/activity/pages/activitylist", {
+			type: type,
+		});
+	};
+
+	const renderMap = (
+		<View
+			className="flex flex-col p-4 gap-4"
+			style={{ background: "linear-gradient(#930a41, #ffffff)" }}
+		>
+			{type.map((item: string, index: number) => (
+				<View
+					key={index}
+					className="w-full box-border h-40 bg-white rounded-xl flex flex-col"
+					onClick={() => {
+						handleNavigateTo(item);
+					}}
+				>
+					<View className="bg-white w-full h-32 rounded-t-xl" />
+					<Text className="ml-4 font-bold">{item}</Text>
+				</View>
+			))}
 		</View>
 	);
+
+	return <View className="index">{renderMap}</View>;
 }
