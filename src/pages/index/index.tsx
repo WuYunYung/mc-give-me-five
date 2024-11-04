@@ -25,10 +25,7 @@ export default function Index() {
 	};
 
 	const renderMap = (
-		<View
-			className="flex flex-col p-4 gap-4"
-			style={{ background: "linear-gradient(#930a41, #ffffff)" }}
-		>
+		<View className="flex flex-col p-4 gap-4">
 			{type.map((item: string, index: number) => (
 				<View
 					key={index}
@@ -44,5 +41,12 @@ export default function Index() {
 		</View>
 	);
 
-	return <View className="index">{renderMap}</View>;
+	return (
+		<View
+			className="w-full h-screen overflow-scroll"
+			style={{ background: "linear-gradient(#930a41, #ffffff)" }}
+		>
+			{renderMap}
+		</View>
+	);
 }
