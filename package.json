@@ -66,6 +66,8 @@
 		"@babel/plugin-proposal-class-properties": "7.14.5",
 		"@babel/preset-react": "^7.24.1",
 		"@biomejs/biome": "1.9.4",
+		"@commitlint/cli": "^19.5.0",
+		"@commitlint/config-conventional": "^19.5.0",
 		"@tarojs/cli": "4.0.7",
 		"@tarojs/vite-runner": "4.0.7",
 		"@types/node": "^22.8.6",
@@ -74,8 +76,10 @@
 		"babel-plugin-import": "^1.13.8",
 		"babel-preset-taro": "4.0.7",
 		"fs-extra": "^11.2.0",
+		"lint-staged": "^15.2.10",
 		"postcss": "^8.4.38",
 		"react-refresh": "^0.14.0",
+		"simple-git-hooks": "^2.11.1",
 		"swagger-typescript-api": "^13.0.22",
 		"tailwindcss": "^3.4.14",
 		"terser": "^5.30.4",
@@ -88,5 +92,12 @@
 		"patchedDependencies": {
 			"@taroify/core@0.5.1-alpha.0": "patches/@taroify__core@0.5.1-alpha.0.patch"
 		}
+	},
+	"simple-git-hooks": {
+		"pre-commit": "pnpm lint-staged",
+		"commit-msg": "pnpm commitlint --edit $1"
+	},
+	"lint-staged": {
+		"*.{js,ts,jsx,tsx}": "pnpm lint"
 	}
 }
