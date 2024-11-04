@@ -13,6 +13,10 @@ export default defineAppConfig({
 			root: "history",
 			pages: ["pages/historydetail"],
 		},
+		{
+			root: "manage",
+			pages: ["pages/create-activity"],
+		},
 	],
 	window: {
 		backgroundTextStyle: "dark",

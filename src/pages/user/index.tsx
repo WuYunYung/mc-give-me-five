@@ -57,7 +57,11 @@ export default function User() {
 			</Cell>
 			<Cell title="我的班级" isLink />
 			<Cell title="新建班级" isLink />
-			<Cell title="新建活动" isLink />
+			<Cell
+				title="新建活动"
+				isLink
+				onClick={() => routePush("/manage/pages/create-activity")}
+			/>
 			<Cell title="统计" isLink />
 		</Cell.Group>
 	);
