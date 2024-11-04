@@ -13,5 +13,7 @@ import * as path from "node:path";
 		httpClientType: "axios",
 		generateClient: true,
 		templates: path.resolve(__dirname, "./templates"),
+		singleHttpClient: true,
+		unwrapResponseData: true,
 	});
 })();

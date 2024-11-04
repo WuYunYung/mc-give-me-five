@@ -1,4 +1,4 @@
-import { cloud, getStorageSync } from "@tarojs/taro";
+import { cloud, showToast } from "@tarojs/taro";
 import axios, { AxiosResponse, type AxiosAdapter } from "axios";
 import { inRange, isString } from "lodash-es";
 
@@ -22,8 +22,13 @@ type Config = Parameters<AxiosAdapter>[0];
 
 type FulfilledHandler = (innerConfig: Config) => Config | Promise<Config>;
 
-async function getWrappedConfig(config: Config) {
-	const handlers: FulfilledHandler[] = [];
+type InterceptorsRequestHandler = {
+	fulfilled?: FulfilledHandler;
+	rejected?: (error: Error) => void;
+};
+
+function getInterceptorsRequestHandlers() {
+	const handlers: InterceptorsRequestHandler[] = [];
 
 	const manager = axios.interceptors.request;
 
@@ -36,16 +41,36 @@ async function getWrappedConfig(config: Config) {
 			) => void;
 		}
 	).forEach((handler) => {
-		handler.fulfilled && handlers.push(handler.fulfilled);
+		handler && handlers.push(handler);
 	});
+
+	return handlers;
+}
+
+async function getWrappedConfig(config: Config) {
+	const handlers = getInterceptorsRequestHandlers();
 
 	let innerConfig = config;
 
 	for (const handler of handlers) {
-		innerConfig = await handler(innerConfig);
+		if (handler.fulfilled) {
+			innerConfig = await handler.fulfilled(innerConfig);
+		}
 	}
 
 	return innerConfig;
+}
+
+async function tiggerRejection(error: Error) {
+	const handlers = getInterceptorsRequestHandlers();
+
+	await Promise.all(
+		handlers.map(async (handler) => {
+			if (handler.rejected) {
+				await handler.rejected(error);
+			}
+		}),
+	);
 }
 
 const adapter: AxiosAdapter = async (config) => {
@@ -105,6 +130,8 @@ const adapter: AxiosAdapter = async (config) => {
 
 		error.response = response;
 
+		await tiggerRejection(error);
+
 		return Promise.reject(error);
 	}
 	return response;
@@ -112,9 +139,19 @@ const adapter: AxiosAdapter = async (config) => {
 
 axios.defaults.adapter = adapter;
 
-axios.interceptors.request.use((config) => {
-	config.headers["Content-Type"] = "application/json";
-	config.headers["X-WX-SERVICE"] = CloudRequestConfig.X_WX_SERVICE;
+axios.interceptors.request.use(
+	(config) => {
+		config.headers["Content-Type"] = "application/json";
+		config.headers["X-WX-SERVICE"] = CloudRequestConfig.X_WX_SERVICE;
 
-	return config;
-});
+		return config;
+	},
+	(error) => {
+		if (error.message) {
+			showToast({
+				icon: "error",
+				title: error.message,
+			});
+		}
+	},
+);

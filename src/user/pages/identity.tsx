@@ -2,9 +2,9 @@ import { routeBack, routePush } from "@/shared/route";
 import { Button, SafeArea } from "@taroify/core";
 import { FriendsOutlined, ManagerOutlined } from "@taroify/icons";
 import { View } from "@tarojs/components";
-import { setStorageSync } from "@tarojs/taro";
 import { useMemoizedFn } from "ahooks";
 import { cloneElement, ReactElement } from "react";
+import useStore from "@/shared/store";
 
 function Card(props: {
 	icon: ReactElement;
@@ -26,6 +26,8 @@ function Card(props: {
 }
 
 export default function () {
+	const { toggleVisitor } = useStore();
+
 	const onClickTeacher = useMemoizedFn(() => {
 		routePush("/user/pages/register", {
 			isTeacher: 1,
@@ -39,7 +41,7 @@ export default function () {
 	});
 
 	const onClickVisitor = useMemoizedFn(() => {
-		setStorageSync("visitor", true);
+		toggleVisitor(true);
 		routeBack();
 	});
 
