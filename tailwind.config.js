@@ -13,8 +13,9 @@ module.exports = {
 	theme: {
 		extend: {
 			colors: {
-				rose: "#da137a",
+				primary: "#da137a",
 			},
 		},
 	},
+	important: true,
 };

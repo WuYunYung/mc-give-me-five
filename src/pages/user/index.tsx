@@ -11,7 +11,7 @@ export default function User() {
 	// TODO: 获取头像
 	// TODO: 获取身份
 	const avatar = (
-		<View className="flex justify-center items-center h-1/3 bg-rose flex-col gap-4">
+		<View className="flex justify-center items-center h-1/3 bg-primary flex-col gap-4">
 			<Avatar size="large" className="shadow-md">
 				WW
 			</Avatar>
