@@ -1,15 +1,10 @@
 import { UserRegister, userRegister } from "@/api";
 import { routeBack } from "@/shared/route";
+import useStore from "@/shared/store";
 import { Button, Cell, Field, Form, Image, Input } from "@taroify/core";
 import { ContactOutlined, Edit, PhoneOutlined } from "@taroify/icons";
 import { View } from "@tarojs/components";
-import {
-	useRouter,
-	showModal,
-	showLoading,
-	hideLoading,
-	setStorageSync,
-} from "@tarojs/taro";
+import { useRouter, showModal, showLoading, hideLoading } from "@tarojs/taro";
 import { useRequest } from "ahooks";
 
 const LOGO_PATH = "https://cmc.szu.edu.cn/images/logo.png";
@@ -18,6 +13,7 @@ const COMMON_PLACEHOLDER = "请输入";
 
 export default function () {
 	const { params } = useRouter();
+	const { toggleVisitor } = useStore();
 
 	const isTeacher = params.isTeacher === "1";
 
@@ -32,7 +28,7 @@ export default function () {
 	const { run } = useRequest(userRegister, {
 		manual: true,
 		onSuccess() {
-			setStorageSync("visitor", false);
+			toggleVisitor(false);
 			routeBack();
 		},
 		onBefore() {

@@ -28,16 +28,6 @@ const descriptionLines = _.compact([
 
 <% if (config.httpClientType === config.constants.HTTP_CLIENT.AXIOS) { %> import type { AxiosRequestConfig, AxiosResponse } from "axios"; <% } %>
 
-
-<% if(config.singleHttpClient) { %>
-  http: HttpClient<SecurityDataType>;
-
-  constructor (http: HttpClient<SecurityDataType>) {
-    this.http = http;
-  }
-<% } %>
-
-
 <% if (routes.outOfModule) { %>
   <% for (const route of routes.outOfModule) { %>
 

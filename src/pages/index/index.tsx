@@ -1,9 +1,8 @@
-import { View, Text } from "@tarojs/components";
-import { useLoad, navigateTo } from "@tarojs/taro";
-import { Button, Image } from "@taroify/core";
-import { useRequest } from "ahooks";
 import { sysTimeList } from "@/api";
 import { routePush } from "@/shared/route";
+import { Text, View } from "@tarojs/components";
+import { useLoad } from "@tarojs/taro";
+import { useRequest } from "ahooks";
 
 definePageConfig({
 	navigationBarTitleText: "首页",

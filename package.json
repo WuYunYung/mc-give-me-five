@@ -31,7 +31,8 @@
 		"lint": "pnpm biome lint --fix",
 		"api": "pnpm ts-node ./scripts/api/index && pnpm lint",
 		"postinstall": "pnpm api",
-		"dev": "pnpm dev:weapp"
+		"dev": "pnpm dev:weapp",
+		"build": "pnpm build:weapp"
 	},
 	"browserslist": [
 		"defaults and fully supports es6-module",
@@ -59,10 +60,12 @@
 		"@tarojs/taro": "4.0.7",
 		"ahooks": "^3.8.1",
 		"axios": "^1.7.7",
+		"immer": "^10.1.1",
 		"lodash-es": "^4.17.21",
 		"query-string": "^9.1.1",
 		"react": "^18.0.0",
-		"react-dom": "^18.0.0"
+		"react-dom": "^18.0.0",
+		"zustand": "^4.5.5"
 	},
 	"devDependencies": {
 		"@babel/core": "^7.24.4",
