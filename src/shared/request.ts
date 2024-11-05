@@ -89,7 +89,7 @@ const adapter: AxiosAdapter = async (config) => {
 
 	const { data, statusCode, header } = await cloud.callContainer({
 		get path() {
-			const uri = "/api" + url;
+			const uri = `/api${url}`;
 
 			return queryString.stringifyUrl({ url: uri, query: params });
 		},

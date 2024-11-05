@@ -2,7 +2,7 @@ import { immer } from "zustand/middleware/immer";
 import { createJSONStorage, persist } from "zustand/middleware";
 import { create } from "zustand";
 import { UserRegister } from "@/api";
-import { merge, } from "lodash-es";
+import { merge } from "lodash-es";
 import {
 	getStorageSync,
 	removeStorageSync,
