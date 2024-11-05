@@ -87,8 +87,6 @@ const adapter: AxiosAdapter = async (config) => {
 		params,
 	} = wrappedConfig;
 
-	console.log({ wrappedConfig });
-
 	const { data, statusCode, header } = await cloud.callContainer({
 		get path() {
 			const uri = "/api" + url;

@@ -58,6 +58,7 @@ export default defineConfig<"vite">(async (merge) => {
 		alias: {
 			"@/api": path.resolve(__dirname, "../assets/api"),
 			"@/shared": path.resolve(__dirname, "../src/shared"),
+			"@/components": path.resolve(__dirname, "../src/components"),
 		},
 		mini: {
 			postcss: {
