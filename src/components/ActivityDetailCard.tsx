@@ -1,5 +1,6 @@
 import { ActivityRead } from "@/api";
 import { View, Text } from "@tarojs/components";
+import dayjs from "dayjs";
 
 export default function ActivityDetailCard({
 	activityDetail,
@@ -31,13 +32,13 @@ export default function ActivityDetailCard({
 				<View className="flex w-full h-12 border-b-2 border-x-0 border-t-0 border-solid  border-slate-100">
 					<Text className="my-auto">开始时间</Text>
 					<Text className="my-auto ml-auto text-slate-400">
-						{activityDetail.start_time}
+						{dayjs(activityDetail.start_time).format("YYYY-MM-DD HH:mm")}
 					</Text>
 				</View>
 				<View className="flex w-full h-12 border-b-2 border-x-0 border-t-0 border-solid  border-slate-100">
 					<Text className="my-auto">结束时间</Text>
 					<Text className="my-auto ml-auto text-slate-400">
-						{activityDetail.end_time}
+						{dayjs(activityDetail.end_time).format("YYYY-MM-DD HH:mm")}
 					</Text>
 				</View>
 

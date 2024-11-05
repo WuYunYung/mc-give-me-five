@@ -4,6 +4,10 @@ import { Text, View } from "@tarojs/components";
 import { useRequest } from "ahooks";
 import { keyBy } from "lodash-es";
 import { useMemo } from "react";
+import banner1 from "../../static/banner/banner1.svg";
+import banner2 from "../../static/banner/banner2.svg";
+import banner3 from "../../static/banner/banner3.svg";
+import banner4 from "../../static/banner/banner4.svg";
 
 definePageConfig({
 	navigationBarTitleText: "首页",
@@ -14,12 +18,7 @@ type Type = "0" | "1" | "2" | "3";
 
 const types = ["0", "1", "2", "3"] as const;
 
-const imageUrl = [
-	"https://www.szu.edu.cn/images/my/240626campusview6.jpg",
-	"https://www.szu.edu.cn/images/my/240626campusview4.jpg",
-	"https://www.szu.edu.cn/images/my/kejidalou.jpg",
-	"https://www.szu.edu.cn/images/my/240626campusview9.jpg",
-];
+const imageUrl = [banner1, banner2, banner3, banner4];
 
 export default function Index() {
 	const handleNavigateTo = (type: Type) => {
@@ -40,21 +39,31 @@ export default function Index() {
 			{types.map((type: Type) => (
 				<View
 					key={type}
-					className="w-full box-border h-40 bg-white rounded-xl flex flex-col p-1"
+					className="w-full box-border h-40 bg-white flex flex-col p-px shadow-white"
+					style={{
+						boxShadow: "4px 4px 2px 1px rgba(255, 255, 255, 1)",
+					}}
 					onClick={() => {
 						handleNavigateTo(type);
 					}}
 				>
+					<View className="relative w-full">
+						<View className="absolute flex top-4 right-4 w-6 h-6 bg-[#930a41]">
+							<Text className="m-auto text-white font-bold">
+								{activityCountMap[type]?.count || 0}
+							</Text>
+						</View>
+					</View>
 					<View
-						className="box-border w-full h-40 rounded-xl bg-center bg-cover bg-no-repeat"
+						className="box-border w-full h-40 bg-center bg-cover bg-no-repeat"
 						style={{
 							backgroundImage: `url(${imageUrl[type]})`,
 							filter: "grayscale(.8)",
 						}}
 					/>
 					<View className="relative bottom-8">
-						<Text className="absolute ml-4 font-bold text-lg text-white">
-							{`类型${type}   ${activityCountMap[type]?.count || 0}`}
+						<Text className="absolute ml-4 font-bold text-lg text-black">
+							{`类型${type}`}
 						</Text>
 					</View>
 				</View>
