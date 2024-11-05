@@ -76,6 +76,56 @@ export interface ActivityRead {
   get_attenders_count: number;
 }
 
+export interface ActivityReadDetail {
+  /** ID */
+  id?: number;
+  /**
+   * 名称
+   * @minLength 1
+   * @maxLength 50
+   */
+  name: string;
+  /**
+   * 描述
+   * @minLength 1
+   * @maxLength 10240
+   */
+  description: string;
+  creator: UserSimple;
+  /**
+   * 开始时间
+   * @format date-time
+   */
+  start_time: string;
+  /**
+   * 结束时间
+   * @format date-time
+   */
+  end_time: string;
+  /**
+   * 地点
+   * @minLength 1
+   * @maxLength 50
+   */
+  location: string;
+  /**
+   * 最大报名容量
+   * @min 0
+   * @max 4294967295
+   */
+  capacity: number;
+  /** 活动类别 */
+  type: 0 | 1 | 2 | 3;
+  /** Get attenders count */
+  get_attenders_count: number;
+  /** Get signed attenders count */
+  get_signed_attenders_count: number;
+  /** Is attend */
+  is_attend?: string;
+  /** Is signed */
+  is_signed?: string;
+}
+
 export interface ActivityCreate {
   /**
    * 名称
@@ -604,7 +654,7 @@ export const activitySignin = (
  * @secure
  */
 export const activityRead = (id: number, params: RequestParams = {}) =>
-  new HttpClient().request<ActivityRead, any>({
+  new HttpClient().request<ActivityReadDetail, any>({
     path: `/activity/${id}/`,
     method: "GET",
     secure: true,
@@ -623,6 +673,23 @@ export const activityRead = (id: number, params: RequestParams = {}) =>
 export const activityAttend = (id: number, params: RequestParams = {}) =>
   new HttpClient().request<ActivityRead, any>({
     path: `/activity/${id}/attend/`,
+    method: "GET",
+    secure: true,
+    format: "json",
+    ...params,
+  });
+
+/**
+ * @description 退出活动
+ *
+ * @tags activity
+ * @name ActivityQuit
+ * @request GET:/activity/{id}/quit/
+ * @secure
+ */
+export const activityQuit = (id: number, params: RequestParams = {}) =>
+  new HttpClient().request<ActivityRead, any>({
+    path: `/activity/${id}/quit/`,
     method: "GET",
     secure: true,
     format: "json",

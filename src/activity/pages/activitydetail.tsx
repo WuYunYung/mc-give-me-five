@@ -1,7 +1,7 @@
 import { Button } from "@taroify/core";
 import { View } from "@tarojs/components";
 import ActivityDetailCard from "../../components/ActivityDetailCard";
-import { activityAttend, activityRead, ActivityRead } from "@/api";
+import { activityAttend, activityRead, ActivityReadDetail } from "@/api";
 import { useRouter, showToast, getStorageSync } from "@tarojs/taro";
 import { useRequest } from "ahooks";
 import { useState } from "react";
@@ -12,7 +12,7 @@ export default function () {
 
 	const { id } = params;
 
-	const [activity, setactivity] = useState<ActivityRead>();
+	const [activity, setactivity] = useState<ActivityReadDetail>();
 
 	const { run: findActv } = useRequest(activityRead, {
 		defaultParams: [Number(id)],

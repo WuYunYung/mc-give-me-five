@@ -1,4 +1,4 @@
-import { activityRead, ActivityRead, activitySignin } from "@/api";
+import { activityRead, ActivityReadDetail, activitySignin } from "@/api";
 import { View } from "@tarojs/components";
 import ActivityDetailCard from "../../components/ActivityDetailCard";
 import { Button } from "@taroify/core";
@@ -12,7 +12,7 @@ export default function () {
 
 	const { id } = params;
 
-	const [activity, setactivity] = useState<ActivityRead>();
+	const [activity, setactivity] = useState<ActivityReadDetail>();
 
 	const { run: findActv } = useRequest(activityRead, {
 		defaultParams: [Number(id)],
