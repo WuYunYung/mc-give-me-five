@@ -55,16 +55,15 @@ export default function User() {
 			<Cell title="班级">
 				{(group as unknown as GroupUpdate | undefined)?.name}
 			</Cell>
-			<Cell title="我的班级" isLink />
 			<Cell
 				title="年级管理"
 				isLink
 				onClick={() => routePush("/manage/pages/grade/list")}
 			/>
 			<Cell
-				title="新建班级"
+				title="班级管理"
 				isLink
-				onClick={() => routePush("/manage/pages/create-classes")}
+				onClick={() => routePush("/manage/pages/group/list")}
 			/>
 			<Cell
 				title="新建活动"

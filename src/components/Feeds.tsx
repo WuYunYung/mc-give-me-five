@@ -1,22 +1,15 @@
-import {
-	Empty,
-	FixedView,
-	List,
-	Loading,
-	SafeArea,
-	Search,
-} from "@taroify/core";
+import { Empty, FloatingBubble, List, Loading, Search } from "@taroify/core";
 import { Button } from "@taroify/core";
 import { Plus } from "@taroify/icons";
 import { ITouchEvent, View } from "@tarojs/components";
 import {
 	createSelectorQuery,
-	getSystemInfoSync,
 	useDidHide,
 	useDidShow,
+	getWindowInfo,
 } from "@tarojs/taro";
 import { useCreation, useMemoizedFn, useRequest, useUpdate } from "ahooks";
-import { concat, isEmpty, merge, uniqueId } from "lodash-es";
+import { concat, isEmpty, isNil, merge, uniqueId } from "lodash-es";
 import {
 	ReactElement,
 	ReactNode,
@@ -36,6 +29,10 @@ type FeedsProps<T> = {
 
 	enableCreate?: boolean;
 	onCreateClick?: (event: ITouchEvent) => void;
+
+	height?: number;
+
+	disabledSearch?: boolean;
 };
 
 const LIMIT = 10;
@@ -52,6 +49,8 @@ export default function Feeds<T>(props: FeedsProps<T>): ReactElement {
 		renderContent,
 		enableCreate: hasEmptyCreate,
 		onCreateClick: onEmptyCreateClick,
+		height: propHeight,
+		disabledSearch,
 	} = props;
 
 	const list = useRef<T[]>([]);
@@ -84,9 +83,10 @@ export default function Feeds<T>(props: FeedsProps<T>): ReactElement {
 		const prevContent = search.current;
 
 		search.current = "";
-		list.current = [];
 		if (!prevContent) return;
-		const innerList = await runAsync();
+		const innerList = await runAsync({
+			offset: 0,
+		});
 		list.current = innerList || [];
 		update();
 	});
@@ -94,15 +94,20 @@ export default function Feeds<T>(props: FeedsProps<T>): ReactElement {
 	const searchBarId = useCreation(() => uniqueId("feads-search-bar-"), []);
 	const searchBarHeight = useRef(0);
 	const windowHeight = useMemo(() => {
-		const { windowHeight } = getSystemInfoSync();
+		const { windowHeight } = getWindowInfo();
 
 		return windowHeight;
 	}, []);
 
-	const listHeight = windowHeight - searchBarHeight.current;
+	const listHeight = propHeight ?? windowHeight - searchBarHeight.current;
 
 	useLayoutEffect(() => {
-		if (ready.current) return;
+		if (ready.current || !isNil(propHeight) || disabledSearch) {
+			ready.current = true;
+			update();
+			return;
+		}
+
 		createSelectorQuery()
 			.select(`#${searchBarId}`)
 			.boundingClientRect((result) => {
@@ -112,13 +117,14 @@ export default function Feeds<T>(props: FeedsProps<T>): ReactElement {
 				update();
 			})
 			.exec();
-	}, [searchBarId, update]);
+	}, [searchBarId, update, disabledSearch, propHeight]);
 
 	const shouldDidShowAutoRefresh = useRef(false);
 
 	const refreshList = useMemoizedFn(async () => {
-		list.current = [];
-		const innerList = await runAsync();
+		const innerList = await runAsync({
+			offset: 0,
+		});
 		list.current = innerList || [];
 		update();
 	});
@@ -143,8 +149,7 @@ export default function Feeds<T>(props: FeedsProps<T>): ReactElement {
 					const content = e.detail.value;
 					if (content === search.current) return;
 					search.current = content;
-					list.current = [];
-					const innerList = await runAsync();
+					const innerList = await runAsync({ offset: 0 });
 					list.current = innerList || [];
 					update();
 				}}
@@ -192,23 +197,15 @@ export default function Feeds<T>(props: FeedsProps<T>): ReactElement {
 	);
 
 	const createButton = (
-		<FixedView position="bottom">
-			<View className="p-4 flex justify-end">
-				<Button
-					shape="round"
-					icon={<Plus />}
-					color="primary"
-					variant="contained"
-					onClick={onEmptyCreateClick}
-				></Button>
-			</View>
-			<SafeArea position="bottom" />
-		</FixedView>
+		<FloatingBubble
+			icon={<Plus />}
+			onClick={onEmptyCreateClick}
+		></FloatingBubble>
 	);
 
 	return (
 		<>
-			{renderSearch}
+			{!disabledSearch && renderSearch}
 
 			{ready.current && renderList}
 
