@@ -12,6 +12,7 @@ import { useRouter } from "@tarojs/taro";
 import { useRequest } from "ahooks";
 import { isNil } from "lodash-es";
 
+// TODO 详情交互
 export default function () {
 	const { params } = useRouter<{
 		id?: string;

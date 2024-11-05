@@ -19,6 +19,7 @@ export default defineAppConfig({
 				"pages/create-activity",
 				"pages/create-classes",
 				...["pages/grade/list", "pages/grade/form"],
+				...["pages/group/list", "pages/group/form"],
 			],
 		},
 	],
