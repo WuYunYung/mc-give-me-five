@@ -20,7 +20,8 @@
 				"noUnusedVariables": "error",
 				"useExhaustiveDependencies": "warn",
 				"useHookAtTopLevel": "error",
-				"useJsxKeyInIterable": "warn"
+				"useJsxKeyInIterable": "warn",
+				"noUnusedImports": "error"
 			},
 			"security": {
 				"noDangerouslySetInnerHtml": "error",
@@ -93,13 +94,15 @@
 							"top"
 						]
 					}
-				}
+				},
+				"useTemplate": "error"
 			},
 			"suspicious": {
 				"noCommentText": "error",
 				"noDuplicateJsxProps": "error",
 				"noLabelVar": "error",
-				"noShadowRestrictedNames": "error"
+				"noShadowRestrictedNames": "error",
+				"noConsoleLog": "warn"
 			}
 		}
 	},

@@ -15,6 +15,7 @@ async function fetchData(
 
 		// TODO operationId 去重
 
+		// biome-ignore lint/suspicious/noConsoleLog: <explanation>
 		console.log(`数据已成功写入文件: ${outputPath}`);
 	} catch (error) {
 		console.error("请求失败:", error);

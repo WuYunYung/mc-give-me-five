@@ -15,7 +15,11 @@ export default defineAppConfig({
 		},
 		{
 			root: "manage",
-			pages: ["pages/create-activity"],
+			pages: [
+				"pages/create-activity",
+				"pages/create-classes",
+				...["pages/grade/list"],
+			],
 		},
 	],
 	window: {

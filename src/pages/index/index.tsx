@@ -1,9 +1,9 @@
 import { activityCountByType } from "@/api";
 import { routePush } from "@/shared/route";
 import { Text, View } from "@tarojs/components";
-import { useLoad } from "@tarojs/taro";
 import { useRequest } from "ahooks";
-import { useState } from "react";
+import { keyBy } from "lodash-es";
+import { useMemo } from "react";
 
 definePageConfig({
 	navigationBarTitleText: "首页",
@@ -12,7 +12,7 @@ definePageConfig({
 
 type Type = "0" | "1" | "2" | "3";
 
-const type: Type[] = ["0", "1", "2", "3"];
+const types = ["0", "1", "2", "3"] as const;
 
 const imageUrl = [
 	"https://www.szu.edu.cn/images/my/240626campusview6.jpg",
@@ -22,51 +22,39 @@ const imageUrl = [
 ];
 
 export default function Index() {
-	const [countByType, setcountByType] = useState<number[]>([]);
-
 	const handleNavigateTo = (type: Type) => {
 		routePush("/activity/pages/activitylist", {
 			type: type,
 		});
 	};
 
-	const { run } = useRequest(activityCountByType, {
-		onSuccess(res) {
-			console.log(res);
-			for (let i = 0; i < type.length; i++) {
-				if (res[i] && Number(type[i]) === res[i].type) {
-					setcountByType((prev) => [...prev, res[i].count]);
-				} else {
-					setcountByType((prev) => [...prev, 0]);
-				}
-			}
-		},
-	});
+	const { data } = useRequest(activityCountByType);
 
-	useLoad(() => {
-		run();
-	});
+	const activityCountMap = useMemo(
+		() => keyBy((data || []) as { type: Type; count: number }[], "type"), // TODO 接口文档与实际返回类型对不上
+		[data],
+	);
 
 	const renderMap = (
 		<View className="flex flex-col p-4 gap-4">
-			{type.map((item: Type, index: number) => (
+			{types.map((type: Type) => (
 				<View
-					key={index}
+					key={type}
 					className="w-full box-border h-40 bg-white rounded-xl flex flex-col p-1"
 					onClick={() => {
-						handleNavigateTo(item);
+						handleNavigateTo(type);
 					}}
 				>
 					<View
 						className="box-border w-full h-40 rounded-xl bg-center bg-cover bg-no-repeat"
 						style={{
-							backgroundImage: `url(${imageUrl[index]})`,
+							backgroundImage: `url(${imageUrl[type]})`,
 							filter: "grayscale(.8)",
 						}}
 					/>
 					<View className="relative bottom-8">
 						<Text className="absolute ml-4 font-bold text-lg text-white">
-							{"类型" + item + "   " + countByType[index]}
+							{`类型${type}   ${activityCountMap[type]?.count || 0}`}
 						</Text>
 					</View>
 				</View>
