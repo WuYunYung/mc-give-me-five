@@ -1,7 +1,20 @@
-import { Empty, List, Loading, Search } from "@taroify/core";
+import {
+	Empty,
+	FixedView,
+	List,
+	Loading,
+	SafeArea,
+	Search,
+} from "@taroify/core";
 import { Button } from "@taroify/core";
+import { Plus } from "@taroify/icons";
 import { ITouchEvent, View } from "@tarojs/components";
-import { createSelectorQuery, getSystemInfoSync } from "@tarojs/taro";
+import {
+	createSelectorQuery,
+	getSystemInfoSync,
+	useDidHide,
+	useDidShow,
+} from "@tarojs/taro";
 import { useCreation, useMemoizedFn, useRequest, useUpdate } from "ahooks";
 import { concat, isEmpty, merge, uniqueId } from "lodash-es";
 import {
@@ -21,8 +34,8 @@ type FeedsProps<T> = {
 
 	renderContent?: (list: T[]) => ReactNode;
 
-	hasEmptyCreate?: boolean;
-	onEmptyCreateClick?: (event: ITouchEvent) => void;
+	enableCreate?: boolean;
+	onCreateClick?: (event: ITouchEvent) => void;
 };
 
 const LIMIT = 10;
@@ -34,7 +47,12 @@ const LIMIT = 10;
  * @TODO 下拉更新
  */
 export default function Feeds<T>(props: FeedsProps<T>): ReactElement {
-	const { service, renderContent, hasEmptyCreate, onEmptyCreateClick } = props;
+	const {
+		service,
+		renderContent,
+		enableCreate: hasEmptyCreate,
+		onCreateClick: onEmptyCreateClick,
+	} = props;
 
 	const list = useRef<T[]>([]);
 	const search = useRef<string>("");
@@ -96,6 +114,25 @@ export default function Feeds<T>(props: FeedsProps<T>): ReactElement {
 			.exec();
 	}, [searchBarId, update]);
 
+	const shouldDidShowAutoRefresh = useRef(false);
+
+	const refreshList = useMemoizedFn(async () => {
+		list.current = [];
+		const innerList = await runAsync();
+		list.current = innerList || [];
+		update();
+	});
+
+	useDidShow(() => {
+		if (!shouldDidShowAutoRefresh.current) return;
+
+		refreshList();
+	});
+
+	useDidHide(() => {
+		shouldDidShowAutoRefresh.current = true;
+	});
+
 	const renderSearch = (
 		<View id={searchBarId}>
 			<Search
@@ -154,11 +191,28 @@ export default function Feeds<T>(props: FeedsProps<T>): ReactElement {
 		</List>
 	);
 
+	const createButton = (
+		<FixedView position="bottom">
+			<View className="p-4 flex justify-end">
+				<Button
+					shape="round"
+					icon={<Plus />}
+					color="primary"
+					variant="contained"
+					onClick={onEmptyCreateClick}
+				></Button>
+			</View>
+			<SafeArea position="bottom" />
+		</FixedView>
+	);
+
 	return (
 		<>
 			{renderSearch}
 
 			{ready.current && renderList}
+
+			{hasEmptyCreate && createButton}
 		</>
 	);
 }
