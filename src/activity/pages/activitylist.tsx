@@ -1,12 +1,13 @@
 import { activityList, ActivityRead } from "@/api";
 import { List, Loading } from "@taroify/core";
 import { Image, View } from "@tarojs/components";
-import { useRouter } from "@tarojs/taro";
+import { useRouter, getStorageSync } from "@tarojs/taro";
 import { useLatest, useRequest } from "ahooks";
 import { isNil } from "lodash-es";
 import { useState } from "react";
 import ActivityCard from "../../components/ActivityCard";
 import defaultPage from "../../static/default/default.svg";
+import dayjs from "dayjs";
 
 definePageConfig({
 	navigationBarTitleText: "give me five",
@@ -34,7 +35,18 @@ export default function () {
 		manual: true,
 		onSuccess({ results = [] }) {
 			setFlag(false);
-			setList((prev) => [...prev, ...results]);
+
+			if (JSON.parse(getStorageSync("store")).state.user.isAdmin) {
+				//老师可以看到所有活动
+				setList((prev) => [...prev, ...results]);
+			} else {
+				//学生可以看到待开始的活动
+				for (let item of results) {
+					if (!dayjs(item.start_time).isBefore(dayjs())) {
+						setList((prev) => [...prev, item]);
+					}
+				}
+			}
 		},
 	});
 
