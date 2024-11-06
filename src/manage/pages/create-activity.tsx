@@ -82,14 +82,14 @@ export default function () {
 
 		return (
 			<DatePicker
-				value={innerValue}
+				defaultValue={innerValue}
 				onChange={onChange}
 				type="date-minute"
 				min={new Date()}
 				max={dayjs().add(1, "year").toDate()}
 				onBlur={onBlur}
 			>
-				<Input value={displayValue} disabled placeholder="请选择开始时间" />
+				<Input value={displayValue} readonly placeholder="请选择开始时间" />
 			</DatePicker>
 		);
 	});
@@ -141,7 +141,7 @@ export default function () {
 							return (
 								<Input
 									placeholder="请选择活动类型"
-									disabled
+									readonly
 									value={value}
 									onClick={() =>
 										showActionSheet({

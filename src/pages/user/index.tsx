@@ -3,9 +3,12 @@ import { View } from "@tarojs/components";
 import { NotesOutlined } from "@taroify/icons";
 import { routePush } from "@/shared/route";
 import { useRequest } from "ahooks";
-import { GroupUpdate, userProfileRead, UserProfileUpdate } from "@/api";
+import { Group, userProfileRead, UserProfileUpdate } from "@/api";
 import { isNil } from "lodash-es";
 import useStore from "@/shared/store";
+import classNames from "classnames";
+import { showLoading, hideLoading } from "@tarojs/taro";
+import { ActivityStatus } from "@/shared/constants";
 
 definePageConfig({
 	navigationBarTitleText: "我的",
@@ -19,19 +22,33 @@ export default function User() {
 			const user = data as unknown as UserProfileUpdate | undefined; // TODO: 接口数据与swagger类型对不上，临时指鹿为马一下
 			user && setupUser(user);
 		},
+		onBefore() {
+			showLoading();
+		},
+		onFinally() {
+			hideLoading();
+		},
 	});
 
-	const { name = "访客", username, group } = user || {};
+	const { name = "访客", username, group, isAdmin } = user || {};
 
 	const registed = !isNil(user);
 
+	const innerGroup = group as Group | undefined;
+
 	// TODO: 获取身份
 	const avatar = (
-		<View className="flex justify-center items-center h-1/3 bg-primary-900 flex-col gap-4">
-			<Avatar size="large" className="shadow-md">
-				{name.slice(0, 2)}
-			</Avatar>
+		<View className="flex justify-center items-center h-1/3 bg-primary-900 flex-col gap-2">
+			<Avatar size="large">{name.at(0)?.toUpperCase()}</Avatar>
 			<View className="text-sm text-white">{name}</View>
+			<View
+				className={classNames("text-xs text-white flex flex-col text-center", {
+					"opacity-0": !user,
+				})}
+			>
+				<View>{username}</View>
+				<View>{`${innerGroup?.grade.name} ${innerGroup?.name}`}</View>
+			</View>
 		</View>
 	);
 
@@ -49,12 +66,7 @@ export default function User() {
 	);
 
 	const teacherEntries = (
-		<Cell.Group>
-			<Cell title="名字">{name}</Cell>
-			<Cell title="学号">{username}</Cell>
-			<Cell title="班级">
-				{(group as unknown as GroupUpdate | undefined)?.name}
-			</Cell>
+		<>
 			<Cell
 				title="年级管理"
 				isLink
@@ -70,14 +82,41 @@ export default function User() {
 				isLink
 				onClick={() => routePush("/manage/pages/create-activity")}
 			/>
+		</>
+	);
+
+	const studenEntries = (
+		<>
+			<Cell
+				title="待签到的活动"
+				isLink
+				onClick={() =>
+					routePush("/activity/pages/activity-list", {
+						status: ActivityStatus.unsigned,
+						end_time: Date.now(),
+					})
+				}
+			></Cell>
+		</>
+	);
+
+	const commonEntries = (
+		<>
 			<Cell title="统计" isLink />
+		</>
+	);
+
+	const registedEntries = (
+		<Cell.Group>
+			{isAdmin ? teacherEntries : studenEntries}
+			{commonEntries}
 		</Cell.Group>
 	);
 
 	return (
 		<View className="flex flex-col h-screen">
 			{avatar}
-			{registed ? teacherEntries : unregistedEntries}
+			{registed ? registedEntries : unregistedEntries}
 		</View>
 	);
 }
