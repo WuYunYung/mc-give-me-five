@@ -34,7 +34,7 @@ export default function ActivityCard({
 				});
 			}}
 		>
-			<View className="flex w-full h-32 box-border border-solid border-gray-300">
+			<View className="flex w-full h-32 box-border border-solid border-gray-300 rounded-t-lg">
 				<Image className="w-32 h-32" src={bannerMap[activityDetail.type]} />
 				<Text className="m-auto font-bold text-xl">{activityDetail.name}</Text>
 			</View>
