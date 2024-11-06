@@ -19,6 +19,7 @@ import dayjs from "dayjs";
 import { inRange } from "lodash-es";
 import { FC, ReactNode } from "react";
 import { showToast, showActionSheet, reLaunch } from "@tarojs/taro";
+import { DateFormat } from "@/shared/constants";
 
 definePageConfig({
 	navigationBarTitleText: "创建活动",
@@ -77,7 +78,7 @@ export default function () {
 			: new Date();
 
 		const displayValue = dayjs(value).isValid()
-			? dayjs(value).format("YYYY-MM-DD hh:mm")
+			? dayjs(value).format(DateFormat.Display)
 			: "";
 
 		return (
