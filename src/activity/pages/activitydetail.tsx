@@ -17,7 +17,6 @@ export default function () {
 	const { run: findActv } = useRequest(activityRead, {
 		defaultParams: [Number(id)],
 		onSuccess(res) {
-			console.log(res);
 			setactivity(res);
 		},
 	});

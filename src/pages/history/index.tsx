@@ -26,7 +26,6 @@ export default function History() {
 	const { run, loading, data } = useRequest(activityList, {
 		manual: true,
 		onSuccess({ results = [] }) {
-			console.log("results=>", results);
 			setFlag(false);
 			setList((prev) => [...prev, ...results]);
 		},

@@ -17,7 +17,6 @@ export default function () {
 	const { run: findActv } = useRequest(activityRead, {
 		defaultParams: [Number(id)],
 		onSuccess(res) {
-			console.log(res);
 			setactivity(res);
 		},
 	});
@@ -42,8 +41,7 @@ export default function () {
 		} else {
 			scanCode({
 				// onlyFromCamera: true,
-				success: (res) => {
-					console.log(res);
+				success: () => {
 					//通过扫码得到的内容发起请求
 					signActv();
 				},
