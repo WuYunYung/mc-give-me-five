@@ -1,14 +1,21 @@
-import { Avatar, Cell } from "@taroify/core";
+import { Avatar, Cell, Switch } from "@taroify/core";
 import { View } from "@tarojs/components";
 import { NotesOutlined } from "@taroify/icons";
 import { routePush } from "@/shared/route";
 import { useRequest } from "ahooks";
-import { Group, userProfileRead, UserProfileUpdate } from "@/api";
+import {
+	Group,
+	manageUserPartialUpdate,
+	userProfileRead,
+	UserProfileUpdate,
+} from "@/api";
 import { isNil } from "lodash-es";
 import useStore from "@/shared/store";
 import classNames from "classnames";
 import { showLoading, hideLoading } from "@tarojs/taro";
 import { ActivityStatus } from "@/shared/constants";
+
+const isDev = process.env.NODE_ENV === "development";
 
 definePageConfig({
 	navigationBarTitleText: "我的",
@@ -17,7 +24,7 @@ definePageConfig({
 export default function User() {
 	const { user, setupUser } = useStore();
 
-	useRequest(userProfileRead, {
+	const { refresh } = useRequest(userProfileRead, {
 		onSuccess(data) {
 			const user = data as unknown as UserProfileUpdate | undefined; // TODO: 接口数据与swagger类型对不上，临时指鹿为马一下
 			user && setupUser(user);
@@ -30,7 +37,7 @@ export default function User() {
 		},
 	});
 
-	const { name = "访客", username, group, isAdmin } = user || {};
+	const { name = "访客", username, group, isAdmin, id } = user || {};
 
 	const registed = !isNil(user);
 
@@ -100,9 +107,28 @@ export default function User() {
 		</>
 	);
 
+	const { run: toggleAdmin, loading } = useRequest(
+		() =>
+			manageUserPartialUpdate(id!, {
+				body: { isAdmin: !isAdmin },
+			} as any),
+		{
+			ready: !isNil(id),
+			manual: true,
+			onSuccess() {
+				refresh();
+			},
+		},
+	);
+
 	const commonEntries = (
 		<>
 			<Cell title="统计" isLink />
+			{isDev && (
+				<Cell title="切换身份" align="center" brief={isAdmin ? "老师" : "学生"}>
+					<Switch checked={isAdmin} loading={loading} onChange={toggleAdmin} />
+				</Cell>
+			)}
 		</>
 	);
 
