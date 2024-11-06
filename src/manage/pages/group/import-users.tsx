@@ -11,7 +11,7 @@ import {
 	showModal,
 } from "@tarojs/taro";
 import { useMemoizedFn, useRequest } from "ahooks";
-import ExcelJS from "exceljs";
+import { read, utils } from "xlsx";
 import { isString } from "lodash-es";
 
 async function readFile(
@@ -28,23 +28,17 @@ async function readFile(
 }
 
 async function getTableMatrixByFile(fileBuffer: ArrayBuffer) {
-	// 创建 ExcelJS 工作簿实例
-	const workbook = new ExcelJS.Workbook();
-
-	await workbook.xlsx.load(fileBuffer); // 加载 Excel 文件数据
+	// 使用 xlsx 库来读取文件
+	const workbook = read(fileBuffer, { type: "binary" });
 
 	// 获取第一个工作表
-	const worksheet = workbook.worksheets[0];
+	const worksheet = workbook.Sheets[workbook.SheetNames[0]];
 
-	// 获取工作表的所有行，转换为矩阵
-	const matrix: ExcelJS.CellValue[][] = [];
-	worksheet.eachRow({ includeEmpty: true }, (row) => {
-		if (!Array.isArray(row?.values)) return;
-
-		const value = row.values.slice?.(1);
-
-		value && matrix.push(value); // row.values[0] 是行索引，slice(1) 去掉
-	});
+	// 将工作表数据转换为二维数组（矩阵）
+	const matrix: (string | number | boolean)[][] = utils.sheet_to_json(
+		worksheet,
+		{ header: 1 },
+	);
 
 	return matrix;
 }
@@ -94,9 +88,7 @@ export default function () {
 		const fileData = await readFile(tempFiles.at(0)?.path!);
 
 		// 获取工作表的所有行，转换为矩阵
-		const matrix: ExcelJS.CellValue[][] = await getTableMatrixByFile(
-			fileData.data as ArrayBuffer,
-		);
+		const matrix = await getTableMatrixByFile(fileData.data as ArrayBuffer);
 
 		const validMatirx = matrix.filter((row) => {
 			const [userName, name] = row;
@@ -108,9 +100,7 @@ export default function () {
 				return false;
 			}
 
-			const validName = Pattern.name.test(name);
-
-			if (!isString(name) || !validName) {
+			if (!isString(name) || !Pattern.name.test(name)) {
 				return false;
 			}
 

@@ -6,6 +6,33 @@ import prodConfig from "./prod";
 
 import { UnifiedViteWeappTailwindcssPlugin as uvtw } from "weapp-tailwindcss/vite";
 import tailwindcss from "tailwindcss";
+import { analyzer } from "vite-bundle-analyzer";
+
+const vitePlugins = [
+	{
+		// 通过 vite 插件加载 postcss,
+		name: "postcss-config-loader-plugin",
+		config(config) {
+			// 加载 tailwindcss
+			if (typeof config.css?.postcss === "object") {
+				config.css?.postcss.plugins?.unshift(tailwindcss());
+			}
+		},
+	},
+	uvtw({
+		// rem转rpx
+		rem2rpx: true,
+		// 除了小程序这些，其他平台都 disable
+		disabled:
+			process.env.TARO_ENV === "h5" ||
+			process.env.TARO_ENV === "harmony" ||
+			process.env.TARO_ENV === "rn",
+	}),
+] as Plugin[];
+
+if (process.env.ANALYZE === "1") {
+	vitePlugins.push(analyzer() as Plugin);
+}
 
 // https://taro-docs.jd.com/docs/next/config#defineconfig-辅助函数
 export default defineConfig<"vite">(async (merge) => {
@@ -33,27 +60,7 @@ export default defineConfig<"vite">(async (merge) => {
 				enable: true,
 				swc: {},
 			},
-			vitePlugins: [
-				{
-					// 通过 vite 插件加载 postcss,
-					name: "postcss-config-loader-plugin",
-					config(config) {
-						// 加载 tailwindcss
-						if (typeof config.css?.postcss === "object") {
-							config.css?.postcss.plugins?.unshift(tailwindcss());
-						}
-					},
-				},
-				uvtw({
-					// rem转rpx
-					rem2rpx: true,
-					// 除了小程序这些，其他平台都 disable
-					disabled:
-						process.env.TARO_ENV === "h5" ||
-						process.env.TARO_ENV === "harmony" ||
-						process.env.TARO_ENV === "rn",
-				}),
-			] as Plugin[], // 从 vite 引入 type, 为了智能提示
+			vitePlugins, // 从 vite 引入 type, 为了智能提示
 		},
 		alias: {
 			"@/api": path.resolve(__dirname, "../assets/api"),
@@ -73,6 +80,9 @@ export default defineConfig<"vite">(async (merge) => {
 						generateScopedName: "[name]__[local]___[hash:base64:5]",
 					},
 				},
+			},
+			optimizeMainPackage: {
+				enable: true,
 			},
 		},
 		h5: {
