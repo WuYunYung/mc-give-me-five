@@ -206,6 +206,36 @@ export interface ActivityUpdate {
   type: 0 | 1 | 2 | 3;
 }
 
+export interface Attender {
+  user: UserSimple;
+  /**
+   * 签到时间
+   * @format date-time
+   */
+  sign_time?: string;
+  /** 签到状态 */
+  status?: boolean;
+  /** 活动 */
+  activity: number;
+}
+
+export interface AttenderCreate {
+  /** User */
+  user: number;
+  /** Activity */
+  activity: number;
+  /**
+   * Status
+   * @default false
+   */
+  status?: boolean;
+}
+
+export interface AttenderUpdate {
+  /** Status */
+  status: boolean;
+}
+
 export interface GroupSimple {
   /** ID */
   id?: number;
@@ -772,6 +802,7 @@ export const manageActivityCreate = (data: ActivityCreate, params: RequestParams
     method: "POST",
     body: data,
     secure: true,
+    type: ContentType.Json,
     format: "json",
     ...params,
   });
@@ -846,57 +877,6 @@ export const manageActivityDelete = (id: number, params: RequestParams = {}) =>
   });
 
 /**
- * @description 参与活动的用户管理 如果是POST请求, 则添加用户到活动中 如果是DELETE请求, 则从活动中删除用户 如果是GET请求, 则返回活动的参与者
- *
- * @tags manage
- * @name ManageActivityAttenderRead
- * @request GET:/manage/activity/{id}/attender/
- * @secure
- */
-export const manageActivityAttenderRead = (id: number, params: RequestParams = {}) =>
-  new HttpClient().request<ActivityRead, any>({
-    path: `/manage/activity/${id}/attender/`,
-    method: "GET",
-    secure: true,
-    format: "json",
-    ...params,
-  });
-
-/**
- * @description 参与活动的用户管理 如果是POST请求, 则添加用户到活动中 如果是DELETE请求, 则从活动中删除用户 如果是GET请求, 则返回活动的参与者
- *
- * @tags manage
- * @name ManageActivityAttenderCreate
- * @request POST:/manage/activity/{id}/attender/
- * @secure
- */
-export const manageActivityAttenderCreate = (id: number, data: ActivityCreate, params: RequestParams = {}) =>
-  new HttpClient().request<ActivityCreate, any>({
-    path: `/manage/activity/${id}/attender/`,
-    method: "POST",
-    body: data,
-    secure: true,
-    format: "json",
-    ...params,
-  });
-
-/**
- * @description 参与活动的用户管理 如果是POST请求, 则添加用户到活动中 如果是DELETE请求, 则从活动中删除用户 如果是GET请求, 则返回活动的参与者
- *
- * @tags manage
- * @name ManageActivityAttenderDelete
- * @request DELETE:/manage/activity/{id}/attender/
- * @secure
- */
-export const manageActivityAttenderDelete = (id: number, params: RequestParams = {}) =>
-  new HttpClient().request<void, any>({
-    path: `/manage/activity/${id}/attender/`,
-    method: "DELETE",
-    secure: true,
-    ...params,
-  });
-
-/**
  * @description 管理员生成签到码, 每次生成都会覆盖之前的签到码 : param ttl: 有效时间, 单位秒, 默认10秒
  *
  * @tags manage
@@ -910,6 +890,134 @@ export const manageActivityGenerateCode = (id: number, params: RequestParams = {
     method: "GET",
     secure: true,
     format: "json",
+    ...params,
+  });
+
+/**
+ * No description
+ *
+ * @tags manage
+ * @name ManageAttenderList
+ * @request GET:/manage/attender/
+ * @secure
+ */
+export const manageAttenderList = (
+  query?: {
+    /** activity_id */
+    activity_id?: string;
+    /** A search term. */
+    search?: string;
+    /** Number of results to return per page. */
+    limit?: number;
+    /** The initial index from which to return the results. */
+    offset?: number;
+  },
+  params: RequestParams = {},
+) =>
+  new HttpClient().request<
+    {
+      count: number;
+      /** @format uri */
+      next?: string | null;
+      /** @format uri */
+      previous?: string | null;
+      results: Attender[];
+    },
+    any
+  >({
+    path: `/manage/attender/`,
+    method: "GET",
+    query: query,
+    secure: true,
+    format: "json",
+    ...params,
+  });
+
+/**
+ * No description
+ *
+ * @tags manage
+ * @name ManageAttenderCreate
+ * @request POST:/manage/attender/
+ * @secure
+ */
+export const manageAttenderCreate = (data: AttenderCreate, params: RequestParams = {}) =>
+  new HttpClient().request<AttenderCreate, any>({
+    path: `/manage/attender/`,
+    method: "POST",
+    body: data,
+    secure: true,
+    type: ContentType.Json,
+    format: "json",
+    ...params,
+  });
+
+/**
+ * No description
+ *
+ * @tags manage
+ * @name ManageAttenderRead
+ * @request GET:/manage/attender/{id}/
+ * @secure
+ */
+export const manageAttenderRead = (id: number, params: RequestParams = {}) =>
+  new HttpClient().request<Attender, any>({
+    path: `/manage/attender/${id}/`,
+    method: "GET",
+    secure: true,
+    format: "json",
+    ...params,
+  });
+
+/**
+ * No description
+ *
+ * @tags manage
+ * @name ManageAttenderUpdate
+ * @request PUT:/manage/attender/{id}/
+ * @secure
+ */
+export const manageAttenderUpdate = (id: number, data: AttenderUpdate, params: RequestParams = {}) =>
+  new HttpClient().request<AttenderUpdate, any>({
+    path: `/manage/attender/${id}/`,
+    method: "PUT",
+    body: data,
+    secure: true,
+    format: "json",
+    ...params,
+  });
+
+/**
+ * No description
+ *
+ * @tags manage
+ * @name ManageAttenderPartialUpdate
+ * @request PATCH:/manage/attender/{id}/
+ * @secure
+ */
+export const manageAttenderPartialUpdate = (id: number, data: AttenderUpdate, params: RequestParams = {}) =>
+  new HttpClient().request<AttenderUpdate, any>({
+    path: `/manage/attender/${id}/`,
+    method: "PATCH",
+    body: data,
+    secure: true,
+    format: "json",
+    ...params,
+  });
+
+/**
+ * No description
+ *
+ * @tags manage
+ * @name ManageAttenderDelete
+ * @request DELETE:/manage/attender/{id}/
+ * @secure
+ */
+export const manageAttenderDelete = (id: number, params: RequestParams = {}) =>
+  new HttpClient().request<void, any>({
+    path: `/manage/attender/${id}/`,
+    method: "DELETE",
+    secure: true,
     ...params,
   });
 

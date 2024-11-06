@@ -1,4 +1,5 @@
 import { UserRegister, userRegister } from "@/api";
+import { Pattern } from "@/shared/pattern";
 import { routeBack } from "@/shared/route";
 import useStore from "@/shared/store";
 import { Button, Cell, Field, Form, Image, Input } from "@taroify/core";
@@ -58,7 +59,7 @@ export default function () {
 						icon={<ContactOutlined />}
 						rules={[
 							{
-								pattern: /^[A-Za-z\u4e00-\u9fa5]{2,10}$/,
+								pattern: Pattern.name,
 								message: "请输入正确的姓名",
 							},
 						]}
@@ -71,7 +72,7 @@ export default function () {
 						icon={<Edit />}
 						rules={[
 							{
-								pattern: /\d{10}/,
+								pattern: Pattern.userName,
 								message: `请输入正确的${idFieldName}`,
 							},
 						]}
@@ -84,7 +85,7 @@ export default function () {
 						icon={<PhoneOutlined />}
 						rules={[
 							{
-								pattern: /\d{11}/,
+								pattern: Pattern.mobile,
 								message: "请输入正确的电话",
 							},
 						]}

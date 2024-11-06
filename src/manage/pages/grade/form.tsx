@@ -1,6 +1,7 @@
 import {
 	Grade,
 	manageGradeCreate,
+	manageGradeDelete2,
 	manageGradePartialUpdate2,
 	manageGradeRead,
 } from "@/api";
@@ -8,11 +9,12 @@ import { routeBack } from "@/shared/route";
 import { Cell, Field, Form, Input } from "@taroify/core";
 import Button from "@taroify/core/button/button";
 import { View } from "@tarojs/components";
-import { useRouter } from "@tarojs/taro";
+import { useRouter, showModal, setNavigationBarTitle } from "@tarojs/taro";
 import { useRequest } from "ahooks";
 import { isNil } from "lodash-es";
+import { useLayoutEffect } from "react";
 
-// TODO 详情交互
+// TODO: 封装详情页交互
 export default function () {
 	const { params } = useRouter<{
 		id?: string;
@@ -26,6 +28,15 @@ export default function () {
 
 	const { data: detail } = useRequest(() => manageGradeRead(id), {
 		ready: !Number.isNaN(id),
+		onSuccess({ name }) {
+			setNavigationBarTitle({ title: name });
+		},
+	});
+
+	useLayoutEffect(() => {
+		if (isCreatiion) {
+			setNavigationBarTitle({ title: "新建班级" });
+		}
 	});
 
 	const { run } = useRequest(
@@ -68,5 +79,35 @@ export default function () {
 		</Form>
 	);
 
-	return <View>{isCreatiion ? form : detail ? form : null}</View>;
+	const { run: deleteGrade } = useRequest(() => manageGradeDelete2(id), {
+		manual: true,
+		ready: !isCreatiion,
+		onSuccess() {
+			routeBack();
+		},
+	});
+
+	const deleteButton = (
+		<View className="px-4">
+			<Button
+				color="danger"
+				block
+				variant="text"
+				onClick={async () => {
+					await showModal({ content: `确定删除 ${detail?.name} 吗？` });
+					deleteGrade();
+				}}
+			>
+				删除年级
+			</Button>
+		</View>
+	);
+
+	return (
+		<View>
+			{isCreatiion ? form : detail ? form : null}
+
+			{!isCreatiion && deleteButton}
+		</View>
+	);
 }

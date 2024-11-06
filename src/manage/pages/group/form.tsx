@@ -9,7 +9,7 @@ import {
 } from "@/api";
 import Feeds from "@/components/Feeds";
 import withPopup from "@/components/withPopup";
-import { routeBack } from "@/shared/route";
+import { routeBack, routePush, routeRedirect } from "@/shared/route";
 import { Cell, Field, Form, Input, Popup } from "@taroify/core";
 import Button from "@taroify/core/button/button";
 import { View } from "@tarojs/components";
@@ -105,7 +105,12 @@ export default function () {
 		{
 			ready: isCreatiion || !Number.isNaN(id),
 			manual: true,
-			onSuccess() {
+			onSuccess({ id: groupId }) {
+				if (isCreatiion && groupId) {
+					return routeRedirect("/manage/pages/group/import-users", {
+						groupId: groupId,
+					});
+				}
 				routeBack();
 			},
 		},
@@ -193,10 +198,29 @@ export default function () {
 		</View>
 	);
 
+	const importButton = (
+		<View className="px-4">
+			<Button
+				block
+				variant="text"
+				onClick={() => {
+					routePush("/manage/pages/group/import-users", {
+						groupId: id,
+					});
+				}}
+			>
+				导入
+			</Button>
+		</View>
+	);
+
 	return (
 		<View>
 			{isCreatiion ? form : detail ? form : null}
+
 			{!isCreatiion && deleteButton}
+
+			{!isCreatiion && importButton}
 		</View>
 	);
 }
