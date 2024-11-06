@@ -19,6 +19,7 @@ import dayjs from "dayjs";
 import { inRange } from "lodash-es";
 import { FC, ReactNode } from "react";
 import { showToast, showActionSheet, reLaunch } from "@tarojs/taro";
+import { DateFormat } from "@/shared/constants";
 
 definePageConfig({
 	navigationBarTitleText: "创建活动",
@@ -77,19 +78,19 @@ export default function () {
 			: new Date();
 
 		const displayValue = dayjs(value).isValid()
-			? dayjs(value).format("YYYY-MM-DD hh:mm")
+			? dayjs(value).format(DateFormat.Display)
 			: "";
 
 		return (
 			<DatePicker
-				value={innerValue}
+				defaultValue={innerValue}
 				onChange={onChange}
 				type="date-minute"
 				min={new Date()}
 				max={dayjs().add(1, "year").toDate()}
 				onBlur={onBlur}
 			>
-				<Input value={displayValue} disabled placeholder="请选择开始时间" />
+				<Input value={displayValue} readonly placeholder="请选择开始时间" />
 			</DatePicker>
 		);
 	});
@@ -141,7 +142,7 @@ export default function () {
 							return (
 								<Input
 									placeholder="请选择活动类型"
-									disabled
+									readonly
 									value={value}
 									onClick={() =>
 										showActionSheet({

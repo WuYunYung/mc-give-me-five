@@ -8,6 +8,7 @@ import banner2 from "../static/banner/banner2.svg";
 import banner3 from "../static/banner/banner3.svg";
 import banner4 from "../static/banner/banner4.svg";
 import { Cell } from "@taroify/core";
+import { DateFormat } from "@/shared/constants";
 
 type CardMode = "activity" | "history";
 
@@ -43,10 +44,10 @@ export default function ActivityCard({
 				<Cell title="活动名额">{`${activityDetail.get_attenders_count} / ${activityDetail.capacity}`}</Cell>
 				<Cell title="活动地点">{activityDetail.location}</Cell>
 				<Cell title="开始时间">
-					{dayjs(activityDetail.start_time).format("YYYY-MM-DD HH:mm")}
+					{dayjs(activityDetail.start_time).format(DateFormat.Display)}
 				</Cell>
 				<Cell title="结束时间">
-					{dayjs(activityDetail.end_time).format("YYYY-MM-DD HH:mm")}
+					{dayjs(activityDetail.end_time).format(DateFormat.Display)}
 				</Cell>
 			</Cell.Group>
 		</View>

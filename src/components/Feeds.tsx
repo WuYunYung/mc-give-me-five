@@ -69,17 +69,17 @@ export default function Feeds<T>(props: FeedsProps<T>): ReactElement {
 	const update = useUpdate();
 
 	const { loading, runAsync, data } = useRequest(
-		async (params?: Parameters<Exclude<typeof service, undefined>>[0]) =>
-			service?.(
-				merge(
-					{
-						search: search.current,
-						limit: LIMIT,
-						offset: list.current.length,
-					},
-					params,
-				),
-			),
+		async (params?: Parameters<Exclude<typeof service, undefined>>[0]) => {
+			const innerParams = {
+				limit: LIMIT,
+				offset: list.current.length,
+			} as Exclude<typeof params, undefined>;
+
+			if (search.current) {
+				innerParams.search = search.current;
+			}
+			return service?.(merge(innerParams, params));
+		},
 		{
 			manual: true,
 		},
@@ -201,7 +201,7 @@ export default function Feeds<T>(props: FeedsProps<T>): ReactElement {
 
 			<List.Placeholder>
 				{loading && <Loading>加载中...</Loading>}
-				{!hasMore && "没有更多了"}
+				{!isEmpty(list.current) && !hasMore && "没有更多了"}
 			</List.Placeholder>
 
 			{!disableSaveArea && <SafeArea position="bottom" />}

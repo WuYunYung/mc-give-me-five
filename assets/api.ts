@@ -295,6 +295,70 @@ export interface GroupUpdate {
   name: string;
 }
 
+export interface UserProfile {
+  /** ID */
+  id?: number;
+  /**
+   * OpenID
+   * @minLength 1
+   * @maxLength 30
+   */
+  openid: string;
+  /**
+   * 学号
+   * @minLength 1
+   * @maxLength 15
+   */
+  username: string;
+  /**
+   * 姓名
+   * @minLength 1
+   * @maxLength 50
+   */
+  name: string;
+  /**
+   * 手机号
+   * @minLength 1
+   * @maxLength 11
+   */
+  phone: string;
+  /** 是否管理员 */
+  isAdmin?: boolean;
+  group: Group;
+}
+
+export interface UserProfileManageUpdate {
+  /** ID */
+  id?: number;
+  /**
+   * OpenID
+   * @minLength 1
+   */
+  openid?: string;
+  /**
+   * 学号
+   * @minLength 1
+   * @maxLength 15
+   */
+  username: string;
+  /**
+   * 姓名
+   * @minLength 1
+   * @maxLength 50
+   */
+  name: string;
+  /**
+   * 手机号
+   * @minLength 1
+   * @maxLength 11
+   */
+  phone: string;
+  /** 是否管理员 */
+  isAdmin?: boolean;
+  /** Group */
+  group: number;
+}
+
 export interface UserProfileUpdate {
   /** ID */
   id?: number;
@@ -1553,11 +1617,22 @@ export const manageUserList = (
   },
   params: RequestParams = {},
 ) =>
-  new HttpClient().request<void, any>({
+  new HttpClient().request<
+    {
+      count: number;
+      /** @format uri */
+      next?: string | null;
+      /** @format uri */
+      previous?: string | null;
+      results: UserProfile[];
+    },
+    any
+  >({
     path: `/manage/user/`,
     method: "GET",
     query: query,
     secure: true,
+    format: "json",
     ...params,
   });
 
@@ -1570,10 +1645,11 @@ export const manageUserList = (
  * @secure
  */
 export const manageUserRead = (id: number, params: RequestParams = {}) =>
-  new HttpClient().request<void, any>({
+  new HttpClient().request<UserProfile, any>({
     path: `/manage/user/${id}/`,
     method: "GET",
     secure: true,
+    format: "json",
     ...params,
   });
 
@@ -1585,11 +1661,13 @@ export const manageUserRead = (id: number, params: RequestParams = {}) =>
  * @request PUT:/manage/user/{id}/
  * @secure
  */
-export const manageUserUpdate = (id: number, params: RequestParams = {}) =>
-  new HttpClient().request<void, any>({
+export const manageUserUpdate = (id: number, data: UserProfileManageUpdate, params: RequestParams = {}) =>
+  new HttpClient().request<UserProfileManageUpdate, any>({
     path: `/manage/user/${id}/`,
     method: "PUT",
+    body: data,
     secure: true,
+    format: "json",
     ...params,
   });
 
@@ -1601,11 +1679,13 @@ export const manageUserUpdate = (id: number, params: RequestParams = {}) =>
  * @request PATCH:/manage/user/{id}/
  * @secure
  */
-export const manageUserPartialUpdate = (id: number, params: RequestParams = {}) =>
-  new HttpClient().request<void, any>({
+export const manageUserPartialUpdate = (id: number, data: UserProfileManageUpdate, params: RequestParams = {}) =>
+  new HttpClient().request<UserProfileManageUpdate, any>({
     path: `/manage/user/${id}/`,
     method: "PATCH",
+    body: data,
     secure: true,
+    format: "json",
     ...params,
   });
 

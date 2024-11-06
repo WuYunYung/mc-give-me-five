@@ -1,7 +1,7 @@
 import { immer } from "zustand/middleware/immer";
 import { createJSONStorage, persist } from "zustand/middleware";
 import { create } from "zustand";
-import { UserRegister } from "@/api";
+import { UserProfileUpdate } from "@/api";
 import { merge } from "lodash-es";
 import {
 	getStorageSync,
@@ -18,8 +18,8 @@ type Store = {
 	visitor: boolean;
 	toggleVisitor: (value: boolean) => void;
 
-	user: UserRegister | null;
-	setupUser: (user: Partial<UserRegister>) => void;
+	user: UserProfileUpdate | null;
+	setupUser: (user: Partial<UserProfileUpdate>) => void;
 };
 
 // TODO: 持久化初始化数据
