@@ -8,6 +8,7 @@ import banner1 from "../../static/banner/banner1.svg";
 import banner2 from "../../static/banner/banner2.svg";
 import banner3 from "../../static/banner/banner3.svg";
 import banner4 from "../../static/banner/banner4.svg";
+import { Image } from "@taroify/core";
 
 definePageConfig({
 	navigationBarTitleText: "首页",
@@ -39,7 +40,7 @@ export default function Index() {
 			{types.map((type: Type) => (
 				<View
 					key={type}
-					className="w-full box-border h-40 bg-white flex flex-col p-px shadow-white"
+					className="w-full box-border h-40 bg-white flex flex-col border-solid border-gray-300 shadow-white"
 					style={{
 						boxShadow: "4px 4px 2px 1px rgba(255, 255, 255, 1)",
 					}}
@@ -54,13 +55,7 @@ export default function Index() {
 							</Text>
 						</View>
 					</View>
-					<View
-						className="box-border w-full h-40 bg-center bg-cover bg-no-repeat"
-						style={{
-							backgroundImage: `url(${imageUrl[type]})`,
-							filter: "grayscale(.8)",
-						}}
-					/>
+					<Image className="box-border w-full h-40" src={imageUrl[type]} />
 					<View className="relative bottom-8">
 						<Text className="absolute ml-4 font-bold text-lg text-black">
 							{`类型${type}`}
