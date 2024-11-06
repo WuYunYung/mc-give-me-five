@@ -1,12 +1,11 @@
 import { View, Image } from "@tarojs/components";
 import { List, Loading, Search, Toast } from "@taroify/core";
 import { useState } from "react";
-import { activityList, ActivityRead } from "@/api";
+import { activityList, ActivityRead, ActivityReadDetail } from "@/api";
 import ActivityCard from "../../components/ActivityCard";
 import defaultPage from "../../static/default/default.svg";
 import { useLatest, useRequest } from "ahooks";
 import { getStorageSync } from "@tarojs/taro";
-import dayjs from "dayjs";
 
 definePageConfig({
 	navigationBarTitleText: "历史",
@@ -29,18 +28,7 @@ export default function History() {
 		onSuccess({ results = [] }) {
 			console.log("results=>", results);
 			setFlag(false);
-
-			if (JSON.parse(getStorageSync("store")).state.user.isAdmin) {
-				//老师可以看到所有活动
-				setList((prev) => [...prev, ...results]);
-			} else {
-				//学生可以看到已报名的活动
-				for (let item of results) {
-					if (item.is_ettend) {
-						setList((prev) => [...prev, item]);
-					}
-				}
-			}
+			setList((prev) => [...prev, ...results]);
 		},
 	});
 
@@ -55,14 +43,22 @@ export default function History() {
 			loading={loading}
 			hasMore={hasMore}
 			onLoad={() => {
-				run({
-					limit: LIMIT,
-					offset: latestList.current.length,
-				});
+				if (JSON.parse(getStorageSync("store")).state.user.isAdmin) {
+					run({
+						limit: LIMIT,
+						offset: latestList.current.length,
+					});
+				} else {
+					run({
+						status: "attend",
+						limit: LIMIT,
+						offset: latestList.current.length,
+					});
+				}
 			}}
 		>
 			{list.length === 0 && !flag && renderDefault}
-			{list.map((item: ActivityRead, index: number) => (
+			{list.map((item: ActivityReadDetail, index: number) => (
 				<ActivityCard
 					activityDetail={item}
 					mode="history"
