@@ -1,4 +1,11 @@
-import { Empty, FloatingBubble, List, Loading, Search } from "@taroify/core";
+import {
+	Empty,
+	FloatingBubble,
+	List,
+	Loading,
+	SafeArea,
+	Search,
+} from "@taroify/core";
 import { Button } from "@taroify/core";
 import { Plus } from "@taroify/icons";
 import { ITouchEvent, View } from "@tarojs/components";
@@ -33,6 +40,8 @@ type FeedsProps<T> = {
 	height?: number;
 
 	disabledSearch?: boolean;
+
+	disableSaveArea?: boolean;
 };
 
 const LIMIT = 10;
@@ -51,6 +60,7 @@ export default function Feeds<T>(props: FeedsProps<T>): ReactElement {
 		onCreateClick: onEmptyCreateClick,
 		height: propHeight,
 		disabledSearch,
+		disableSaveArea,
 	} = props;
 
 	const list = useRef<T[]>([]);
@@ -193,6 +203,8 @@ export default function Feeds<T>(props: FeedsProps<T>): ReactElement {
 				{loading && <Loading>加载中...</Loading>}
 				{!hasMore && "没有更多了"}
 			</List.Placeholder>
+
+			{!disableSaveArea && <SafeArea position="bottom" />}
 		</List>
 	);
 

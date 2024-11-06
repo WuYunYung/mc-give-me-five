@@ -7,11 +7,11 @@ export default defineAppConfig({
 		},
 		{
 			root: "activity",
-			pages: ["pages/activitylist", "pages/activitydetail"],
+			pages: ["pages/activity-list", "pages/activity-detail"],
 		},
 		{
 			root: "history",
-			pages: ["pages/historydetail"],
+			pages: ["pages/history-detail"],
 		},
 		{
 			root: "manage",

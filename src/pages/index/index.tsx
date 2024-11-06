@@ -23,7 +23,7 @@ const imageUrl = [banner1, banner2, banner3, banner4];
 
 export default function Index() {
 	const handleNavigateTo = (type: Type) => {
-		routePush("/activity/pages/activitylist", {
+		routePush("/activity/pages/activity-list", {
 			type: type,
 		});
 	};
@@ -40,10 +40,7 @@ export default function Index() {
 			{types.map((type: Type) => (
 				<View
 					key={type}
-					className="w-full box-border h-40 bg-white flex flex-col border-solid border-gray-300 shadow-white"
-					style={{
-						boxShadow: "4px 4px 2px 1px rgba(255, 255, 255, 1)",
-					}}
+					className="w-full box-border h-40 bg-white flex flex-col border-solid border-gray-300 rounded-lg"
 					onClick={() => {
 						handleNavigateTo(type);
 					}}
