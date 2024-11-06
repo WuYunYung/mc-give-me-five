@@ -28,7 +28,7 @@ export default function ActivityCard({
 		<View
 			className="box-border flex flex-col w-full shadow-xl rounded-lg mb-4"
 			onClick={() => {
-				routePush(`/${mode}/pages/${mode}detail`, {
+				routePush(`/${mode}/pages/${mode}-detail`, {
 					id: activityDetail.id,
 				});
 			}}

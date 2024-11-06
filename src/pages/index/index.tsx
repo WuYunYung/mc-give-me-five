@@ -23,7 +23,7 @@ const imageUrl = [banner1, banner2, banner3, banner4];
 
 export default function Index() {
 	const handleNavigateTo = (type: Type) => {
-		routePush("/activity/pages/activitylist", {
+		routePush("/activity/pages/activity-list", {
 			type: type,
 		});
 	};
