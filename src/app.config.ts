@@ -11,7 +11,7 @@ export default defineAppConfig({
 		},
 		{
 			root: "history",
-			pages: ["pages/history-detail"],
+			pages: ["pages/history-detail", "pages/history-attender"],
 		},
 		{
 			root: "manage",

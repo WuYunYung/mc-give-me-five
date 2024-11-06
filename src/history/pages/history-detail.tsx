@@ -1,11 +1,19 @@
-import { activityRead, ActivityReadDetail, activitySignin } from "@/api";
+import {
+	activityQuit,
+	activityRead,
+	ActivityReadDetail,
+	activitySignin,
+	manageActivityGenerateCode,
+} from "@/api";
 import { View } from "@tarojs/components";
 import ActivityDetailCard from "../../components/ActivityDetailCard";
 import { Button } from "@taroify/core";
 import dayjs from "dayjs";
-import { useRouter, scanCode, getStorageSync, showToast } from "@tarojs/taro";
+import { useRouter, scanCode, getStorageSync, showModal } from "@tarojs/taro";
 import { useState } from "react";
 import { useRequest } from "ahooks";
+import CodeCreator from "taro-code-creator";
+import { routePush } from "@/shared/route";
 
 export default function () {
 	const { params } = useRouter();
@@ -13,6 +21,8 @@ export default function () {
 	const { id } = params;
 
 	const [activity, setactivity] = useState<ActivityReadDetail>();
+
+	const [qrCode, setqrCode] = useState("");
 
 	const { run: findActv } = useRequest(activityRead, {
 		defaultParams: [Number(id)],
@@ -29,64 +39,98 @@ export default function () {
 		},
 	});
 
+	const { run: quitActv } = useRequest(activityQuit, {
+		manual: true,
+		onSuccess() {
+			//...
+			findActv(Number(id));
+		},
+	});
+
+	const { run: findCode, loading: findCodeLoading } = useRequest(
+		manageActivityGenerateCode,
+		{
+			manual: true,
+			pollingInterval: 10000,
+			pollingWhenHidden: false,
+			onSuccess(res) {
+				console.log("code=>", res.code);
+				setqrCode(res.code);
+			},
+		},
+	);
+
+	// const { run: findAttender } = useRequest(manageAttenderRead, {
+	// 	manual: true,
+	// 	onSuccess() {
+
+	// 	}
+	// })
+
 	//用户签到
 	const handleSigned = () => {
-		//老师无需签到
-		if (JSON.parse(getStorageSync("store")).state.user.isAdmin) {
-			showToast({
-				title: "您无需报名",
-				icon: "success",
-				duration: 2000,
-			});
-		} else {
-			scanCode({
-				// onlyFromCamera: true,
-				success: () => {
-					//通过扫码得到的内容发起请求
-					signActv();
-				},
-			});
-		}
+		scanCode({
+			// onlyFromCamera: true,
+			success: (res) => {
+				//通过扫码得到的内容发起请求
+				signActv(res.code);
+			},
+		});
 	};
 
 	//用户取消报名
 	const handleQuit = () => {
-		//老师无需签到
-		if (JSON.parse(getStorageSync("store")).state.user.isAdmin) {
-			showToast({
-				title: "您无需报名",
-				icon: "success",
-				duration: 2000,
-			});
-		} else {
-			//取消报名
-		}
+		showModal({
+			title: "提示",
+			content: "确定取消报名吗？",
+			success: function (res) {
+				if (res.confirm) {
+					quitActv(Number(id));
+				}
+			},
+		});
+		quitActv(Number(id));
+	};
+
+	//老师生成签到码
+	const handleFindCode = () => {
+		findCode(Number(id));
+	};
+
+	//老师查看活动报名详情
+	const handleNavigateToAttender = () => {
+		routePush("/history/pages/history-attender", {
+			id: id,
+		});
 	};
 
 	const renderButtons = (
 		<>
-			{/* 活动未开始 */}
-			{activity && dayjs(activity.start_time).valueOf() > dayjs().valueOf() && (
-				<View className="flex flex-col">
-					<Button
-						color="success"
-						className="w-4/5 mx-auto mt-4"
-						onClick={handleSigned}
-					>
-						等待签到确认
-					</Button>
-					<Button
-						color="default"
-						className="w-4/5 mx-auto mt-4"
-						onClick={handleQuit}
-					>
-						取消报名
-					</Button>
-				</View>
-			)}
+			{/* 学生-活动未开始 */}
+			{!JSON.parse(getStorageSync("store")).state.user.isAdmin &&
+				activity &&
+				dayjs(activity.start_time).valueOf() > dayjs().valueOf() && (
+					<View className="flex flex-col">
+						<Button
+							color="success"
+							className="w-4/5 mx-auto mt-4"
+							onClick={handleSigned}
+						>
+							等待签到确认
+						</Button>
+						<Button
+							color="default"
+							className="w-4/5 mx-auto mt-4"
+							onClick={handleQuit}
+						>
+							取消报名
+						</Button>
+					</View>
+				)}
 
-			{/* 活动已开始未结束 */}
-			{activity &&
+			{/* 学生-活动已开始未结束 */}
+			{!JSON.parse(getStorageSync("store")).state.user.isAdmin &&
+				activity &&
 				dayjs(activity.start_time).valueOf() < dayjs().valueOf() &&
 				dayjs(activity.end_time).valueOf() > dayjs().valueOf() && (
 					<View className="flex flex-col">
@@ -100,22 +144,60 @@ export default function () {
 					</View>
 				)}
 
-			{/* 活动已结束 */}
-			{activity && dayjs(activity.end_time).valueOf() < dayjs().valueOf() && (
-				<View className="flex flex-col">
-					{activity.is_signed && (
-						<Button color="primary" className="w-4/5 mx-auto mt-4">
-							已参加
-						</Button>
-					)}
+			{/* 学生-活动已结束 */}
+			{!JSON.parse(getStorageSync("store")).state.user.isAdmin &&
+				activity &&
+				dayjs(activity.end_time).valueOf() < dayjs().valueOf() && (
+					<View className="flex flex-col">
+						{activity.is_signed && (
+							<Button color="primary" className="w-4/5 mx-auto mt-4">
+								已参加
+							</Button>
+						)}
 
-					{!activity.is_signed && (
-						<Button color="warning" className="w-4/5 mx-auto mt-4">
-							已结束（未签到）
+						{!activity.is_signed && (
+							<Button color="warning" className="w-4/5 mx-auto mt-4">
+								已结束（未签到）
+							</Button>
+						)}
+					</View>
+				)}
+
+			{/* 老师-活动未结束 */}
+			{JSON.parse(getStorageSync("store")).state.user.isAdmin &&
+				activity &&
+				dayjs(activity.end_time).valueOf() > dayjs().valueOf() && (
+					<View className="flex flex-col">
+						<Button
+							className="w-4/5 mx-auto mt-4"
+							color="primary"
+							onClick={handleFindCode}
+						>
+							生成签到码
 						</Button>
-					)}
-				</View>
-			)}
+
+						<View className="mx-auto mt-4">
+							{!findCodeLoading && qrCode !== "" && (
+								<CodeCreator codeText={qrCode} size={256}></CodeCreator>
+							)}
+						</View>
+					</View>
+				)}
+
+			{/* 老师-活动已结束 */}
+			{JSON.parse(getStorageSync("store")).state.user.isAdmin &&
+				activity &&
+				dayjs(activity.end_time).valueOf() < dayjs().valueOf() && (
+					<View className="flex flex-col">
+						<Button
+							className="w-4/5 mx-auto mt-4"
+							color="primary"
+							onClick={handleNavigateToAttender}
+						>
+							查看详情
+						</Button>
+					</View>
+				)}
 		</>
 	);
 
