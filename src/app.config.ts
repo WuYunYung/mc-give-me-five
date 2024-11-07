@@ -3,7 +3,12 @@ export default defineAppConfig({
 	subPackages: [
 		{
 			root: "user",
-			pages: ["pages/identity", "pages/register", "pages/summary"],
+			pages: [
+				"pages/identity",
+				"pages/register",
+				"pages/summary",
+				"pages/mobile",
+			],
 		},
 		{
 			root: "activity",

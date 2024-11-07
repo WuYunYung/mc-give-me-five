@@ -1,4 +1,4 @@
-import { Avatar, Cell } from "@taroify/core";
+import { Avatar, Cell, Input } from "@taroify/core";
 import { View } from "@tarojs/components";
 import { NotesOutlined } from "@taroify/icons";
 import { routePush } from "@/shared/route";
@@ -7,6 +7,7 @@ import { isNil } from "lodash-es";
 import useStore from "@/shared/store";
 import classNames from "classnames";
 import { ActivityStatus } from "@/shared/constants";
+import { maskPhoneNumber } from "@/shared/utils";
 
 definePageConfig({
 	navigationBarTitleText: "我的",
@@ -15,7 +16,7 @@ definePageConfig({
 export default function User() {
 	const { user } = useStore();
 
-	const { name = "访客", username, group, isAdmin } = user || {};
+	const { name = "访客", username, group, isAdmin, phone } = user || {};
 
 	const registed = !isNil(user);
 
@@ -84,7 +85,23 @@ export default function User() {
 		</>
 	);
 
-	const commonEntries = (
+	const commonBeforeEntries = (
+		<>
+			<Cell
+				title="联系电话"
+				isLink
+				onClick={() => routePush("/user/pages/mobile")}
+			>
+				<Input
+					readonly
+					value={phone ? maskPhoneNumber(phone) : phone}
+					placeholder="更换手机"
+				/>
+			</Cell>
+		</>
+	);
+
+	const commonAfterEntries = (
 		<>
 			<Cell
 				title="历史统计"
@@ -96,8 +113,9 @@ export default function User() {
 
 	const registedEntries = (
 		<Cell.Group>
+			{commonBeforeEntries}
 			{isAdmin ? teacherEntries : studenEntries}
-			{commonEntries}
+			{commonAfterEntries}
 		</Cell.Group>
 	);
 
