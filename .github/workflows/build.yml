@@ -1,0 +1,40 @@
+name: build
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: read
+
+env:
+  WEAPP_PRIVATE_KEY: ${{ secrets.WEAPP_PRIVATE_KEY }}
+  WEAPP_APPID: ${{ secrets.WEAPP_APPID }}
+
+jobs:
+  main:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+
+      - run: pnpm install --frozen-lockfile
+
+      - run: pnpm build
+
+      - run: echo "$WEAPP_PRIVATE_KEY" > private.key
+
+      - run: pnpm miniprogram-ci upload --pp ./ --pkp ./private.key --appid $WEAPP_APPID --uv 1.0.0

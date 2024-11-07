@@ -11,3 +11,5 @@ output/
 project.private.config.json
 
 .idea/
+
+.secrets
