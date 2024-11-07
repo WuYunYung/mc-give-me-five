@@ -7,7 +7,7 @@ import {
 } from "@/api";
 import { View } from "@tarojs/components";
 import ActivityDetailCard from "../../components/ActivityDetailCard";
-import { Button } from "@taroify/core";
+import { Button, SafeArea } from "@taroify/core";
 import dayjs from "dayjs";
 import { useRouter, scanCode, getStorageSync, showModal } from "@tarojs/taro";
 import { useState } from "react";
@@ -188,6 +188,8 @@ export default function () {
 			)}
 
 			{renderButtons}
+
+			<SafeArea position="bottom" />
 		</View>
 	);
 }

@@ -1,4 +1,4 @@
-import { Button } from "@taroify/core";
+import { Button, SafeArea } from "@taroify/core";
 import { View } from "@tarojs/components";
 import ActivityDetailCard from "../../components/ActivityDetailCard";
 import { activityAttend, activityRead, ActivityReadDetail } from "@/api";
@@ -75,6 +75,8 @@ export default function () {
 						: "已结束"}
 				</Button>
 			</View>
+
+			<SafeArea position="bottom" />
 		</View>
 	);
 }
