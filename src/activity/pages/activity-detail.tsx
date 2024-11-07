@@ -62,17 +62,19 @@ export default function () {
 				<ActivityDetailCard activityDetail={activity}></ActivityDetailCard>
 			)}
 
-			<Button
-				color="primary"
-				className="w-4/5 mx-auto mt-4"
-				onClick={() => handleAttendActivity(Number(id))}
-			>
-				{activity && !dayjs(activity.start_time).isBefore(dayjs())
-					? activity.is_attend
-						? "已报名"
-						: "报名"
-					: "已结束"}
-			</Button>
+			<View className="p-4">
+				<Button
+					color="primary"
+					block
+					onClick={() => handleAttendActivity(Number(id))}
+				>
+					{activity && !dayjs(activity.start_time).isBefore(dayjs())
+						? activity.is_attend
+							? "已报名"
+							: "报名"
+						: "已结束"}
+				</Button>
+			</View>
 		</View>
 	);
 }

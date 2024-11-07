@@ -43,7 +43,7 @@ const Card: FC<CardProps> = (props) => {
 			<View className="bg-primary-900 h-24 w-full"></View>
 			<View className="relative">
 				<View
-					className="absolute left-1/2 -top-1/2 w-24 h-24 bg-white rounded-full flex justify-center items-center"
+					className="absolute left-1s2 -top-1s2 w-24 h-24 bg-white rounded-full flex justify-center items-center"
 					style={{
 						transform: "translate(-50%, -50%)",
 					}}

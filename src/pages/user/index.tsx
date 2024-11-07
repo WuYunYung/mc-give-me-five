@@ -43,9 +43,8 @@ export default function User() {
 
 	const innerGroup = group as Group | undefined;
 
-	// TODO: 获取身份
 	const avatar = (
-		<View className="flex justify-center items-center h-1/3 bg-primary-900 flex-col gap-2">
+		<View className="flex justify-center items-center h-1s3 bg-primary-900 flex-col gap-2">
 			<Avatar size="large">{name.at(0)?.toUpperCase()}</Avatar>
 			<View className="text-sm text-white">{name}</View>
 			<View

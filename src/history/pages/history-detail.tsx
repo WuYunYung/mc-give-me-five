@@ -110,19 +110,11 @@ export default function () {
 			{!JSON.parse(getStorageSync("store")).state.user.isAdmin &&
 				activity &&
 				dayjs(activity.start_time).valueOf() > dayjs().valueOf() && (
-					<View className="flex flex-col">
-						<Button
-							color="success"
-							className="w-4/5 mx-auto mt-4"
-							onClick={handleSigned}
-						>
+					<View className="flex flex-col gap-4 p-4">
+						<Button block color="success" onClick={handleSigned}>
 							等待签到确认
 						</Button>
-						<Button
-							color="default"
-							className="w-4/5 mx-auto mt-4"
-							onClick={handleQuit}
-						>
+						<Button block color="default" onClick={handleQuit}>
 							取消报名
 						</Button>
 					</View>
@@ -133,12 +125,8 @@ export default function () {
 				activity &&
 				dayjs(activity.start_time).valueOf() < dayjs().valueOf() &&
 				dayjs(activity.end_time).valueOf() > dayjs().valueOf() && (
-					<View className="flex flex-col">
-						<Button
-							color="success"
-							className="w-4/5 mx-auto mt-4"
-							onClick={handleSigned}
-						>
+					<View className="flex flex-col gap-4 p-4">
+						<Button block color="success" onClick={handleSigned}>
 							等待签到确认
 						</Button>
 					</View>
@@ -148,15 +136,15 @@ export default function () {
 			{!JSON.parse(getStorageSync("store")).state.user.isAdmin &&
 				activity &&
 				dayjs(activity.end_time).valueOf() < dayjs().valueOf() && (
-					<View className="flex flex-col">
+					<View className="flex flex-col gap-4 p-4">
 						{activity.is_signed && (
-							<Button color="primary" className="w-4/5 mx-auto mt-4">
+							<Button block color="primary">
 								已参加
 							</Button>
 						)}
 
 						{!activity.is_signed && (
-							<Button color="warning" className="w-4/5 mx-auto mt-4">
+							<Button block color="warning">
 								已结束（未签到）
 							</Button>
 						)}
@@ -167,12 +155,8 @@ export default function () {
 			{JSON.parse(getStorageSync("store")).state.user.isAdmin &&
 				activity &&
 				dayjs(activity.end_time).valueOf() > dayjs().valueOf() && (
-					<View className="flex flex-col">
-						<Button
-							className="w-4/5 mx-auto mt-4"
-							color="primary"
-							onClick={handleFindCode}
-						>
+					<View className="flex flex-col gap-4 p-4">
+						<Button block color="primary" onClick={handleFindCode}>
 							生成签到码
 						</Button>
 
@@ -189,11 +173,7 @@ export default function () {
 				activity &&
 				dayjs(activity.end_time).valueOf() < dayjs().valueOf() && (
 					<View className="flex flex-col">
-						<Button
-							className="w-4/5 mx-auto mt-4"
-							color="primary"
-							onClick={handleNavigateToAttender}
-						>
+						<Button block color="primary" onClick={handleNavigateToAttender}>
 							查看详情
 						</Button>
 					</View>
