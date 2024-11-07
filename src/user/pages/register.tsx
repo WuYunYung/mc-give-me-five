@@ -19,8 +19,8 @@ export default function () {
 	const isTeacher = params.isTeacher === "1";
 
 	const logo = (
-		<View className="bg-primary-900 px-4 flex justify-center items-center h-1/5 overflow-hidden w-full">
-			<Image src={LOGO_PATH} mode="aspectFit" className="w-1/2 h-full" />
+		<View className="bg-primary-900 px-4 flex justify-center items-center h-1s5 overflow-hidden w-full">
+			<Image src={LOGO_PATH} mode="aspectFit" className="w-1s2 h-full" />
 		</View>
 	);
 

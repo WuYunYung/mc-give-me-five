@@ -4,39 +4,13 @@ import * as path from "node:path";
 import devConfig from "./dev";
 import prodConfig from "./prod";
 
-import { UnifiedViteWeappTailwindcssPlugin as uvtw } from "weapp-tailwindcss/vite";
-import tailwindcss from "tailwindcss";
-import { analyzer } from "vite-bundle-analyzer";
+const { UnifiedWebpackPluginV5 } = require("weapp-tailwindcss/webpack");
 
-const vitePlugins = [
-	{
-		// 通过 vite 插件加载 postcss,
-		name: "postcss-config-loader-plugin",
-		config(config) {
-			// 加载 tailwindcss
-			if (typeof config.css?.postcss === "object") {
-				config.css?.postcss.plugins?.unshift(tailwindcss());
-			}
-		},
-	},
-	uvtw({
-		// rem转rpx
-		rem2rpx: true,
-		// 除了小程序这些，其他平台都 disable
-		disabled:
-			process.env.TARO_ENV === "h5" ||
-			process.env.TARO_ENV === "harmony" ||
-			process.env.TARO_ENV === "rn",
-	}),
-] as Plugin[];
-
-if (process.env.ANALYZE === "1") {
-	vitePlugins.push(analyzer() as Plugin);
-}
+// TODO analyzer 插件
 
 // https://taro-docs.jd.com/docs/next/config#defineconfig-辅助函数
-export default defineConfig<"vite">(async (merge) => {
-	const baseConfig: UserConfigExport<"vite"> = {
+export default defineConfig<"webpack5">(async (merge) => {
+	const baseConfig: UserConfigExport<"webpack5"> = {
 		projectName: "mc-give-me-five",
 		date: "2024-11-1",
 		designWidth: 750,
@@ -54,16 +28,12 @@ export default defineConfig<"vite">(async (merge) => {
 			options: {},
 		},
 		framework: "react",
-		compiler: {
-			type: "vite",
-			prebundle: {
-				enable: true,
-				swc: {},
-			},
-			vitePlugins, // 从 vite 引入 type, 为了智能提示
+		compiler: "webpack5",
+		cache: {
+			enable: false, // Webpack 持久化缓存配置，建议开启。默认配置请参考：https://docs.taro.zone/docs/config-detail#cache
 		},
 		alias: {
-			"@/api": path.resolve(__dirname, "../assets/api"),
+			"@/api": path.resolve(__dirname, "../src/shared/api"),
 			"@/shared": path.resolve(__dirname, "../src/shared"),
 			"@/components": path.resolve(__dirname, "../src/components"),
 		},
@@ -83,6 +53,20 @@ export default defineConfig<"vite">(async (merge) => {
 			},
 			optimizeMainPackage: {
 				enable: true,
+			},
+			webpackChain(chain) {
+				chain.merge({
+					plugin: {
+						"unified-webpack-plugin-v5": {
+							plugin: UnifiedWebpackPluginV5,
+							args: [
+								{
+									appType: "taro", // 设置应用类型为 Taro
+								},
+							],
+						},
+					},
+				});
 			},
 		},
 		h5: {

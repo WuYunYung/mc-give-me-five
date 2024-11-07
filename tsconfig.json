@@ -22,7 +22,7 @@
     ],
     "paths": {
       "@/api": [
-        "./assets/api"
+        "./src/shared/api"
       ],
       "@/shared/*": [
         "./src/shared/*"
