@@ -70,11 +70,7 @@ export default function () {
 				return (
 					<View className="px-4 pt-4">
 						{list.map((item: ActivityRead) => (
-							<ActivityCard
-								activityDetail={item}
-								mode="activity"
-								key={item.id}
-							></ActivityCard>
+							<ActivityCard activityDetail={item} key={item.id}></ActivityCard>
 						))}
 					</View>
 				);

@@ -12,11 +12,15 @@ export default defineAppConfig({
 		},
 		{
 			root: "activity",
-			pages: ["pages/activity-list", "pages/activity-detail"],
+			pages: ["pages/activity-list"],
 		},
 		{
 			root: "history",
-			pages: ["pages/history-detail", "pages/history-attender"],
+			pages: [
+				"pages/history-detail",
+				"pages/history-attender",
+				"pages/history-detail-qrcode",
+			],
 		},
 		{
 			root: "manage",

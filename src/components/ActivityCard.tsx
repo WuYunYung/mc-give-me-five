@@ -10,8 +10,6 @@ import banner4 from "../static/banner/banner4.svg";
 import { Cell } from "@taroify/core";
 import { DateFormat } from "@/shared/constants";
 
-type CardMode = "activity" | "history";
-
 // 定义类型映射
 type BannerType = "0" | "1" | "2" | "3";
 
@@ -24,13 +22,12 @@ const bannerMap: Record<BannerType, string> = {
 
 export default function ActivityCard({
 	activityDetail,
-	mode,
-}: { activityDetail: ActivityRead; mode: CardMode }) {
+}: { activityDetail: ActivityRead }) {
 	return (
 		<View
 			className="box-border flex flex-col w-full shadow-xl rounded-lg mb-4 overflow-hidden"
 			onClick={() => {
-				routePush(`/${mode}/pages/${mode}-detail`, {
+				routePush(`/history/pages/history-detail`, {
 					id: activityDetail.id,
 				});
 			}}
