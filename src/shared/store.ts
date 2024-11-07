@@ -1,12 +1,14 @@
 import { immer } from "zustand/middleware/immer";
 import { createJSONStorage, persist } from "zustand/middleware";
 import { create } from "zustand";
-import { UserProfileUpdate } from "@/api";
+import { userProfileRead, UserProfileUpdate } from "@/api";
 import { merge } from "lodash-es";
 import {
 	getStorageSync,
 	removeStorageSync,
 	setStorageSync,
+	showLoading,
+	hideLoading,
 } from "@tarojs/taro";
 
 type Store = {
@@ -20,6 +22,7 @@ type Store = {
 
 	user: UserProfileUpdate | null;
 	setupUser: (user: Partial<UserProfileUpdate>) => void;
+	loadUser: () => Promise<void>;
 };
 
 // TODO: 持久化初始化数据
@@ -40,6 +43,24 @@ const useStore = create<Store>()(
 						state.user = merge(get().user, user);
 						state.visitor = false;
 					});
+				},
+				/**
+				 * 加载用户信息
+				 *
+				 * @TODO 考虑没有注册时的跳转问题
+				 */
+				loadUser: async () => {
+					try {
+						showLoading();
+						const user = await userProfileRead();
+
+						user &&
+							set((state) => {
+								state.user = user as unknown as UserProfileUpdate;
+							});
+					} finally {
+						hideLoading();
+					}
 				},
 			};
 		}),
