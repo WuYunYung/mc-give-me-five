@@ -1,18 +1,23 @@
 import {
+	activityAttend,
 	activityQuit,
 	activityRead,
 	ActivityReadDetail,
 	activitySignin,
-	manageActivityGenerateCode,
 } from "@/api";
 import { View } from "@tarojs/components";
 import ActivityDetailCard from "../../components/ActivityDetailCard";
 import { Button, SafeArea } from "@taroify/core";
 import dayjs from "dayjs";
-import { useRouter, scanCode, getStorageSync, showModal } from "@tarojs/taro";
+import {
+	useRouter,
+	scanCode,
+	getStorageSync,
+	showModal,
+	showToast,
+} from "@tarojs/taro";
 import { useState } from "react";
 import { useRequest } from "ahooks";
-import CodeCreator from "taro-code-creator";
 import { routePush } from "@/shared/route";
 
 export default function () {
@@ -22,7 +27,19 @@ export default function () {
 
 	const [activity, setactivity] = useState<ActivityReadDetail>();
 
-	const [qrCode, setqrCode] = useState("");
+	const { run: attendActv } = useRequest(activityAttend, {
+		manual: true,
+		defaultParams: [Number(id)],
+		onSuccess() {
+			showToast({
+				title: "成功",
+				icon: "success",
+				duration: 2000,
+			});
+
+			findActv(Number(id));
+		},
+	});
 
 	const { run: findActv } = useRequest(activityRead, {
 		defaultParams: [Number(id)],
@@ -47,25 +64,17 @@ export default function () {
 		},
 	});
 
-	const { run: findCode, loading: findCodeLoading } = useRequest(
-		manageActivityGenerateCode,
-		{
-			manual: true,
-			pollingInterval: 10000,
-			pollingWhenHidden: false,
-			onSuccess(res) {
-				console.log("code=>", res.code);
-				setqrCode(res.code);
-			},
-		},
-	);
-
-	// const { run: findAttender } = useRequest(manageAttenderRead, {
-	// 	manual: true,
-	// 	onSuccess() {
-
-	// 	}
-	// })
+	const handleAttendActivity = (id: number) => {
+		if (activity && activity?.get_attenders_count < activity?.capacity) {
+			attendActv(id);
+		} else {
+			showToast({
+				title: "人数已满",
+				icon: "error",
+				duration: 2000,
+			});
+		}
+	};
 
 	//用户签到
 	const handleSigned = () => {
@@ -94,7 +103,10 @@ export default function () {
 
 	//老师生成签到码
 	const handleFindCode = () => {
-		findCode(Number(id));
+		// findCode(Number(id));
+		routePush("/history/pages/history-detail-qrcode", {
+			id: id,
+		});
 	};
 
 	//老师查看活动报名详情
@@ -106,6 +118,23 @@ export default function () {
 
 	const renderButtons = (
 		<>
+			{/* 学生-未报名活动 */}
+			{!JSON.parse(getStorageSync("store")).state.user.isAdmin &&
+				activity &&
+				!activity.is_signed && (
+					<View className="p-4">
+						<Button
+							color="primary"
+							block
+							onClick={() => handleAttendActivity(Number(id))}
+						>
+							报名
+						</Button>
+					</View>
+				)}
+
+			{/* 学生-已报名活动 */}
+
 			{/* 学生-活动未开始 */}
 			{!JSON.parse(getStorageSync("store")).state.user.isAdmin &&
 				activity &&
@@ -155,29 +184,24 @@ export default function () {
 			{JSON.parse(getStorageSync("store")).state.user.isAdmin &&
 				activity &&
 				dayjs(activity.end_time).valueOf() > dayjs().valueOf() && (
-					<View className="flex flex-col gap-4 p-4">
+					<View className="flex flex-col gap-4 px-4 pt-4">
 						<Button block color="primary" onClick={handleFindCode}>
 							生成签到码
 						</Button>
-
-						<View className="mx-auto mt-4">
-							{!findCodeLoading && qrCode !== "" && (
-								<CodeCreator codeText={qrCode} size={256}></CodeCreator>
-							)}
-						</View>
 					</View>
 				)}
 
-			{/* 老师-活动已结束 */}
-			{JSON.parse(getStorageSync("store")).state.user.isAdmin &&
-				activity &&
-				dayjs(activity.end_time).valueOf() < dayjs().valueOf() && (
-					<View className="flex flex-col p-4">
-						<Button block color="primary" onClick={handleNavigateToAttender}>
-							查看详情
-						</Button>
-					</View>
-				)}
+			{/* 老师-管理活动 */}
+			{JSON.parse(getStorageSync("store")).state.user.isAdmin && activity && (
+				<View className="flex flex-col p-4 gap-4">
+					<Button block color="info">
+						编辑活动
+					</Button>
+					<Button block color="info" onClick={handleNavigateToAttender}>
+						查看详情
+					</Button>
+				</View>
+			)}
 		</>
 	);
 

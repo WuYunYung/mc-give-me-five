@@ -29,11 +29,7 @@ export default function History() {
 				return (
 					<View className="px-4">
 						{list.map((item: ActivityReadDetail) => (
-							<ActivityCard
-								activityDetail={item}
-								mode="history"
-								key={item.id}
-							></ActivityCard>
+							<ActivityCard activityDetail={item} key={item.id}></ActivityCard>
 						))}
 					</View>
 				);
