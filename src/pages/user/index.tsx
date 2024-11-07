@@ -1,43 +1,21 @@
-import { Avatar, Cell, Switch } from "@taroify/core";
+import { Avatar, Cell } from "@taroify/core";
 import { View } from "@tarojs/components";
 import { NotesOutlined } from "@taroify/icons";
 import { routePush } from "@/shared/route";
-import { useRequest } from "ahooks";
-import {
-	Group,
-	manageUserPartialUpdate,
-	userProfileRead,
-	UserProfileUpdate,
-} from "@/api";
+import { Group } from "@/api";
 import { isNil } from "lodash-es";
 import useStore from "@/shared/store";
 import classNames from "classnames";
-import { showLoading, hideLoading } from "@tarojs/taro";
 import { ActivityStatus } from "@/shared/constants";
-
-const isDev = process.env.NODE_ENV === "development";
 
 definePageConfig({
 	navigationBarTitleText: "我的",
 });
 
 export default function User() {
-	const { user, setupUser } = useStore();
+	const { user } = useStore();
 
-	const { refresh } = useRequest(userProfileRead, {
-		onSuccess(data) {
-			const user = data as unknown as UserProfileUpdate | undefined; // TODO: 接口数据与swagger类型对不上，临时指鹿为马一下
-			user && setupUser(user);
-		},
-		onBefore() {
-			showLoading();
-		},
-		onFinally() {
-			hideLoading();
-		},
-	});
-
-	const { name = "访客", username, group, isAdmin, id } = user || {};
+	const { name = "访客", username, group, isAdmin } = user || {};
 
 	const registed = !isNil(user);
 
@@ -106,20 +84,6 @@ export default function User() {
 		</>
 	);
 
-	const { run: toggleAdmin, loading } = useRequest(
-		() =>
-			manageUserPartialUpdate(id!, {
-				body: { isAdmin: !isAdmin },
-			} as any),
-		{
-			ready: !isNil(id),
-			manual: true,
-			onSuccess() {
-				refresh();
-			},
-		},
-	);
-
 	const commonEntries = (
 		<>
 			<Cell
@@ -127,16 +91,6 @@ export default function User() {
 				isLink
 				onClick={() => routePush("/user/pages/summary")}
 			/>
-			{isDev && (
-				<Cell title="切换身份" align="center" brief={isAdmin ? "老师" : "学生"}>
-					<Switch
-						checked={isAdmin}
-						loading={loading}
-						onChange={toggleAdmin}
-						size={20}
-					/>
-				</Cell>
-			)}
 		</>
 	);
 
