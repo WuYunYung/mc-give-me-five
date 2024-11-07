@@ -30,7 +30,7 @@
 		"dev:harmony-hybrid": "npm run build:harmony-hybrid -- --watch",
 		"lint": "pnpm biome lint --fix",
 		"api": "pnpm ts-node ./scripts/api/index && pnpm lint",
-		"postinstall": "pnpm api",
+		"postinstall": "pnpm simple-git-hooks",
 		"dev": "pnpm dev:weapp",
 		"build": "pnpm build:weapp",
 		"analyze": "ANALYZE=1 pnpm build"
@@ -89,6 +89,7 @@
 		"babel-preset-taro": "4.0.7",
 		"fs-extra": "^11.2.0",
 		"lint-staged": "^15.2.10",
+		"miniprogram-ci": "^2.0.10",
 		"postcss": "^8.4.38",
 		"react-refresh": "^0.14.0",
 		"simple-git-hooks": "^2.11.1",
