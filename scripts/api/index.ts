@@ -8,7 +8,7 @@ import * as path from "node:path";
 
 	await generateApi({
 		name: "api.ts",
-		output: path.resolve(__dirname, "../../assets"),
+		output: path.resolve(__dirname, "../../src/shared"),
 		input: SWAGGER_OUTPUT_PATH,
 		httpClientType: "axios",
 		generateClient: true,

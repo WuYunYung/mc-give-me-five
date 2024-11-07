@@ -172,7 +172,7 @@ export default function () {
 			{JSON.parse(getStorageSync("store")).state.user.isAdmin &&
 				activity &&
 				dayjs(activity.end_time).valueOf() < dayjs().valueOf() && (
-					<View className="flex flex-col">
+					<View className="flex flex-col p-4">
 						<Button block color="primary" onClick={handleNavigateToAttender}>
 							查看详情
 						</Button>

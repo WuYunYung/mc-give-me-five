@@ -46,7 +46,7 @@ export default function Index() {
 					}}
 				>
 					<View className="relative w-full">
-						<View className="absolute flex top-4 right-4 w-6 h-6 bg-[#930a41]">
+						<View className="absolute flex top-4 right-4 w-6 h-6 bg-primary-900">
 							<Text className="m-auto text-white font-bold">
 								{activityCountMap[type]?.count || 0}
 							</Text>
