@@ -1,20 +1,13 @@
-import { activityCountByType } from "@/api";
+import useActivityCountByType, {
+	SummaryResult,
+} from "@/hooks/useActivityCountByType";
 import { Loading, Progress, SafeArea } from "@taroify/core";
 import { View } from "@tarojs/components";
-import { useRequest } from "ahooks";
-import { FC, useMemo } from "react";
+import { FC } from "react";
 
 definePageConfig({
 	navigationBarTitleText: "历史统计",
 });
-
-type Summary = Record<number, number>;
-
-type SummaryResult = {
-	attend: Summary;
-	signed: Summary;
-	total: Summary;
-};
 
 type MapType<T, P> = {
 	[K in keyof T]: P;
@@ -67,28 +60,13 @@ const Card: FC<CardProps> = (props) => {
 };
 
 export default function () {
-	const { data, loading } = useRequest(() => activityCountByType());
-
-	const { attend, signed, total } = (data as unknown as SummaryResult) || {};
-
-	const types = useMemo(
-		() => (total ? Object.keys(total).sort() : []),
-		[total],
-	);
+	const { data, loading } = useActivityCountByType();
 
 	return (
 		<View className="flex flex-col gap-4 p-4">
 			{loading && <Loading />}
-			{types.map((type) => {
-				return (
-					<Card
-						key={type}
-						type={type}
-						attend={attend[type]}
-						signed={signed[type]}
-						total={total[type]}
-					/>
-				);
+			{data.map((item) => {
+				return <Card key={item.type} {...item} />;
 			})}
 			<SafeArea position="bottom" />
 		</View>

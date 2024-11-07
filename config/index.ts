@@ -36,6 +36,7 @@ export default defineConfig<"webpack5">(async (merge) => {
 			"@/api": path.resolve(__dirname, "../src/shared/api"),
 			"@/shared": path.resolve(__dirname, "../src/shared"),
 			"@/components": path.resolve(__dirname, "../src/components"),
+			"@/hooks": path.resolve(__dirname, "../src/hooks"),
 		},
 		mini: {
 			postcss: {
