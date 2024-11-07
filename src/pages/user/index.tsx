@@ -123,10 +123,19 @@ export default function User() {
 
 	const commonEntries = (
 		<>
-			<Cell title="统计" isLink />
+			<Cell
+				title="历史统计"
+				isLink
+				onClick={() => routePush("/user/pages/summary")}
+			/>
 			{isDev && (
 				<Cell title="切换身份" align="center" brief={isAdmin ? "老师" : "学生"}>
-					<Switch checked={isAdmin} loading={loading} onChange={toggleAdmin} />
+					<Switch
+						checked={isAdmin}
+						loading={loading}
+						onChange={toggleAdmin}
+						size={20}
+					/>
 				</Cell>
 			)}
 		</>

@@ -1,4 +1,4 @@
-import { cloud, showToast } from "@tarojs/taro";
+import { cloud, showToast, showModal } from "@tarojs/taro";
 import axios, { AxiosResponse, type AxiosAdapter } from "axios";
 import { inRange, isString } from "lodash-es";
 import queryString from "query-string";
@@ -141,21 +141,30 @@ const adapter: AxiosAdapter = async (config) => {
 	return response;
 };
 
-axios.defaults.adapter = adapter;
+export function registerAdapter() {
+	axios.defaults.adapter = adapter;
+}
 
-axios.interceptors.request.use(
-	(config) => {
-		config.headers["Content-Type"] = "application/json";
-		config.headers["X-WX-SERVICE"] = CloudRequestConfig.X_WX_SERVICE;
+export function registerInterceptors() {
+	axios.interceptors.request.use(
+		(config) => {
+			config.headers["Content-Type"] = "application/json";
+			config.headers["X-WX-SERVICE"] = CloudRequestConfig.X_WX_SERVICE;
 
-		return config;
-	},
-	(error) => {
-		if (error.message) {
-			showToast({
-				icon: "error",
-				title: error.message,
-			});
-		}
-	},
-);
+			return config;
+		},
+		(error) => {
+			if (error.message) {
+				if (error.message.length <= 6) {
+					showToast({
+						title: error.message,
+					});
+				} else {
+					showModal({
+						content: error.message,
+					});
+				}
+			}
+		},
+	);
+}
