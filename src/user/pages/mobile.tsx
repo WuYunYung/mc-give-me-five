@@ -29,10 +29,10 @@ export default function () {
 			<Form
 				onSubmit={async (e) => {
 					const value = e.detail.value as UserProfileUpdate;
-					await showModal({
+					const { confirm } = await showModal({
 						content: `确认联系电话将更新为${value.phone}吗？`,
 					});
-					run(value);
+					confirm && run(value);
 				}}
 			>
 				<Field

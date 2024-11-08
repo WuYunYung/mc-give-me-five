@@ -13,3 +13,11 @@ export namespace DateFormat {
 
 	export const Display = "YYYY-MM-DD hh:mm";
 }
+
+export const PLACEHOLDER = "请输入";
+
+export namespace Theme {
+	export namespace Color {
+		export const Primary = "#930a41";
+	}
+}

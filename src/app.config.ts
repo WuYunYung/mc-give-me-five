@@ -1,3 +1,5 @@
+import { Theme } from "./shared/constants";
+
 export default defineAppConfig({
 	pages: ["pages/index/index", "pages/history/index", "pages/user/index"],
 	subPackages: [
@@ -8,6 +10,7 @@ export default defineAppConfig({
 				"pages/register",
 				"pages/summary",
 				"pages/mobile",
+				"pages/detail",
 			],
 		},
 		{
@@ -35,13 +38,13 @@ export default defineAppConfig({
 	],
 	window: {
 		backgroundTextStyle: "dark",
-		navigationBarBackgroundColor: "#930a41",
+		navigationBarBackgroundColor: Theme.Color.Primary,
 		navigationBarTitleText: "GiveMeFive",
 		navigationBarTextStyle: "white",
 	},
 	tabBar: {
 		color: "#8a8a8a",
-		selectedColor: "#930a41",
+		selectedColor: Theme.Color.Primary,
 		backgroundColor: "#fafafa",
 		borderStyle: "black",
 		list: [
