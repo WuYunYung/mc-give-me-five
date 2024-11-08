@@ -1,10 +1,11 @@
-import { manageGroupList } from "@/api";
+import { manageGroupDelete2, manageGroupList } from "@/api";
 import { View } from "@tarojs/components";
 import Feeds from "@/components/Feeds";
 import { Button, Cell, SwipeCell } from "@taroify/core";
 import { routePush } from "@/shared/route";
 import { useRouter, setNavigationBarTitle } from "@tarojs/taro";
-import { useMount } from "ahooks";
+import { useMount, useRequest } from "ahooks";
+import { showLoading, hideLoading, showModal, showToast } from "@tarojs/taro";
 
 definePageConfig({
 	navigationBarTitleText: "班级管理",
@@ -23,6 +24,22 @@ export default function () {
 			setNavigationBarTitle({ title: decodeURIComponent(gradeName) });
 	});
 
+	const { runAsync: deleteGroup } = useRequest(manageGroupDelete2, {
+		manual: true,
+		onBefore() {
+			showLoading();
+		},
+		onFinally() {
+			hideLoading();
+		},
+		onSuccess() {
+			showToast({
+				title: "删除成功",
+				icon: "success",
+			});
+		},
+	});
+
 	return (
 		<View>
 			<Feeds
@@ -34,10 +51,10 @@ export default function () {
 
 					return results;
 				}}
-				renderContent={(list) => {
+				renderContent={(list, mutate) => {
 					return (
 						<Cell.Group>
-							{list.map((group) => (
+							{list.map((group, index) => (
 								<SwipeCell key={group.id}>
 									<Cell
 										key={group.id}
@@ -66,6 +83,27 @@ export default function () {
 											}
 										>
 											设置
+										</Button>
+										<Button
+											className="h-full"
+											variant="contained"
+											shape="square"
+											color="danger"
+											onClick={async () => {
+												const { confirm } = await showModal({
+													content: `确定要删除 ${group.name} 吗？`,
+												});
+
+												if (!confirm) return;
+
+												await deleteGroup(group.id!);
+
+												mutate((list) => {
+													list.splice(index, 1);
+												});
+											}}
+										>
+											删除
 										</Button>
 									</SwipeCell.Actions>
 								</SwipeCell>

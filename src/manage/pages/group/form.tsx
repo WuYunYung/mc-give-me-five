@@ -3,7 +3,6 @@ import {
 	GroupUpdate,
 	manageGradeList,
 	manageGroupCreate,
-	manageGroupDelete2,
 	manageGroupPartialUpdate2,
 	manageGroupRead,
 } from "@/api";
@@ -13,12 +12,7 @@ import { routeBack, routePush, routeRedirect } from "@/shared/route";
 import { Cell, Field, Form, Input, Popup } from "@taroify/core";
 import Button from "@taroify/core/button/button";
 import { View } from "@tarojs/components";
-import {
-	getWindowInfo,
-	useRouter,
-	setNavigationBarTitle,
-	showModal,
-} from "@tarojs/taro";
+import { getWindowInfo, useRouter, setNavigationBarTitle } from "@tarojs/taro";
 import { useRequest } from "ahooks";
 import { concat, isNil } from "lodash-es";
 import { useLayoutEffect } from "react";
@@ -174,30 +168,6 @@ export default function () {
 		</Form>
 	);
 
-	const { run: deleteGroup } = useRequest(() => manageGroupDelete2(id), {
-		manual: true,
-		ready: !isCreatiion,
-		onSuccess() {
-			routeBack();
-		},
-	});
-
-	const deleteButton = (
-		<View className="px-4">
-			<Button
-				color="danger"
-				block
-				variant="text"
-				onClick={async () => {
-					await showModal({ content: `确定删除 ${detail?.name} 吗？` });
-					deleteGroup();
-				}}
-			>
-				删除班级
-			</Button>
-		</View>
-	);
-
 	const importButton = (
 		<View className="px-4">
 			<Button
@@ -218,8 +188,6 @@ export default function () {
 	return (
 		<View>
 			{isCreatiion ? form : detail ? form : null}
-
-			{!isCreatiion && deleteButton}
 
 			{!isCreatiion && importButton}
 		</View>

@@ -43,12 +43,12 @@ export default function () {
 		<View>
 			<Form
 				onSubmit={async (e) => {
-					await showModal({
+					const { confirm } = await showModal({
 						title: "确认",
 						content: "提交后不可修改，请务必确认个人信息无误",
 					});
 
-					run(e.detail.value as UserRegister);
+					confirm && run(e.detail.value as UserRegister);
 				}}
 			>
 				<Cell.Group>

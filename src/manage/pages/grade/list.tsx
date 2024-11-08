@@ -1,14 +1,32 @@
-import { manageGradeList } from "@/api";
+import { manageGradeDelete2, manageGradeList } from "@/api";
 import { View } from "@tarojs/components";
+import { showLoading, hideLoading, showModal, showToast } from "@tarojs/taro";
 import Feeds from "@/components/Feeds";
 import { Button, Cell, SwipeCell } from "@taroify/core";
 import { routePush } from "@/shared/route";
+import { useRequest } from "ahooks";
 
 definePageConfig({
 	navigationBarTitleText: "年级管理",
 });
 
 export default function () {
+	const { runAsync: deleteGrade } = useRequest(manageGradeDelete2, {
+		manual: true,
+		onBefore() {
+			showLoading();
+		},
+		onFinally() {
+			hideLoading();
+		},
+		onSuccess() {
+			showToast({
+				title: "删除成功",
+				icon: "success",
+			});
+		},
+	});
+
 	return (
 		<View>
 			<Feeds
@@ -17,10 +35,10 @@ export default function () {
 
 					return results;
 				}}
-				renderContent={(list) => {
+				renderContent={(list, mutate) => {
 					return (
 						<Cell.Group>
-							{list.map((grade) => (
+							{list.map((grade, index) => (
 								<SwipeCell key={grade.id}>
 									<Cell
 										title={grade.name}
@@ -47,6 +65,26 @@ export default function () {
 											}
 										>
 											设置
+										</Button>
+										<Button
+											variant="contained"
+											shape="square"
+											color="danger"
+											onClick={async () => {
+												const { confirm } = await showModal({
+													content: `确定要删除 ${grade.name} 吗？`,
+												});
+
+												if (!confirm) return;
+
+												await deleteGrade(grade.id!);
+
+												mutate((list) => {
+													list.splice(index, 1);
+												});
+											}}
+										>
+											删除
 										</Button>
 									</SwipeCell.Actions>
 								</SwipeCell>

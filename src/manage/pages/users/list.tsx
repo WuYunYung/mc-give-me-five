@@ -1,9 +1,10 @@
-import { manageUserList } from "@/api";
+import { manageUserDelete, manageUserList } from "@/api";
 import Feeds from "@/components/Feeds";
 import { routePush } from "@/shared/route";
 import { Avatar, Button, Cell, SwipeCell } from "@taroify/core";
 import { useRouter, setNavigationBarTitle } from "@tarojs/taro";
-import { useMount } from "ahooks";
+import { useMount, useRequest } from "ahooks";
+import { showLoading, hideLoading, showModal, showToast } from "@tarojs/taro";
 
 export default function () {
 	const { params } = useRouter<{
@@ -17,6 +18,22 @@ export default function () {
 	useMount(() => {
 		groupName &&
 			setNavigationBarTitle({ title: decodeURIComponent(groupName) });
+	});
+
+	const { runAsync: deleteUser } = useRequest(manageUserDelete, {
+		manual: true,
+		onBefore() {
+			showLoading();
+		},
+		onFinally() {
+			hideLoading();
+		},
+		onSuccess() {
+			showToast({
+				title: "删除成功",
+				icon: "success",
+			});
+		},
 	});
 
 	return (
@@ -39,10 +56,10 @@ export default function () {
 
 				return results;
 			}}
-			renderContent={(list) => {
+			renderContent={(list, mutate) => {
 				return (
 					<Cell.Group>
-						{list.map((user) => {
+						{list.map((user, index) => {
 							return (
 								<SwipeCell key={user.id}>
 									<Cell
@@ -65,10 +82,23 @@ export default function () {
 									</Cell>
 									<SwipeCell.Actions side="right">
 										<Button
+											className="h-full"
 											variant="contained"
 											shape="square"
 											color="danger"
-											className="h-full"
+											onClick={async () => {
+												const { confirm } = await showModal({
+													content: `确定要删除 ${user.name} 吗？`,
+												});
+
+												if (!confirm) return;
+
+												await deleteUser(user.id!);
+
+												mutate((list) => {
+													list.splice(index, 1);
+												});
+											}}
 										>
 											删除
 										</Button>

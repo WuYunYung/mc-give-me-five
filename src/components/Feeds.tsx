@@ -16,7 +16,7 @@ import {
 	getWindowInfo,
 } from "@tarojs/taro";
 import { useCreation, useMemoizedFn, useRequest, useUpdate } from "ahooks";
-import { concat, isEmpty, isNil, merge, uniqueId } from "lodash-es";
+import { concat, isEmpty, isFunction, isNil, merge, uniqueId } from "lodash-es";
 import {
 	ReactElement,
 	ReactNode,
@@ -24,6 +24,7 @@ import {
 	useMemo,
 	useRef,
 } from "react";
+import { Draft, produce } from "immer";
 
 export type FeedsProps<T> = {
 	service?: (params: {
@@ -32,7 +33,10 @@ export type FeedsProps<T> = {
 		offset: number;
 	}) => Promise<T[]>;
 
-	renderContent?: (list: T[]) => ReactNode;
+	renderContent?: (
+		list: T[],
+		mutate: (updater: T[] | ((prevList: Draft<T>[]) => void)) => void,
+	) => ReactNode;
 
 	enableCreate?: boolean;
 	onCreateClick?: (event: ITouchEvent) => void;
@@ -168,6 +172,24 @@ export default function Feeds<T>(props: FeedsProps<T>): ReactElement {
 		</View>
 	);
 
+	const mutate = useMemoizedFn(
+		(updater: T[] | ((prevList: Draft<T>[]) => void)) => {
+			let result: T[];
+
+			if (isFunction(updater)) {
+				result = produce(list.current, (state) => {
+					updater(state);
+				});
+			} else {
+				result = updater;
+			}
+
+			list.current = result;
+			update();
+			return;
+		},
+	);
+
 	const renderList = (
 		<List
 			style={{
@@ -183,7 +205,7 @@ export default function Feeds<T>(props: FeedsProps<T>): ReactElement {
 				update();
 			}}
 		>
-			{renderContent?.(list.current)}
+			{renderContent?.(list.current, mutate)}
 
 			{isEmpty(list.current) && (
 				<Empty>
