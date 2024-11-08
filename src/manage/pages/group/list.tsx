@@ -3,17 +3,34 @@ import { View } from "@tarojs/components";
 import Feeds from "@/components/Feeds";
 import { Cell } from "@taroify/core";
 import { routePush } from "@/shared/route";
+import { useRouter, setNavigationBarTitle } from "@tarojs/taro";
+import { useMount } from "ahooks";
 
 definePageConfig({
 	navigationBarTitleText: "班级管理",
 });
 
 export default function () {
+	const { params } = useRouter<{
+		gradeId?: string;
+		gradeName?: string;
+	}>();
+
+	const { gradeId, gradeName } = params;
+
+	useMount(() => {
+		gradeName &&
+			setNavigationBarTitle({ title: decodeURIComponent(gradeName) });
+	});
+
 	return (
 		<View>
 			<Feeds
 				service={async (params) => {
-					const { results = [] } = await manageGroupList(params);
+					const { results = [] } = await manageGroupList({
+						...params,
+						grade__id: gradeId,
+					});
 
 					return results;
 				}}
@@ -28,8 +45,10 @@ export default function () {
 									brief={item.grade.name}
 									align="center"
 									onClick={() =>
-										routePush("/manage/pages/group/form", {
-											id: item.id,
+										routePush("/manage/pages/users/list", {
+											groupId: item.id,
+											gradeId,
+											groupName: item.name,
 										})
 									}
 								></Cell>

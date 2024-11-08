@@ -1606,6 +1606,14 @@ export const manageUserList = (
     id__lt?: string;
     /** id__in */
     id__in?: string;
+    /** group_id */
+    group_id?: string;
+    /** group_id__in */
+    group_id__in?: string;
+    /** group__grade_id */
+    group__grade_id?: string;
+    /** group__grade_id__in */
+    group__grade_id__in?: string;
     /** A search term. */
     search?: string;
     /** Which field to use when ordering the results. */

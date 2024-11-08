@@ -1,6 +1,6 @@
 import { manageRegisterBatchRegister } from "@/api";
 import { Pattern } from "@/shared/pattern";
-import { routeBack } from "@/shared/route";
+import { routeRedirect } from "@/shared/route";
 import { Button, Cell } from "@taroify/core";
 import { View, Text } from "@tarojs/components";
 import {
@@ -73,7 +73,9 @@ export default function () {
 		{
 			manual: true,
 			onSuccess() {
-				routeBack();
+				routeRedirect("/manage/pages/users/list", {
+					groupId,
+				});
 			},
 		},
 	);
