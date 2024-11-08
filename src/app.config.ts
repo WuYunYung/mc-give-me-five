@@ -21,8 +21,11 @@ export default defineAppConfig({
 			root: "history",
 			pages: [
 				"pages/history-detail",
-				"pages/history-attender",
-				"pages/history-detail-qrcode",
+				...[
+					"pages/detail/detail-attender",
+					"pages/detail/detail-qrcode",
+					"pages/detail/detail-import",
+				],
 			],
 		},
 		{
