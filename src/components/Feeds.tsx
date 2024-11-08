@@ -15,7 +15,13 @@ import {
 	useDidShow,
 	getWindowInfo,
 } from "@tarojs/taro";
-import { useCreation, useMemoizedFn, useRequest, useUpdate } from "ahooks";
+import {
+	useCreation,
+	useDebounceFn,
+	useMemoizedFn,
+	useRequest,
+	useUpdate,
+} from "ahooks";
 import { concat, isEmpty, isFunction, isNil, merge, uniqueId } from "lodash-es";
 import {
 	ReactElement,
@@ -26,6 +32,13 @@ import {
 } from "react";
 import { Draft, produce } from "immer";
 
+type Mutate<T> = (updater: T[] | ((prevList: Draft<T>[]) => void)) => void;
+
+type Option<T> = {
+	mutate: Mutate<T>;
+	refresh: () => void;
+};
+
 export type FeedsProps<T> = {
 	service?: (params: {
 		search?: string;
@@ -33,19 +46,19 @@ export type FeedsProps<T> = {
 		offset: number;
 	}) => Promise<T[]>;
 
-	renderContent?: (
-		list: T[],
-		mutate: (updater: T[] | ((prevList: Draft<T>[]) => void)) => void,
-	) => ReactNode;
+	renderContent?: (list: T[], options: Option<T>) => ReactNode;
 
 	enableCreate?: boolean;
-	onCreateClick?: (event: ITouchEvent) => void;
+	onCreateClick?: (event: ITouchEvent, options: Option<T>) => void;
 
 	height?: number;
 
 	disabledSearch?: boolean;
 
 	disableSaveArea?: boolean;
+
+	/** 禁用返回当前页面时自动刷新 */
+	disabledAutoRefresh?: boolean;
 };
 
 const LIMIT = 10;
@@ -65,6 +78,7 @@ export default function Feeds<T>(props: FeedsProps<T>): ReactElement {
 		height: propHeight,
 		disabledSearch,
 		disableSaveArea,
+		disabledAutoRefresh,
 	} = props;
 
 	const list = useRef<T[]>([]);
@@ -135,18 +149,21 @@ export default function Feeds<T>(props: FeedsProps<T>): ReactElement {
 
 	const shouldDidShowAutoRefresh = useRef(false);
 
-	const refreshList = useMemoizedFn(async () => {
-		const innerList = await runAsync({
-			offset: 0,
-		});
-		list.current = innerList || [];
-		update();
-	});
+	const { run: refreshList } = useDebounceFn(
+		async () => {
+			const innerList = await runAsync({
+				offset: 0,
+			});
+			list.current = innerList || [];
+			update();
+		},
+		{ wait: 100 },
+	);
 
 	useDidShow(() => {
 		if (!shouldDidShowAutoRefresh.current) return;
 
-		refreshList();
+		!disabledAutoRefresh && refreshList();
 	});
 
 	useDidHide(() => {
@@ -172,22 +189,25 @@ export default function Feeds<T>(props: FeedsProps<T>): ReactElement {
 		</View>
 	);
 
-	const mutate = useMemoizedFn(
-		(updater: T[] | ((prevList: Draft<T>[]) => void)) => {
-			let result: T[];
+	const mutate = useMemoizedFn<Mutate<T>>((updater) => {
+		let result: T[];
 
-			if (isFunction(updater)) {
-				result = produce(list.current, (state) => {
-					updater(state);
-				});
-			} else {
-				result = updater;
-			}
+		if (isFunction(updater)) {
+			result = produce(list.current, (state) => {
+				updater(state);
+			});
+		} else {
+			result = updater;
+		}
 
-			list.current = result;
-			update();
-			return;
-		},
+		list.current = result;
+		update();
+		return;
+	});
+
+	const commonOption: Option<T> = useCreation(
+		() => ({ mutate, refresh: refreshList }),
+		[],
 	);
 
 	const renderList = (
@@ -205,7 +225,7 @@ export default function Feeds<T>(props: FeedsProps<T>): ReactElement {
 				update();
 			}}
 		>
-			{renderContent?.(list.current, mutate)}
+			{renderContent?.(list.current, commonOption)}
 
 			{isEmpty(list.current) && (
 				<Empty>
@@ -213,7 +233,11 @@ export default function Feeds<T>(props: FeedsProps<T>): ReactElement {
 					<Empty.Description>暂无内容</Empty.Description>
 					{hasEmptyCreate && (
 						<View className="p-4">
-							<Button color="primary" block onClick={onEmptyCreateClick}>
+							<Button
+								color="primary"
+								block
+								onClick={(e) => onEmptyCreateClick?.(e, commonOption)}
+							>
 								去新建
 							</Button>
 						</View>
@@ -233,7 +257,7 @@ export default function Feeds<T>(props: FeedsProps<T>): ReactElement {
 	const createButton = (
 		<FloatingBubble
 			icon={<Plus />}
-			onClick={onEmptyCreateClick}
+			onClick={(e) => onEmptyCreateClick?.(e, commonOption)}
 		></FloatingBubble>
 	);
 

@@ -5,6 +5,7 @@ import { Avatar, Button, Cell, SwipeCell } from "@taroify/core";
 import { useRouter, setNavigationBarTitle } from "@tarojs/taro";
 import { useMount, useRequest } from "ahooks";
 import { showLoading, hideLoading, showModal, showToast } from "@tarojs/taro";
+import { DeleteOutlined } from "@taroify/icons";
 
 export default function () {
 	const { params } = useRouter<{
@@ -56,7 +57,7 @@ export default function () {
 
 				return results;
 			}}
-			renderContent={(list, mutate) => {
+			renderContent={(list, { mutate }) => {
 				return (
 					<Cell.Group>
 						{list.map((user, index) => {
@@ -83,9 +84,9 @@ export default function () {
 									<SwipeCell.Actions side="right">
 										<Button
 											className="h-full"
-											variant="contained"
+											variant="text"
 											shape="square"
-											color="danger"
+											color="primary"
 											onClick={async () => {
 												const { confirm } = await showModal({
 													content: `确定要删除 ${user.name} 吗？`,
@@ -99,9 +100,8 @@ export default function () {
 													list.splice(index, 1);
 												});
 											}}
-										>
-											删除
-										</Button>
+											icon={<DeleteOutlined />}
+										></Button>
 									</SwipeCell.Actions>
 								</SwipeCell>
 							);

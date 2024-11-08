@@ -52,7 +52,7 @@ export default function () {
 						gradeName: grade.name,
 					});
 				}
-				routeBack();
+				routeBack({ shouldRefresh: true });
 			},
 		},
 	);

@@ -5,6 +5,7 @@ import Feeds from "@/components/Feeds";
 import { Button, Cell, SwipeCell } from "@taroify/core";
 import { routePush } from "@/shared/route";
 import { useRequest } from "ahooks";
+import { DeleteOutlined, Edit } from "@taroify/icons";
 
 definePageConfig({
 	navigationBarTitleText: "年级管理",
@@ -35,7 +36,7 @@ export default function () {
 
 					return results;
 				}}
-				renderContent={(list, mutate) => {
+				renderContent={(list, { mutate, refresh }) => {
 					return (
 						<Cell.Group>
 							{list.map((grade, index) => (
@@ -55,21 +56,24 @@ export default function () {
 									</Cell>
 									<SwipeCell.Actions side="right">
 										<Button
-											variant="contained"
+											variant="text"
 											shape="square"
 											color="primary"
 											onClick={() =>
-												routePush("/manage/pages/grade/form", {
-													gradeId: grade.id,
-												})
+												routePush(
+													"/manage/pages/grade/form",
+													{
+														gradeId: grade.id,
+													},
+													refresh,
+												)
 											}
-										>
-											设置
-										</Button>
+											icon={<Edit />}
+										></Button>
 										<Button
-											variant="contained"
+											variant="text"
 											shape="square"
-											color="danger"
+											color="primary"
 											onClick={async () => {
 												const { confirm } = await showModal({
 													content: `确定要删除 ${grade.name} 吗？`,
@@ -83,9 +87,8 @@ export default function () {
 													list.splice(index, 1);
 												});
 											}}
-										>
-											删除
-										</Button>
+											icon={<DeleteOutlined />}
+										></Button>
 									</SwipeCell.Actions>
 								</SwipeCell>
 							))}
@@ -93,9 +96,9 @@ export default function () {
 					);
 				}}
 				enableCreate
-				onCreateClick={(e) => {
+				onCreateClick={(e, { refresh }) => {
 					e.stopPropagation();
-					routePush("/manage/pages/grade/form");
+					routePush("/manage/pages/grade/form", refresh);
 				}}
 			/>
 		</View>

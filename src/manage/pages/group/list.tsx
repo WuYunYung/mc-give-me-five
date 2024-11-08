@@ -6,6 +6,7 @@ import { routePush } from "@/shared/route";
 import { useRouter, setNavigationBarTitle } from "@tarojs/taro";
 import { useMount, useRequest } from "ahooks";
 import { showLoading, hideLoading, showModal, showToast } from "@tarojs/taro";
+import { DeleteOutlined, Edit } from "@taroify/icons";
 
 definePageConfig({
 	navigationBarTitleText: "班级管理",
@@ -51,7 +52,7 @@ export default function () {
 
 					return results;
 				}}
-				renderContent={(list, mutate) => {
+				renderContent={(list, { mutate }) => {
 					return (
 						<Cell.Group>
 							{list.map((group, index) => (
@@ -73,7 +74,7 @@ export default function () {
 									<SwipeCell.Actions side="right">
 										<Button
 											className="h-full"
-											variant="contained"
+											variant="text"
 											shape="square"
 											color="primary"
 											onClick={() =>
@@ -81,14 +82,13 @@ export default function () {
 													groupId: group.id,
 												})
 											}
-										>
-											设置
-										</Button>
+											icon={<Edit />}
+										></Button>
 										<Button
 											className="h-full"
-											variant="contained"
+											variant="text"
 											shape="square"
-											color="danger"
+											color="primary"
 											onClick={async () => {
 												const { confirm } = await showModal({
 													content: `确定要删除 ${group.name} 吗？`,
@@ -102,9 +102,8 @@ export default function () {
 													list.splice(index, 1);
 												});
 											}}
-										>
-											删除
-										</Button>
+											icon={<DeleteOutlined />}
+										></Button>
 									</SwipeCell.Actions>
 								</SwipeCell>
 							))}
