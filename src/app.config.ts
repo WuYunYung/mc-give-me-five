@@ -29,6 +29,7 @@ export default defineAppConfig({
 				"pages/create-classes",
 				...["pages/grade/list", "pages/grade/form"],
 				...["pages/group/list", "pages/group/form", "pages/group/import-users"],
+				...["pages/users/list"],
 			],
 		},
 	],

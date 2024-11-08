@@ -27,8 +27,9 @@ export default function () {
 									isLink
 									clickable
 									onClick={() =>
-										routePush("/manage/pages/grade/form", {
-											id: item.id,
+										routePush("/manage/pages/group/list", {
+											gradeId: item.id,
+											gradeName: item.name,
 										})
 									}
 								>
