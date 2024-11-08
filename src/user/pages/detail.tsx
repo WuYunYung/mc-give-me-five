@@ -6,7 +6,7 @@ import {
 } from "@/api";
 import { Cell, Empty, Field, Popup, Input } from "@taroify/core";
 import { View } from "@tarojs/components";
-import { useRouter, getWindowInfo } from "@tarojs/taro";
+import { useRouter, getWindowInfo, setNavigationBarTitle } from "@tarojs/taro";
 import { useRequest } from "ahooks";
 import UserForm from "../components/UserForm";
 import Feeds from "@/components/Feeds";
@@ -69,9 +69,11 @@ export default function () {
 
 	const { data: user } = useRequest(() => manageUserRead(+userId!), {
 		ready: !Number.isNaN(Number(userId)),
+		onSuccess({ name }) {
+			setNavigationBarTitle({ title: name });
+		},
 	});
 
-	// TODO：编辑接口不成功
 	const { run } = useRequest(
 		(user: UserProfileManageUpdate) => manageUserPartialUpdate(+userId!, user),
 		{

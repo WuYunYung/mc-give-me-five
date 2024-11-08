@@ -68,6 +68,11 @@ export default function User() {
 				onClick={() => routePush("/manage/pages/users/list")}
 			/>
 			<Cell
+				title="注册管理"
+				isLink
+				onClick={() => routePush("/manage/pages/register/list")}
+			/>
+			<Cell
 				title="新建活动"
 				isLink
 				onClick={() => routePush("/manage/pages/create-activity")}

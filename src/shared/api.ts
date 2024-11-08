@@ -9,6 +9,29 @@
  * ---------------------------------------------------------------
  */
 
+export interface GradeSimple {
+  /** ID */
+  id?: number;
+  /**
+   * 年级名
+   * @minLength 1
+   * @maxLength 50
+   */
+  name: string;
+}
+
+export interface Group {
+  /** ID */
+  id?: number;
+  grade: GradeSimple;
+  /**
+   * 班级名
+   * @minLength 1
+   * @maxLength 50
+   */
+  name: string;
+}
+
 export interface UserSimple {
   /** ID */
   id?: number;
@@ -30,6 +53,7 @@ export interface UserSimple {
    * @maxLength 11
    */
   phone: string;
+  group: Group;
 }
 
 export interface ActivityRead {
@@ -261,29 +285,6 @@ export interface Grade {
   groups?: GroupSimple[];
 }
 
-export interface GradeSimple {
-  /** ID */
-  id?: number;
-  /**
-   * 年级名
-   * @minLength 1
-   * @maxLength 50
-   */
-  name: string;
-}
-
-export interface Group {
-  /** ID */
-  id?: number;
-  grade: GradeSimple;
-  /**
-   * 班级名
-   * @minLength 1
-   * @maxLength 50
-   */
-  name: string;
-}
-
 export interface GroupUpdate {
   /** ID */
   id?: number;
@@ -316,22 +317,20 @@ export interface Register {
 }
 
 export interface RegisterUpdate {
-  /** ID */
-  id?: number;
-  /** Group */
-  group: number;
-  /**
-   * Name
-   * @minLength 2
-   * @maxLength 20
-   */
-  name: string;
   /**
    * Username
    * @minLength 10
    * @maxLength 10
    */
   username: string;
+  /**
+   * Name
+   * @minLength 2
+   * @maxLength 20
+   */
+  name: string;
+  /** Group */
+  group: number;
 }
 
 export interface UserProfile {

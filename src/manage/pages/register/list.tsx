@@ -1,6 +1,5 @@
-import { manageUserDelete, manageUserList } from "@/api";
+import { manageRegisterDelete, manageRegisterList } from "@/api";
 import Feeds from "@/components/Feeds";
-import { routePush } from "@/shared/route";
 import { Avatar, Button, Cell, SwipeCell } from "@taroify/core";
 import { useRouter, setNavigationBarTitle } from "@tarojs/taro";
 import { useMount, useRequest } from "ahooks";
@@ -8,9 +7,11 @@ import { showLoading, hideLoading, showModal, showToast } from "@tarojs/taro";
 import { DeleteOutlined } from "@taroify/icons";
 
 definePageConfig({
-	navigationBarTitleText: "学生管理",
+	navigationBarTitleText: "注册管理",
 });
 
+// TODO: 编辑
+// TODO: 班级下钻
 export default function () {
 	const { params } = useRouter<{
 		groupId?: string;
@@ -25,7 +26,7 @@ export default function () {
 			setNavigationBarTitle({ title: decodeURIComponent(groupName) });
 	});
 
-	const { runAsync: deleteUser } = useRequest(manageUserDelete, {
+	const { runAsync: deleteRegister } = useRequest(manageRegisterDelete, {
 		manual: true,
 		onBefore() {
 			showLoading();
@@ -45,9 +46,9 @@ export default function () {
 		<Feeds
 			service={async (params) => {
 				const requestParams: Exclude<
-					Parameters<typeof manageUserList>[0],
+					Parameters<typeof manageRegisterList>[0],
 					undefined
-				> = { ...params, isAdmin: "false" };
+				> = { ...params };
 
 				if (gradeId) {
 					requestParams.group__grade_id = gradeId;
@@ -57,7 +58,7 @@ export default function () {
 					requestParams.group_id = groupId;
 				}
 
-				const { results = [] } = await manageUserList(requestParams);
+				const { results = [] } = await manageRegisterList(requestParams);
 
 				return results;
 			}}
@@ -76,12 +77,6 @@ export default function () {
 											</Avatar>
 										}
 										align="center"
-										isLink
-										onClick={() =>
-											routePush("/user/pages/detail", {
-												userId: user.id,
-											})
-										}
 									>
 										{user.group.name}
 									</Cell>
@@ -98,7 +93,7 @@ export default function () {
 
 												if (!confirm) return;
 
-												await deleteUser(user.id!);
+												await deleteRegister(user.id!);
 
 												mutate((list) => {
 													list.splice(index, 1);
