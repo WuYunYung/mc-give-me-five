@@ -12,13 +12,14 @@ import dayjs from "dayjs";
 import {
 	useRouter,
 	scanCode,
-	getStorageSync,
 	showModal,
 	showToast,
+	useDidShow,
 } from "@tarojs/taro";
 import { useState } from "react";
 import { useRequest } from "ahooks";
 import { routePush } from "@/shared/route";
+import useStore from "@/shared/store";
 
 export default function () {
 	const { params } = useRouter();
@@ -104,39 +105,41 @@ export default function () {
 	//老师生成签到码
 	const handleFindCode = () => {
 		// findCode(Number(id));
-		routePush("/history/pages/history-detail-qrcode", {
+		routePush("/history/pages/detail/detail-qrcode", {
 			id: id,
 		});
 	};
 
 	//老师查看活动报名详情
 	const handleNavigateToAttender = () => {
-		routePush("/history/pages/history-attender", {
+		routePush("/history/pages/detail/detail-attender", {
 			id: id,
 		});
 	};
 
+	const { user } = useStore();
+
+	const { isAdmin } = user || {};
+
 	const renderButtons = (
 		<>
 			{/* 学生-未报名活动 */}
-			{!JSON.parse(getStorageSync("store")).state.user.isAdmin &&
-				activity &&
-				!activity.is_signed && (
-					<View className="p-4">
-						<Button
-							color="primary"
-							block
-							onClick={() => handleAttendActivity(Number(id))}
-						>
-							报名
-						</Button>
-					</View>
-				)}
+			{!isAdmin && activity?.is_signed && (
+				<View className="p-4">
+					<Button
+						color="primary"
+						block
+						onClick={() => handleAttendActivity(Number(id))}
+					>
+						报名
+					</Button>
+				</View>
+			)}
 
 			{/* 学生-已报名活动 */}
 
 			{/* 学生-活动未开始 */}
-			{!JSON.parse(getStorageSync("store")).state.user.isAdmin &&
+			{!isAdmin &&
 				activity &&
 				dayjs(activity.start_time).valueOf() > dayjs().valueOf() && (
 					<View className="flex flex-col gap-4 p-4">
@@ -150,7 +153,7 @@ export default function () {
 				)}
 
 			{/* 学生-活动已开始未结束 */}
-			{!JSON.parse(getStorageSync("store")).state.user.isAdmin &&
+			{!isAdmin &&
 				activity &&
 				dayjs(activity.start_time).valueOf() < dayjs().valueOf() &&
 				dayjs(activity.end_time).valueOf() > dayjs().valueOf() && (
@@ -162,7 +165,7 @@ export default function () {
 				)}
 
 			{/* 学生-活动已结束 */}
-			{!JSON.parse(getStorageSync("store")).state.user.isAdmin &&
+			{!isAdmin &&
 				activity &&
 				dayjs(activity.end_time).valueOf() < dayjs().valueOf() && (
 					<View className="flex flex-col gap-4 p-4">
@@ -181,7 +184,7 @@ export default function () {
 				)}
 
 			{/* 老师-活动未结束 */}
-			{JSON.parse(getStorageSync("store")).state.user.isAdmin &&
+			{isAdmin &&
 				activity &&
 				dayjs(activity.end_time).valueOf() > dayjs().valueOf() && (
 					<View className="flex flex-col gap-4 px-4 pt-4">
@@ -192,18 +195,27 @@ export default function () {
 				)}
 
 			{/* 老师-管理活动 */}
-			{JSON.parse(getStorageSync("store")).state.user.isAdmin && activity && (
+			{isAdmin && activity && (
 				<View className="flex flex-col p-4 gap-4">
-					<Button block color="info">
+					<Button block variant="outlined" color="primary">
 						编辑活动
 					</Button>
-					<Button block color="info" onClick={handleNavigateToAttender}>
+					<Button
+						block
+						variant="outlined"
+						color="primary"
+						onClick={handleNavigateToAttender}
+					>
 						查看详情
 					</Button>
 				</View>
 			)}
 		</>
 	);
+
+	useDidShow(() => {
+		findActv(Number(id));
+	});
 
 	return (
 		<View className="flex flex-col">
