@@ -5,9 +5,9 @@
   "appid": "wx7d43df6ba9ae300c",
   "setting": {
     "urlCheck": true,
-    "es6": false,
-    "enhance": false,
-    "compileHotReLoad": false,
+    "es6": true,
+    "enhance": true,
+    "compileHotReLoad": true,
     "postcss": false,
     "minified": false,
     "babelSetting": {
@@ -15,10 +15,11 @@
       "disablePlugins": [],
       "outputPath": ""
     },
-    "swc": false,
+    "swc": true,
     "minifyWXSS": false,
     "minifyWXML": false,
-    "ignoreUploadUnusedFiles": false
+    "ignoreUploadUnusedFiles": false,
+    "condition": true
   },
   "compileType": "miniprogram",
   "libVersion": "3.6.3",

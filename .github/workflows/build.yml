@@ -37,4 +37,4 @@ jobs:
 
       - run: echo "$WEAPP_PRIVATE_KEY" > private.key
 
-      - run: pnpm miniprogram-ci upload --pp ./ --pkp ./private.key --appid $WEAPP_APPID --uv 1.0.0
+      - run: pnpm miniprogram-ci upload --pp ./ --pkp ./private.key --appid $WEAPP_APPID --uv 1.0.0 --use-project-config
