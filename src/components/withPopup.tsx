@@ -3,22 +3,25 @@ import { PopupProps } from "@taroify/core/popup/popup";
 import { View } from "@tarojs/components";
 import { FC, PropsWithChildren, useState, ReactNode } from "react";
 
-const withPopup = <
-	Props extends {
-		value?: any;
-		onChange?: (value: any) => void;
-		onBlur?: (value: any) => void;
-	},
->(
+export type FormControlProps = {
+	value?: any;
+	onChange?: (value: any) => void;
+	onBlur?: (value: any) => void;
+};
+
+const withPopup = <Props,>(
 	params: Omit<PopupProps, "open" | "onClose"> & {
 		renderContent: (
-			params: Props & { toggleOpen: (open: boolean) => void },
+			params: Props &
+				FormControlProps & { toggleOpen: (open: boolean) => void },
 		) => ReactNode;
 	},
 ) => {
 	const { renderContent } = params;
 
-	const component: FC<PropsWithChildren<Props>> = (props) => {
+	const component: FC<PropsWithChildren<Props & FormControlProps>> = (
+		props,
+	) => {
 		const { children } = props;
 
 		const [open, setOpen] = useState(false);

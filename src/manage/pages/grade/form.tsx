@@ -5,7 +5,7 @@ import {
 	manageGradePartialUpdate2,
 	manageGradeRead,
 } from "@/api";
-import { routeBack } from "@/shared/route";
+import { routeBack, routeRedirect } from "@/shared/route";
 import { Cell, Field, Form, Input } from "@taroify/core";
 import Button from "@taroify/core/button/button";
 import { View } from "@tarojs/components";
@@ -14,13 +14,12 @@ import { useRequest } from "ahooks";
 import { isNil } from "lodash-es";
 import { useLayoutEffect } from "react";
 
-// TODO: 封装详情页交互
 export default function () {
 	const { params } = useRouter<{
-		id?: string;
+		gradeId?: string;
 	}>();
 
-	const { id: queryId } = params;
+	const { gradeId: queryId } = params;
 
 	const isCreatiion = isNil(queryId);
 
@@ -47,7 +46,13 @@ export default function () {
 		{
 			ready: isCreatiion || !Number.isNaN(id),
 			manual: true,
-			onSuccess() {
+			onSuccess(grade) {
+				if (isCreatiion) {
+					return routeRedirect("/manage/pages/group/list", {
+						gradeId: grade.id,
+						gradeName: grade.name,
+					});
+				}
 				routeBack();
 			},
 		},

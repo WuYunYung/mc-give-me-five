@@ -1,7 +1,7 @@
 import { manageGroupList } from "@/api";
 import { View } from "@tarojs/components";
 import Feeds from "@/components/Feeds";
-import { Cell } from "@taroify/core";
+import { Button, Cell, SwipeCell } from "@taroify/core";
 import { routePush } from "@/shared/route";
 import { useRouter, setNavigationBarTitle } from "@tarojs/taro";
 import { useMount } from "ahooks";
@@ -37,21 +37,38 @@ export default function () {
 				renderContent={(list) => {
 					return (
 						<Cell.Group>
-							{list.map((item) => (
-								<Cell
-									key={item.id}
-									title={item.name}
-									isLink
-									brief={item.grade.name}
-									align="center"
-									onClick={() =>
-										routePush("/manage/pages/users/list", {
-											groupId: item.id,
-											gradeId,
-											groupName: item.name,
-										})
-									}
-								></Cell>
+							{list.map((group) => (
+								<SwipeCell key={group.id}>
+									<Cell
+										key={group.id}
+										title={group.name}
+										isLink
+										brief={group.grade.name}
+										align="center"
+										onClick={() =>
+											routePush("/manage/pages/users/list", {
+												groupId: group.id,
+												gradeId,
+												groupName: group.name,
+											})
+										}
+									></Cell>
+									<SwipeCell.Actions side="right">
+										<Button
+											className="h-full"
+											variant="contained"
+											shape="square"
+											color="primary"
+											onClick={() =>
+												routePush("/manage/pages/group/form", {
+													groupId: group.id,
+												})
+											}
+										>
+											设置
+										</Button>
+									</SwipeCell.Actions>
+								</SwipeCell>
 							))}
 						</Cell.Group>
 					);

@@ -9,8 +9,9 @@ import {
 	getFileSystemManager,
 	FileSystemManager,
 	showModal,
+	setNavigationBarTitle,
 } from "@tarojs/taro";
-import { useMemoizedFn, useRequest } from "ahooks";
+import { useMemoizedFn, useMount, useRequest } from "ahooks";
 import { read, utils } from "xlsx";
 import { isString } from "lodash-es";
 
@@ -45,10 +46,17 @@ async function getTableMatrixByFile(fileBuffer: ArrayBuffer) {
 
 export default function () {
 	const { params } = useRouter<{
-		groupId: string;
+		groupId?: string;
+		groupName?: string;
 	}>();
 
-	const { groupId } = params;
+	const { groupId, groupName } = params;
+
+	useMount(() => {
+		if (groupName) {
+			setNavigationBarTitle({ title: decodeURIComponent(groupName) });
+		}
+	});
 
 	const guide = (
 		<Cell.Group bordered={false}>

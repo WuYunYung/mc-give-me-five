@@ -54,7 +54,6 @@ const PopupList = withPopup({
 									key={grade.id}
 									title={<View className="text-left">{grade.name}</View>}
 									clickable
-									isLink
 									onClick={(e) => {
 										e.stopPropagation();
 										onChange?.(grade);
@@ -75,10 +74,10 @@ const PopupList = withPopup({
 
 export default function () {
 	const { params } = useRouter<{
-		id?: string;
+		groupId?: string;
 	}>();
 
-	const { id: queryId } = params;
+	const { groupId: queryId } = params;
 
 	const isCreatiion = isNil(queryId);
 
@@ -105,10 +104,11 @@ export default function () {
 		{
 			ready: isCreatiion || !Number.isNaN(id),
 			manual: true,
-			onSuccess({ id: groupId }) {
+			onSuccess({ id: groupId, name: groupName }) {
 				if (isCreatiion && groupId) {
 					return routeRedirect("/manage/pages/group/import-users", {
-						groupId: groupId,
+						groupId,
+						groupName,
 					});
 				}
 				routeBack();
@@ -206,6 +206,7 @@ export default function () {
 				onClick={() => {
 					routePush("/manage/pages/group/import-users", {
 						groupId: id,
+						groupName: detail?.name,
 					});
 				}}
 			>

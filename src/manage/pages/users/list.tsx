@@ -1,7 +1,7 @@
 import { manageUserList } from "@/api";
 import Feeds from "@/components/Feeds";
-import { maskPhoneNumber } from "@/shared/utils";
-import { Avatar, Cell } from "@taroify/core";
+import { routePush } from "@/shared/route";
+import { Avatar, Button, Cell, SwipeCell } from "@taroify/core";
 import { useRouter, setNavigationBarTitle } from "@tarojs/taro";
 import { useMount } from "ahooks";
 
@@ -44,19 +44,36 @@ export default function () {
 					<Cell.Group>
 						{list.map((user) => {
 							return (
-								<Cell
-									key={user.id}
-									title={user.name}
-									brief={user.username}
-									icon={
-										<Avatar className="mr-2">
-											{user.name.at(0)?.toUpperCase()}
-										</Avatar>
-									}
-									align="center"
-								>
-									{maskPhoneNumber(user.phone)}
-								</Cell>
+								<SwipeCell key={user.id}>
+									<Cell
+										title={user.name}
+										brief={user.username}
+										icon={
+											<Avatar className="mr-2">
+												{user.name.at(0)?.toUpperCase()}
+											</Avatar>
+										}
+										align="center"
+										isLink
+										onClick={() =>
+											routePush("/user/pages/detail", {
+												userId: user.id,
+											})
+										}
+									>
+										{user.group.name}
+									</Cell>
+									<SwipeCell.Actions side="right">
+										<Button
+											variant="contained"
+											shape="square"
+											color="danger"
+											className="h-full"
+										>
+											删除
+										</Button>
+									</SwipeCell.Actions>
+								</SwipeCell>
 							);
 						})}
 					</Cell.Group>

@@ -3,6 +3,7 @@ import * as path from "node:path";
 
 import devConfig from "./dev";
 import prodConfig from "./prod";
+import dayjs from "dayjs";
 
 const { UnifiedWebpackPluginV5 } = require("weapp-tailwindcss/webpack");
 
@@ -12,7 +13,7 @@ const { UnifiedWebpackPluginV5 } = require("weapp-tailwindcss/webpack");
 export default defineConfig<"webpack5">(async (merge) => {
 	const baseConfig: UserConfigExport<"webpack5"> = {
 		projectName: "mc-give-me-five",
-		date: "2024-11-1",
+		date: dayjs().format("YYYY-MM-DD"),
 		designWidth: 750,
 		deviceRatio: {
 			640: 2.34 / 2,

@@ -1,4 +1,5 @@
 import { UserRegister, userRegister } from "@/api";
+import { PLACEHOLDER } from "@/shared/constants";
 import { Pattern } from "@/shared/pattern";
 import { routeBack } from "@/shared/route";
 import useStore from "@/shared/store";
@@ -9,8 +10,6 @@ import { useRouter, showModal, showLoading, hideLoading } from "@tarojs/taro";
 import { useRequest } from "ahooks";
 
 const LOGO_PATH = "https://cmc.szu.edu.cn/images/logo.png";
-
-const COMMON_PLACEHOLDER = "请输入";
 
 export default function () {
 	const { params } = useRouter();
@@ -64,11 +63,11 @@ export default function () {
 							},
 						]}
 					>
-						<Input placeholder={COMMON_PLACEHOLDER} />
+						<Input placeholder={PLACEHOLDER} />
 					</Field>
 					<Field
 						label={idFieldName}
-						name="userName"
+						name="username"
 						icon={<Edit />}
 						rules={[
 							{
@@ -77,7 +76,7 @@ export default function () {
 							},
 						]}
 					>
-						<Input placeholder={COMMON_PLACEHOLDER} />
+						<Input placeholder={PLACEHOLDER} />
 					</Field>
 					<Field
 						label={"电话"}
@@ -90,7 +89,7 @@ export default function () {
 							},
 						]}
 					>
-						<Input placeholder={COMMON_PLACEHOLDER} />
+						<Input placeholder={PLACEHOLDER} />
 					</Field>
 				</Cell.Group>
 				<View className="p-4">

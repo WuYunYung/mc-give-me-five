@@ -25,7 +25,7 @@ import {
 	useRef,
 } from "react";
 
-type FeedsProps<T> = {
+export type FeedsProps<T> = {
 	service?: (params: {
 		search?: string;
 		limit?: number;

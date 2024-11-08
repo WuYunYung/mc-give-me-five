@@ -207,6 +207,8 @@ export interface ActivityUpdate {
 }
 
 export interface Attender {
+  /** ID */
+  id?: number;
   user: UserSimple;
   /**
    * 签到时间
@@ -220,8 +222,8 @@ export interface Attender {
 }
 
 export interface AttenderCreate {
-  /** User */
-  user: number;
+  /** @uniqueItems true */
+  usernames: string[];
   /** Activity */
   activity: number;
   /**
@@ -293,6 +295,43 @@ export interface GroupUpdate {
    * @maxLength 50
    */
   name: string;
+}
+
+export interface Register {
+  /** ID */
+  id?: number;
+  group: Group;
+  /**
+   * 学号
+   * @minLength 1
+   * @maxLength 15
+   */
+  username: string;
+  /**
+   * 姓名
+   * @minLength 1
+   * @maxLength 20
+   */
+  name: string;
+}
+
+export interface RegisterUpdate {
+  /** ID */
+  id?: number;
+  /** Group */
+  group: number;
+  /**
+   * Name
+   * @minLength 2
+   * @maxLength 20
+   */
+  name: string;
+  /**
+   * Username
+   * @minLength 10
+   * @maxLength 10
+   */
+  username: string;
 }
 
 export interface UserProfile {
@@ -1465,6 +1504,22 @@ export const manageGroupDelete2 = (id: number, params: RequestParams = {}) =>
  */
 export const manageRegisterList = (
   query?: {
+    /** username */
+    username?: string;
+    /** username__in */
+    username__in?: string;
+    /** name */
+    name?: string;
+    /** name__in */
+    name__in?: string;
+    /** group_id */
+    group_id?: string;
+    /** group_id__in */
+    group_id__in?: string;
+    /** group__grade_id */
+    group__grade_id?: string;
+    /** group__grade_id__in */
+    group__grade_id__in?: string;
     /** A search term. */
     search?: string;
     /** Number of results to return per page. */
@@ -1474,11 +1529,22 @@ export const manageRegisterList = (
   },
   params: RequestParams = {},
 ) =>
-  new HttpClient().request<void, any>({
+  new HttpClient().request<
+    {
+      count: number;
+      /** @format uri */
+      next?: string | null;
+      /** @format uri */
+      previous?: string | null;
+      results: Register[];
+    },
+    any
+  >({
     path: `/manage/register/`,
     method: "GET",
     query: query,
     secure: true,
+    format: "json",
     ...params,
   });
 
@@ -1490,11 +1556,13 @@ export const manageRegisterList = (
  * @request POST:/manage/register/
  * @secure
  */
-export const manageRegisterCreate = (params: RequestParams = {}) =>
-  new HttpClient().request<void, any>({
+export const manageRegisterCreate = (data: Register, params: RequestParams = {}) =>
+  new HttpClient().request<Register, any>({
     path: `/manage/register/`,
     method: "POST",
+    body: data,
     secure: true,
+    format: "json",
     ...params,
   });
 
@@ -1506,11 +1574,13 @@ export const manageRegisterCreate = (params: RequestParams = {}) =>
  * @request POST:/manage/register/batch-register/
  * @secure
  */
-export const manageRegisterBatchRegister = (params: RequestParams = {}) =>
-  new HttpClient().request<void, any>({
+export const manageRegisterBatchRegister = (data: Register, params: RequestParams = {}) =>
+  new HttpClient().request<Register, any>({
     path: `/manage/register/batch-register/`,
     method: "POST",
+    body: data,
     secure: true,
+    format: "json",
     ...params,
   });
 
@@ -1523,10 +1593,11 @@ export const manageRegisterBatchRegister = (params: RequestParams = {}) =>
  * @secure
  */
 export const manageRegisterRead = (id: number, params: RequestParams = {}) =>
-  new HttpClient().request<void, any>({
+  new HttpClient().request<Register, any>({
     path: `/manage/register/${id}/`,
     method: "GET",
     secure: true,
+    format: "json",
     ...params,
   });
 
@@ -1538,11 +1609,13 @@ export const manageRegisterRead = (id: number, params: RequestParams = {}) =>
  * @request PUT:/manage/register/{id}/
  * @secure
  */
-export const manageRegisterUpdate = (id: number, params: RequestParams = {}) =>
-  new HttpClient().request<void, any>({
+export const manageRegisterUpdate = (id: number, data: RegisterUpdate, params: RequestParams = {}) =>
+  new HttpClient().request<RegisterUpdate, any>({
     path: `/manage/register/${id}/`,
     method: "PUT",
+    body: data,
     secure: true,
+    format: "json",
     ...params,
   });
 
@@ -1554,11 +1627,13 @@ export const manageRegisterUpdate = (id: number, params: RequestParams = {}) =>
  * @request PATCH:/manage/register/{id}/
  * @secure
  */
-export const manageRegisterPartialUpdate = (id: number, params: RequestParams = {}) =>
-  new HttpClient().request<void, any>({
+export const manageRegisterPartialUpdate = (id: number, data: RegisterUpdate, params: RequestParams = {}) =>
+  new HttpClient().request<RegisterUpdate, any>({
     path: `/manage/register/${id}/`,
     method: "PATCH",
+    body: data,
     secure: true,
+    format: "json",
     ...params,
   });
 
