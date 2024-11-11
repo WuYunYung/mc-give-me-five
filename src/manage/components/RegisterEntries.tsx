@@ -31,7 +31,7 @@ export default function RegisterEntries(props: {
 						switch (result.tapIndex) {
 							case 0:
 								return routePush(
-									"/manage/pages/group/import-users",
+									"/feature/pages/group-import-users",
 									{
 										groupId,
 										groupName,

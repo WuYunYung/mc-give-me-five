@@ -53,7 +53,7 @@ export default function () {
 			manual: true,
 			onSuccess({ id: groupId, name: groupName }) {
 				if (isCreatiion && groupId) {
-					return routeRedirect("/manage/pages/group/import-users", {
+					return routeRedirect("/feature/pages/group-import-users", {
 						groupId,
 						groupName,
 					});
@@ -127,7 +127,7 @@ export default function () {
 				block
 				variant="text"
 				onClick={() => {
-					routePush("/manage/pages/group/import-users", {
+					routePush("/feature/pages/group-import-users", {
 						groupId: id,
 						groupName: detail?.name,
 					});

@@ -28,7 +28,7 @@ import { produce } from "immer";
 import { useMemo, useState } from "react";
 import { utils, write } from "xlsx";
 
-enum SelectType {
+const enum SelectType {
 	Leading = 0,
 	delete = 1,
 	export = 2,
@@ -180,7 +180,7 @@ export default function () {
 
 	const handleSelect = (e) => {
 		if (e.value === SelectType.Leading) {
-			routePush("/history/pages/detail/detail-import", {
+			routePush("/feature/pages/history-detail-import", {
 				id: id,
 			});
 		} else if (e.value === SelectType.delete) {

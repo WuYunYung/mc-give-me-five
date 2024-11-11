@@ -6,50 +6,19 @@ import { View, Text } from "@tarojs/components";
 import {
 	useRouter,
 	chooseMessageFile,
-	getFileSystemManager,
-	FileSystemManager,
 	showModal,
 	setNavigationBarTitle,
 } from "@tarojs/taro";
 import { useMemoizedFn, useMount, useRequest } from "ahooks";
-import { read, utils } from "xlsx";
 import { isString } from "lodash-es";
 import { useMemo } from "react";
-import GroupList from "../../components/GroupList";
+import GroupList from "@/components/GroupList";
 import classNames from "classnames";
+import { getTableMatrixByFile, readFile } from "../utils";
 
 definePageConfig({
 	navigationBarTitleText: "名单导入",
 });
-
-async function readFile(
-	filePath: string,
-): Promise<FileSystemManager.ReadFileSuccessCallbackResult> {
-	return new Promise((resolve, reject) => {
-		getFileSystemManager().readFile({
-			filePath: filePath,
-			encoding: "binary",
-			success: resolve,
-			fail: reject,
-		});
-	});
-}
-
-async function getTableMatrixByFile(fileBuffer: ArrayBuffer) {
-	// 使用 xlsx 库来读取文件
-	const workbook = read(fileBuffer, { type: "binary" });
-
-	// 获取第一个工作表
-	const worksheet = workbook.Sheets[workbook.SheetNames[0]];
-
-	// 将工作表数据转换为二维数组（矩阵）
-	const matrix: (string | number | boolean)[][] = utils.sheet_to_json(
-		worksheet,
-		{ header: 1 },
-	);
-
-	return matrix;
-}
 
 export default function () {
 	const { params } = useRouter<{

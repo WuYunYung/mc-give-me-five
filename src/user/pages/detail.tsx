@@ -10,7 +10,7 @@ import { useRequest } from "ahooks";
 import UserForm from "../components/UserForm";
 import { FriendsOutlined } from "@taroify/icons";
 import { routeBack } from "@/shared/route";
-import GroupList from "../../manage/components/GroupList";
+import GroupList from "@/components/GroupList";
 
 export default function () {
 	const { params } = useRouter<{

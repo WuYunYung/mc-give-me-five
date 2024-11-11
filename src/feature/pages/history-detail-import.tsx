@@ -2,44 +2,9 @@ import { manageAttenderCreate } from "@/api";
 import { routeBack } from "@/shared/route";
 import { Button, Cell } from "@taroify/core";
 import { View, Text } from "@tarojs/components";
-import {
-	useRouter,
-	chooseMessageFile,
-	getFileSystemManager,
-	FileSystemManager,
-	showModal,
-} from "@tarojs/taro";
+import { useRouter, chooseMessageFile, showModal } from "@tarojs/taro";
 import { useMemoizedFn, useRequest } from "ahooks";
-import { read, utils } from "xlsx";
-
-async function readFile(
-	filePath: string,
-): Promise<FileSystemManager.ReadFileSuccessCallbackResult> {
-	return new Promise((resolve, reject) => {
-		getFileSystemManager().readFile({
-			filePath: filePath,
-			encoding: "binary",
-			success: resolve,
-			fail: reject,
-		});
-	});
-}
-
-async function getTableMatrixByFile(fileBuffer: ArrayBuffer) {
-	// 使用 xlsx 库来读取文件
-	const workbook = read(fileBuffer, { type: "binary" });
-
-	// 获取第一个工作表
-	const worksheet = workbook.Sheets[workbook.SheetNames[0]];
-
-	// 将工作表数据转换为二维数组（矩阵）
-	const matrix: (string | number | boolean)[][] = utils.sheet_to_json(
-		worksheet,
-		{ header: 1 },
-	);
-
-	return matrix;
-}
+import { getTableMatrixByFile, readFile } from "../utils";
 
 export default function () {
 	const { params } = useRouter<{
