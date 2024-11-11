@@ -69,11 +69,7 @@ export default function () {
 		run: findAttender,
 		data: attenders,
 		mutate,
-	} = useRequest((id) => manageAttenderList({ activity_id: id }), {
-		onSuccess(res) {
-			console.log(res);
-		},
-	});
+	} = useRequest((id) => manageAttenderList({ activity_id: id }));
 
 	const { run: deleteAttender } = useRequest(manageAttenderDelete, {
 		manual: true,
@@ -96,7 +92,7 @@ export default function () {
 
 	const { run: updateAttender } = useRequest(manageAttenderCreate, {
 		manual: true,
-		onSuccess(res, [{ usernames }]) {
+		onSuccess(_, [{ usernames }]) {
 			showToast({
 				title: "修改成功",
 				icon: "success",
@@ -106,8 +102,6 @@ export default function () {
 			mutate((prev) => {
 				return produce(prev, (draft) => {
 					const userIdSet = new Set(usernames);
-
-					console.log("res=>", res, "draft=>", draft);
 
 					draft?.results.forEach((item) => {
 						if (!userIdSet.has(item.user.username)) return;
@@ -162,26 +156,13 @@ export default function () {
 				filePath: tempFilePath,
 				data: buffer,
 				encoding: "binary",
-				success: (res) => {
-					console.log("文件写入成功", res);
-
-					// openDocument({
-					// 	filePath: tempFilePath,
-					// 	success: function (res) {
-					// 		console.log(tempFilePath);
-					// 		console.log("打开文档成功", res);
-					// 	},
-					// });
-
+				success: () => {
 					showModal({
 						content: "导出成功，分享至好友",
 						success() {
 							shareFileMessage({
 								filePath: tempFilePath,
 								fileName: "test.xlsx",
-								complete(res) {
-									console.log("shareFileMessage", res);
-								},
 							});
 						},
 					});
@@ -191,13 +172,6 @@ export default function () {
 					throw new Error("文件写入失败");
 				},
 			});
-			// downloadFile({
-			// 	url: base64String, //仅为示例，并非真实的资源
-			// 	success: function (res) {
-			// 		// 只要服务器有响应数据，就会把响应内容写入文件并进入 success 回调，业务需要自行判断是否下载到了想要的内容
-			// 		console.log(res);
-			// 	},
-			// });
 		} catch (error) {
 			showToast({ title: "导出失败", icon: "none" });
 			console.error("导出文件失败:", error);

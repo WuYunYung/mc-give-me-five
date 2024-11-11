@@ -333,43 +333,6 @@ export interface RegisterUpdate {
   group: number;
 }
 
-export interface Register {
-  /** ID */
-  id?: number;
-  group: Group;
-  /**
-   * 学号
-   * @minLength 1
-   * @maxLength 15
-   */
-  username: string;
-  /**
-   * 姓名
-   * @minLength 1
-   * @maxLength 20
-   */
-  name: string;
-}
-
-export interface RegisterUpdate {
-  /** ID */
-  id?: number;
-  /** Group */
-  group: number;
-  /**
-   * Name
-   * @minLength 2
-   * @maxLength 20
-   */
-  name: string;
-  /**
-   * Username
-   * @minLength 10
-   * @maxLength 10
-   */
-  username: string;
-}
-
 export interface UserProfile {
   /** ID */
   id?: number;

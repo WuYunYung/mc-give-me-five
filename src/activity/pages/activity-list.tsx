@@ -1,4 +1,4 @@
-import { activityList, ActivityRead } from "@/api";
+import { activityList } from "@/api";
 import { View } from "@tarojs/components";
 import { useRouter } from "@tarojs/taro";
 import ActivityCard from "../../components/ActivityCard";
@@ -69,7 +69,7 @@ export default function () {
 			renderContent={(list) => {
 				return (
 					<View className="px-4 pt-4">
-						{list.map((item: ActivityRead) => (
+						{list.map((item) => (
 							<ActivityCard activityDetail={item} key={item.id}></ActivityCard>
 						))}
 					</View>
