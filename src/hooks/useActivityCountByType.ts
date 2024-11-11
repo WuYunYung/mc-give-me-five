@@ -1,6 +1,9 @@
-import { useRequest } from "ahooks";
+import { useMemoizedFn, useRequest, clearCache } from "ahooks";
 import { useMemo } from "react";
 import { activityCountByType } from "@/api";
+import dayjs from "dayjs";
+import { DateFormat } from "@/shared/constants";
+import classNames from "classnames";
 
 export type Summary = Record<number, number>;
 
@@ -10,10 +13,25 @@ export type SummaryResult = {
 	total: Summary;
 };
 
-export default function useActivityCountByType() {
-	const { data, loading } = useRequest(() => activityCountByType(), {
-		cacheKey: "[GET]/activity/count_by_type/",
+export default function useActivityCountByType(params?: {
+	queryByNow?: boolean;
+}) {
+	const { queryByNow } = params || {};
+
+	const cacheKey = classNames("[GET]/activity/count_by_type/", {
+		queryByNow,
 	});
+
+	const { data, loading, runAsync } = useRequest(
+		() =>
+			activityCountByType({
+				start_time: queryByNow ? dayjs().format(DateFormat.Remote) : undefined,
+			}),
+		{
+			cacheKey,
+			staleTime: 60 * 1000 * 5,
+		},
+	);
 
 	const innerData = useMemo(() => {
 		const { attend, signed, total } = (data as unknown as SummaryResult) || {};
@@ -28,8 +46,14 @@ export default function useActivityCountByType() {
 		}));
 	}, [data]);
 
+	const forceRefreshAsync = useMemoizedFn(() => {
+		clearCache(cacheKey);
+		return runAsync();
+	});
+
 	return {
 		loading,
 		data: innerData,
+		forceRefreshAsync,
 	};
 }
