@@ -36,7 +36,7 @@ export default defineAppConfig({
 				...["pages/grade/list", "pages/grade/form"],
 				...["pages/group/list", "pages/group/form", "pages/group/import-users"],
 				...["pages/users/list"],
-				...["pages/register/list"],
+				...["pages/register/list", "pages/register/form"],
 			],
 		},
 	],

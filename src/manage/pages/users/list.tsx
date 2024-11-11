@@ -6,6 +6,8 @@ import { useRouter, setNavigationBarTitle } from "@tarojs/taro";
 import { useMount, useRequest } from "ahooks";
 import { showLoading, hideLoading, showModal, showToast } from "@tarojs/taro";
 import { DeleteOutlined } from "@taroify/icons";
+import RegisterEntries from "../../components/RegisterEntries";
+import { useMemo } from "react";
 
 definePageConfig({
 	navigationBarTitleText: "学生管理",
@@ -20,9 +22,14 @@ export default function () {
 
 	const { groupId, gradeId, groupName } = params;
 
+	const innerGroupName = useMemo(
+		() => (groupName ? decodeURIComponent(groupName) : ""),
+		[groupName],
+	);
+
 	useMount(() => {
-		groupName &&
-			setNavigationBarTitle({ title: decodeURIComponent(groupName) });
+		innerGroupName &&
+			setNavigationBarTitle({ title: decodeURIComponent(innerGroupName) });
 	});
 
 	const { runAsync: deleteUser } = useRequest(manageUserDelete, {
@@ -41,7 +48,7 @@ export default function () {
 		},
 	});
 
-	return (
+	const feeds = (
 		<Feeds
 			service={async (params) => {
 				const requestParams: Exclude<
@@ -114,5 +121,12 @@ export default function () {
 				);
 			}}
 		/>
+	);
+
+	return (
+		<>
+			{feeds}
+			<RegisterEntries groupId={groupId} groupName={innerGroupName} />
+		</>
 	);
 }

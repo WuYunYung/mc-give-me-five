@@ -2,7 +2,7 @@ import { immer } from "zustand/middleware/immer";
 import { createJSONStorage, persist } from "zustand/middleware";
 import { create } from "zustand";
 import { userProfileRead, UserProfileUpdate } from "@/api";
-import { merge } from "lodash-es";
+import { isNil, merge } from "lodash-es";
 import {
 	getStorageSync,
 	removeStorageSync,
@@ -25,7 +25,6 @@ type Store = {
 	loadUser: () => Promise<void>;
 };
 
-// TODO: 持久化初始化数据
 const useStore = create<Store>()(
 	persist(
 		immer((set, get) => {
@@ -50,8 +49,12 @@ const useStore = create<Store>()(
 				 * @TODO 考虑没有注册时的跳转问题
 				 */
 				loadUser: async () => {
+					const { user } = get();
+
+					const shouldShowLoading = isNil(user);
+
 					try {
-						showLoading();
+						shouldShowLoading && showLoading();
 						const user = await userProfileRead();
 
 						user &&
@@ -59,7 +62,7 @@ const useStore = create<Store>()(
 								state.user = user as unknown as UserProfileUpdate;
 							});
 					} finally {
-						hideLoading();
+						shouldShowLoading && hideLoading();
 					}
 				},
 			};
@@ -70,7 +73,7 @@ const useStore = create<Store>()(
 				getItem(name) {
 					const result = getStorageSync(name);
 
-					return JSON.stringify(result);
+					return result;
 				},
 				setItem(name, value) {
 					setStorageSync(name, value);

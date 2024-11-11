@@ -1,7 +1,7 @@
-import { manageRegisterBatchRegister } from "@/api";
+import { Group, manageRegisterBatchRegister } from "@/api";
 import { Pattern } from "@/shared/pattern";
 import { routeRedirect } from "@/shared/route";
-import { Button, Cell } from "@taroify/core";
+import { Button, Cell, Field, Form, Input } from "@taroify/core";
 import { View, Text } from "@tarojs/components";
 import {
 	useRouter,
@@ -14,6 +14,13 @@ import {
 import { useMemoizedFn, useMount, useRequest } from "ahooks";
 import { read, utils } from "xlsx";
 import { isString } from "lodash-es";
+import { useMemo } from "react";
+import GroupList from "../../components/GroupList";
+import classNames from "classnames";
+
+definePageConfig({
+	navigationBarTitleText: "名单导入",
+});
 
 async function readFile(
 	filePath: string,
@@ -52,10 +59,14 @@ export default function () {
 
 	const { groupId, groupName } = params;
 
+	const innerGroupName = useMemo(
+		() => (groupName ? decodeURIComponent(groupName) : undefined),
+		[groupName],
+	);
+
 	useMount(() => {
-		if (groupName) {
-			setNavigationBarTitle({ title: decodeURIComponent(groupName) });
-		}
+		innerGroupName &&
+			setNavigationBarTitle({ title: decodeURIComponent(innerGroupName) });
 	});
 
 	const guide = (
@@ -88,7 +99,7 @@ export default function () {
 		},
 	);
 
-	const handleImport = useMemoizedFn(async () => {
+	const handleImport = useMemoizedFn(async (groupId: number) => {
 		const { tempFiles } = await chooseMessageFile({
 			count: 1,
 			type: "file",
@@ -148,17 +159,57 @@ export default function () {
 
 	const importButton = (
 		<View className="p-4">
-			<Button block color="primary" onClick={handleImport}>
+			<Button block color="primary" formType="submit">
 				导入
 			</Button>
 		</View>
+	);
+
+	const form = (
+		<Form
+			onSubmit={(e) => {
+				const { group } = e.detail.value as { group: Group };
+
+				const innerGroupId = groupId || group.id;
+
+				if (!innerGroupId) return;
+
+				handleImport(+innerGroupId);
+			}}
+			controlAlign="right"
+		>
+			<Cell.Group>
+				<Field
+					className={classNames({
+						hidden: !!groupId,
+					})}
+					label="班级"
+					name="group"
+					rules={[
+						{
+							required: true,
+							message: "请选择班级",
+						},
+					]}
+				>
+					{({ value, onChange, onBlur }) => {
+						return (
+							<GroupList value={value} onChange={onChange} onBlur={onBlur}>
+								<Input placeholder="请选择" readonly value={value?.name} />
+							</GroupList>
+						);
+					}}
+				</Field>
+			</Cell.Group>
+			{importButton}
+		</Form>
 	);
 
 	return (
 		<>
 			{guide}
 
-			{importButton}
+			{form}
 		</>
 	);
 }

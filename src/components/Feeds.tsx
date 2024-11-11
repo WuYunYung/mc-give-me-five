@@ -24,8 +24,12 @@ import {
 } from "ahooks";
 import { concat, isEmpty, isFunction, isNil, merge, uniqueId } from "lodash-es";
 import {
+	forwardRef,
 	ReactElement,
 	ReactNode,
+	Ref,
+	RefAttributes,
+	useImperativeHandle,
 	useLayoutEffect,
 	useMemo,
 	useRef,
@@ -34,7 +38,7 @@ import { Draft, produce } from "immer";
 
 type Mutate<T> = (updater: T[] | ((prevList: Draft<T>[]) => void)) => void;
 
-type Option<T> = {
+export type Option<T> = {
 	mutate: Mutate<T>;
 	refresh: () => void;
 };
@@ -59,6 +63,9 @@ export type FeedsProps<T> = {
 
 	/** 禁用返回当前页面时自动刷新 */
 	disabledAutoRefresh?: boolean;
+
+	/** 禁用默认的新建气泡 */
+	disabledCreateBubble?: boolean;
 };
 
 const LIMIT = 10;
@@ -69,16 +76,17 @@ const LIMIT = 10;
  * 集成搜索、上拉加载、空状态
  * @TODO 下拉更新
  */
-export default function Feeds<T>(props: FeedsProps<T>): ReactElement {
+function Feeds<T>(props: FeedsProps<T>, ref: Ref<Option<T>>): ReactElement {
 	const {
 		service,
 		renderContent,
-		enableCreate: hasEmptyCreate,
+		enableCreate,
 		onCreateClick: onEmptyCreateClick,
 		height: propHeight,
 		disabledSearch,
 		disableSaveArea,
 		disabledAutoRefresh,
+		disabledCreateBubble,
 	} = props;
 
 	const list = useRef<T[]>([]);
@@ -231,7 +239,7 @@ export default function Feeds<T>(props: FeedsProps<T>): ReactElement {
 				<Empty>
 					<Empty.Image />
 					<Empty.Description>暂无内容</Empty.Description>
-					{hasEmptyCreate && (
+					{enableCreate && (
 						<View className="p-4">
 							<Button
 								color="primary"
@@ -261,13 +269,19 @@ export default function Feeds<T>(props: FeedsProps<T>): ReactElement {
 		></FloatingBubble>
 	);
 
+	useImperativeHandle(ref, () => commonOption);
+
 	return (
 		<>
 			{!disabledSearch && renderSearch}
 
 			{ready.current && renderList}
 
-			{hasEmptyCreate && createButton}
+			{enableCreate && !disabledCreateBubble && createButton}
 		</>
 	);
 }
+
+export default forwardRef(Feeds) as unknown as <T>(
+	props: FeedsProps<T> & RefAttributes<Option<T>>,
+) => ReactElement;

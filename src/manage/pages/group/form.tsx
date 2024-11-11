@@ -1,69 +1,22 @@
 import {
 	Grade,
 	GroupUpdate,
-	manageGradeList,
 	manageGroupCreate,
 	manageGroupPartialUpdate2,
 	manageGroupRead,
 } from "@/api";
-import Feeds from "@/components/Feeds";
-import withPopup from "@/components/withPopup";
 import { routeBack, routePush, routeRedirect } from "@/shared/route";
-import { Cell, Field, Form, Input, Popup } from "@taroify/core";
+import { Cell, Field, Form, Input } from "@taroify/core";
 import Button from "@taroify/core/button/button";
 import { View } from "@tarojs/components";
-import { getWindowInfo, useRouter, setNavigationBarTitle } from "@tarojs/taro";
+import { useRouter, setNavigationBarTitle } from "@tarojs/taro";
 import { useRequest } from "ahooks";
-import { concat, isNil } from "lodash-es";
+import { isNil } from "lodash-es";
 import { useLayoutEffect } from "react";
+import GradeList from "../../components/GradeList";
 
 definePageConfig({
 	navigationBarTitleText: "",
-});
-
-const PopupList = withPopup({
-	renderContent(params) {
-		const { onChange, onBlur, toggleOpen } = params;
-
-		const { windowHeight } = getWindowInfo();
-
-		const panelHeight = windowHeight * 0.7;
-
-		return (
-			<>
-				<View className="h-10">
-					<Popup.Close />
-				</View>
-				<Feeds
-					height={panelHeight}
-					disabledSearch
-					service={async (params) => {
-						const { results = [] } = await manageGradeList(params);
-						return concat(results);
-					}}
-					renderContent={(list) => (
-						<Cell.Group>
-							{list.map((grade) => (
-								<Cell
-									key={grade.id}
-									title={<View className="text-left">{grade.name}</View>}
-									clickable
-									onClick={(e) => {
-										e.stopPropagation();
-										onChange?.(grade);
-										onBlur?.(grade);
-										toggleOpen(false);
-									}}
-								>
-									{grade.groups?.length || 0}
-								</Cell>
-							))}
-						</Cell.Group>
-					)}
-				></Feeds>
-			</>
-		);
-	},
 });
 
 export default function () {
@@ -139,9 +92,9 @@ export default function () {
 				>
 					{({ value, onChange, onBlur }) => {
 						return (
-							<PopupList value={value} onChange={onChange} onBlur={onBlur}>
+							<GradeList value={value} onChange={onChange} onBlur={onBlur}>
 								<Input placeholder="请输入" readonly value={value?.name} />
-							</PopupList>
+							</GradeList>
 						);
 					}}
 				</Field>

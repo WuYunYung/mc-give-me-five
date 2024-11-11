@@ -1,5 +1,5 @@
 import { View } from "@tarojs/components";
-import { activityList, ActivityReadDetail } from "@/api";
+import { activityList } from "@/api";
 import ActivityCard from "../../components/ActivityCard";
 import Feeds from "@/components/Feeds";
 import useStore from "@/shared/store";
@@ -28,7 +28,7 @@ export default function History() {
 			renderContent={(list) => {
 				return (
 					<View className="px-4">
-						{list.map((item: ActivityReadDetail) => (
+						{list.map((item) => (
 							<ActivityCard activityDetail={item} key={item.id}></ActivityCard>
 						))}
 					</View>
