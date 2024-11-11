@@ -1,4 +1,4 @@
-import { manageRegisterDelete, manageRegisterList } from "@/api";
+import { manageRegisterDelete, manageRegisterList, Register } from "@/api";
 import Feeds from "@/components/Feeds";
 import { Avatar, Button, Cell, SwipeCell } from "@taroify/core";
 import { useRouter, setNavigationBarTitle } from "@tarojs/taro";
@@ -6,6 +6,8 @@ import { useMount, useRequest } from "ahooks";
 import { showLoading, hideLoading, showModal, showToast } from "@tarojs/taro";
 import { DeleteOutlined } from "@taroify/icons";
 import { routePush } from "@/shared/route";
+import RegisterEntries from "../../components/RegisterEntries";
+import { ElementRef, useMemo, useRef } from "react";
 
 // TODO: 接口更新后开启
 const enableCreate = false;
@@ -14,19 +16,22 @@ definePageConfig({
 	navigationBarTitleText: "注册管理",
 });
 
-// TODO: 班级下钻
 export default function () {
 	const { params } = useRouter<{
 		groupId?: string;
-		gradeId?: string;
 		groupName?: string;
 	}>();
 
-	const { groupId, gradeId, groupName } = params;
+	const { groupId, groupName } = params;
+
+	const innerGroupName = useMemo(
+		() => (groupName ? decodeURIComponent(groupName) : ""),
+		[groupName],
+	);
 
 	useMount(() => {
-		groupName &&
-			setNavigationBarTitle({ title: decodeURIComponent(groupName) });
+		innerGroupName &&
+			setNavigationBarTitle({ title: decodeURIComponent(innerGroupName) });
 	});
 
 	const { runAsync: deleteRegister } = useRequest(manageRegisterDelete, {
@@ -45,17 +50,16 @@ export default function () {
 		},
 	});
 
-	return (
+	const feedsRef = useRef<ElementRef<typeof Feeds<Register>>>(null);
+
+	const feeds = (
 		<Feeds
+			ref={feedsRef!}
 			service={async (params) => {
 				const requestParams: Exclude<
 					Parameters<typeof manageRegisterList>[0],
 					undefined
 				> = { ...params };
-
-				if (gradeId) {
-					requestParams.group__grade_id = gradeId;
-				}
 
 				if (groupId) {
 					requestParams.group_id = groupId;
@@ -125,5 +129,17 @@ export default function () {
 				routePush("/manage/pages/register/form", refresh);
 			}}
 		/>
+	);
+
+	return (
+		<>
+			{feeds}
+			<RegisterEntries
+				onRefreshImportUsers={() => feedsRef.current?.refresh()}
+				groupId={groupId}
+				groupName={innerGroupName}
+				disableRegistInfoEntry
+			/>
+		</>
 	);
 }
