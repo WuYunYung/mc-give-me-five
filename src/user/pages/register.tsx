@@ -1,12 +1,17 @@
 import { UserRegister, userRegister } from "@/api";
 import { PLACEHOLDER } from "@/shared/constants";
 import { Pattern } from "@/shared/pattern";
-import { routeBack } from "@/shared/route";
 import useStore from "@/shared/store";
 import { Button, Cell, Field, Form, Image, Input } from "@taroify/core";
 import { ContactOutlined, Edit, PhoneOutlined } from "@taroify/icons";
 import { View } from "@tarojs/components";
-import { useRouter, showModal, showLoading, hideLoading } from "@tarojs/taro";
+import {
+	useRouter,
+	showModal,
+	showLoading,
+	hideLoading,
+	reLaunch,
+} from "@tarojs/taro";
 import { useRequest } from "ahooks";
 
 const LOGO_PATH = "https://cmc.szu.edu.cn/images/logo.png";
@@ -29,7 +34,9 @@ export default function () {
 		manual: true,
 		onSuccess() {
 			toggleVisitor(false);
-			routeBack();
+			reLaunch({
+				url: "/pages/index/index",
+			});
 		},
 		onBefore() {
 			showLoading();

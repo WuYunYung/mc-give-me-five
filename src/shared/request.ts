@@ -1,7 +1,8 @@
 import { cloud, showToast, showModal } from "@tarojs/taro";
 import axios, { AxiosResponse, type AxiosAdapter } from "axios";
-import { inRange, isString } from "lodash-es";
+import { debounce, inRange, isString } from "lodash-es";
 import queryString from "query-string";
+import { routeRedirect } from "./route";
 
 namespace CloudRequestConfig {
 	export const CLOUD_ENV = "prod-0gefozow13dd7576";
@@ -146,6 +147,8 @@ export function registerAdapter() {
 }
 
 export function registerInterceptors() {
+	const gotoRegist = debounce(() => routeRedirect("/user/pages/register"), 200);
+
 	axios.interceptors.request.use(
 		(config) => {
 			config.headers["Content-Type"] = "application/json";
@@ -154,6 +157,12 @@ export function registerInterceptors() {
 			return config;
 		},
 		(error) => {
+			const { response } = error;
+
+			if (response.status === 403) {
+				return gotoRegist();
+			}
+
 			if (error.message) {
 				if (error.message.length <= 6) {
 					showToast({
