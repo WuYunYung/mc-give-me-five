@@ -13,7 +13,7 @@ import { useRouter, setNavigationBarTitle } from "@tarojs/taro";
 import { useRequest } from "ahooks";
 import { isNil } from "lodash-es";
 import { useLayoutEffect } from "react";
-import GroupList from "../../components/GroupList";
+import GroupList from "@/components/GroupList";
 import { PLACEHOLDER } from "@/shared/constants";
 import { Pattern } from "@/shared/pattern";
 

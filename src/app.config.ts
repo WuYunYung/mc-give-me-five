@@ -1,6 +1,7 @@
 import { Theme } from "./shared/constants";
 
 export default defineAppConfig({
+	entryPagePath: "pages/index/index",
 	pages: ["pages/index/index", "pages/history/index", "pages/user/index"],
 	subPackages: [
 		{
@@ -19,14 +20,7 @@ export default defineAppConfig({
 		},
 		{
 			root: "history",
-			pages: [
-				"pages/history-detail",
-				...[
-					"pages/detail/detail-attender",
-					"pages/detail/detail-qrcode",
-					"pages/detail/detail-import",
-				],
-			],
+			pages: ["pages/history-detail", ...["pages/detail/detail-qrcode"]],
 		},
 		{
 			root: "manage",
@@ -34,9 +28,17 @@ export default defineAppConfig({
 				"pages/create-activity",
 				"pages/create-classes",
 				...["pages/grade/list", "pages/grade/form"],
-				...["pages/group/list", "pages/group/form", "pages/group/import-users"],
+				...["pages/group/list", "pages/group/form"],
 				...["pages/users/list"],
 				...["pages/register/list", "pages/register/form"],
+			],
+		},
+		{
+			root: "feature",
+			pages: [
+				"pages/group-import-users",
+				"pages/history-detail-import",
+				"pages/history-detail-attender",
 			],
 		},
 	],

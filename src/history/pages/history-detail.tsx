@@ -112,7 +112,7 @@ export default function () {
 
 	//老师查看活动报名详情
 	const handleNavigateToAttender = () => {
-		routePush("/history/pages/detail/detail-attender", {
+		routePush("/feature/pages/history-detail-attender", {
 			id: id,
 		});
 	};
