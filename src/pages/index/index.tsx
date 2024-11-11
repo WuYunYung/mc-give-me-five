@@ -4,8 +4,11 @@ import banner1 from "../../static/banner/banner1.svg";
 import banner2 from "../../static/banner/banner2.svg";
 import banner3 from "../../static/banner/banner3.svg";
 import banner4 from "../../static/banner/banner4.svg";
-import { Image } from "@taroify/core";
+import { ConfigProvider, Image, PullRefresh } from "@taroify/core";
 import useActivityCountByType from "@/hooks/useActivityCountByType";
+import { usePageScroll } from "@tarojs/taro";
+import { useRef, useState } from "react";
+import { Theme } from "@/shared/constants";
 
 definePageConfig({
 	navigationBarTitleText: "首页",
@@ -22,7 +25,9 @@ export default function Index() {
 		});
 	};
 
-	const { data } = useActivityCountByType();
+	const { data, forceRefreshAsync, loading } = useActivityCountByType({
+		queryByNow: true,
+	});
 
 	const renderMap = (
 		<View className="flex flex-col p-4 gap-4">
@@ -50,12 +55,40 @@ export default function Index() {
 		</View>
 	);
 
+	const pullDownRefreshLoading = useRef(false);
+
+	const [reachTop, setReachTop] = useState(true);
+
+	usePageScroll(({ scrollTop }) => setReachTop(scrollTop === 0));
+
 	return (
 		<View
 			className="w-full h-screen overflow-scroll"
-			style={{ background: "linear-gradient(#930a41, #ffffff)" }}
+			style={{
+				background: `linear-gradient(${Theme.Color.Primary}, ${Theme.Color.White})`,
+			}}
 		>
-			{renderMap}
+			<ConfigProvider
+				theme={{
+					pullRefreshHeadColor: Theme.Color.White,
+					loadingColor: Theme.Color.White,
+					loadingTextColor: Theme.Color.White,
+				}}
+			>
+				<PullRefresh
+					loading={pullDownRefreshLoading.current && loading}
+					reachTop={reachTop}
+					onRefresh={async () => {
+						pullDownRefreshLoading.current = true;
+
+						await forceRefreshAsync();
+
+						pullDownRefreshLoading.current = false;
+					}}
+				>
+					{renderMap}
+				</PullRefresh>
+			</ConfigProvider>
 		</View>
 	);
 }

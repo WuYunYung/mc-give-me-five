@@ -3,6 +3,7 @@ import {
 	FloatingBubble,
 	List,
 	Loading,
+	PullRefresh,
 	SafeArea,
 	Search,
 } from "@taroify/core";
@@ -15,13 +16,7 @@ import {
 	useDidShow,
 	getWindowInfo,
 } from "@tarojs/taro";
-import {
-	useCreation,
-	useDebounceFn,
-	useMemoizedFn,
-	useRequest,
-	useUpdate,
-} from "ahooks";
+import { useCreation, useMemoizedFn, useRequest, useUpdate } from "ahooks";
 import { concat, isEmpty, isFunction, isNil, merge, uniqueId } from "lodash-es";
 import {
 	forwardRef,
@@ -92,6 +87,7 @@ function Feeds<T>(props: FeedsProps<T>, ref: Ref<Option<T>>): ReactElement {
 	const list = useRef<T[]>([]);
 	const search = useRef<string>("");
 	const ready = useRef(false);
+	const pullDownRefreshLoading = useRef(false);
 	const update = useUpdate();
 
 	const { loading, runAsync, data } = useRequest(
@@ -157,16 +153,13 @@ function Feeds<T>(props: FeedsProps<T>, ref: Ref<Option<T>>): ReactElement {
 
 	const shouldDidShowAutoRefresh = useRef(false);
 
-	const { run: refreshList } = useDebounceFn(
-		async () => {
-			const innerList = await runAsync({
-				offset: 0,
-			});
-			list.current = innerList || [];
-			update();
-		},
-		{ wait: 100 },
-	);
+	const refreshList = useMemoizedFn(async () => {
+		const innerList = await runAsync({
+			offset: 0,
+		});
+		list.current = innerList || [];
+		update();
+	});
 
 	useDidShow(() => {
 		if (!shouldDidShowAutoRefresh.current) return;
@@ -254,12 +247,31 @@ function Feeds<T>(props: FeedsProps<T>, ref: Ref<Option<T>>): ReactElement {
 			)}
 
 			<List.Placeholder>
-				{loading && <Loading>加载中...</Loading>}
+				{!pullDownRefreshLoading.current && loading && (
+					<Loading>加载中...</Loading>
+				)}
 				{!isEmpty(list.current) && !hasMore && "没有更多了"}
 			</List.Placeholder>
 
 			{!disableSaveArea && <SafeArea position="bottom" />}
 		</List>
+	);
+
+	// TODO：性能优化
+	// TODO：下拉回调
+	const listWithPullRefresh = (
+		<PullRefresh
+			loading={pullDownRefreshLoading.current && loading}
+			onRefresh={async () => {
+				pullDownRefreshLoading.current = true;
+
+				await refreshList();
+
+				pullDownRefreshLoading.current = false;
+			}}
+		>
+			{renderList}
+		</PullRefresh>
 	);
 
 	const createButton = (
@@ -275,7 +287,7 @@ function Feeds<T>(props: FeedsProps<T>, ref: Ref<Option<T>>): ReactElement {
 		<>
 			{!disabledSearch && renderSearch}
 
-			{ready.current && renderList}
+			{ready.current && listWithPullRefresh}
 
 			{enableCreate && !disabledCreateBubble && createButton}
 		</>
