@@ -1,5 +1,126 @@
+diff --git a/dropdown-menu/dropdown-menu.js b/dropdown-menu/dropdown-menu.js
+index c1273616bb405a0def73465eb625454b92a696a2..ab7835705b1080a15fbf316114e9c97c0e98d2fc 100644
+--- a/dropdown-menu/dropdown-menu.js
++++ b/dropdown-menu/dropdown-menu.js
+@@ -1,6 +1,6 @@
+ import { useUncontrolled } from "@taroify/hooks/index.js";
+ import { View } from "@tarojs/components";
+-import { getSystemInfoSync, usePageScroll } from "@tarojs/taro";
++import {  usePageScroll,getWindowInfo } from "@tarojs/taro";
+ import classnames from "classnames";
+ import * as _ from "lodash";
+ import * as React from "react";
+@@ -85,7 +85,7 @@ function DropdownMenu(props) {
+     const [itemOffset, setItemOffset] = useState(0);
+     const { titles, items } = useDropdownMenuChildren(childrenProp);
+     const toggleKeyRef = useRef();
+-    const windowHeight = useMemo(() => getSystemInfoSync().windowHeight, []);
++    const windowHeight = useMemo(() => getWindowInfo().windowHeight, []);
+     const updateItemOffset = useCallback(() => {
+         getRect(barRef).then((rect) => {
+             if (rect) {
+diff --git a/floating-bubble/floating-bubble.js b/floating-bubble/floating-bubble.js
+index 7a9b9daf7396db27b8aaa224850b3a01e170eba1..bf38dffcb1514c3342e081474a1142312902a287 100644
+--- a/floating-bubble/floating-bubble.js
++++ b/floating-bubble/floating-bubble.js
+@@ -1,6 +1,6 @@
+ import * as React from "react";
+ import { useMemo, useRef, useState, useEffect } from "react";
+-import { getSystemInfoSync, nextTick } from "@tarojs/taro";
++import { getWindowInfo, nextTick } from "@tarojs/taro";
+ import { View } from "@tarojs/components";
+ import { cloneIconElement, isIconElement } from "@taroify/icons/utils/index.js";
+ import classNames from "classnames";
+@@ -19,8 +19,8 @@ const FloatingBubble = (props) => {
+     const initialized = useRef(false);
+     const prevX = useRef(0);
+     const prevY = useRef(0);
+-    const windowHeight = useMemo(() => getSystemInfoSync().windowHeight, []);
+-    const windowWidth = useMemo(() => getSystemInfoSync().windowWidth, []);
++    const windowHeight = useMemo(() => getWindowInfo().windowHeight, []);
++    const windowWidth = useMemo(() => getWindowInfo().windowWidth, []);
+     const boundary = useMemo(() => {
+         return {
+             top: gap,
+diff --git a/floating-panel/floating-panel.js b/floating-panel/floating-panel.js
+index c5c240af163a8810f3354641322b01fe6ab48bb3..efc59b4acf74f71424192f4c9dc2aadb8cddcb51 100644
+--- a/floating-panel/floating-panel.js
++++ b/floating-panel/floating-panel.js
+@@ -1,6 +1,6 @@
+ import * as React from "react";
+ import { forwardRef, useMemo, useState, useRef, useEffect } from "react";
+-import { getSystemInfoSync, getEnv } from "@tarojs/taro";
++import { getWindowInfo, getEnv } from "@tarojs/taro";
+ import { View, ScrollView } from "@tarojs/components";
+ import classNames from "classnames";
+ import SafeArea from "../safe-area/index.js";
+@@ -19,7 +19,7 @@ const FloatingPanel = forwardRef((props, ref) => {
+     const [dragging, setDragging] = useState(false);
+     const [scrollContentTop, setScrollContentTop] = useState(0);
+     const touch = useTouch();
+-    const windowHeight = useMemo(() => getSystemInfoSync().windowHeight, []);
++    const windowHeight = useMemo(() => getWindowInfo().windowHeight, []);
+     const ease = (moveY) => {
+         const absDistance = Math.abs(moveY);
+         const { min, max } = boundary;
+diff --git a/form/form-label.scss b/form/form-label.scss
+index e6be78a1a3edda910cd41deb012588955d0e2ec9..b99bcd1ffa9085f9e734f00e11254bb12c8493c6 100644
+--- a/form/form-label.scss
++++ b/form/form-label.scss
+@@ -25,4 +25,3 @@
+     text-align: right;
+   }
+ }
+-
+diff --git a/hooks/use-canvas.js b/hooks/use-canvas.js
+index 60e98f0c5d0b368f453f92cb1cdef19c2a9aaa03..aa463ede0394b24041dab4c8ff7ae33da0592a77 100644
+--- a/hooks/use-canvas.js
++++ b/hooks/use-canvas.js
+@@ -1,12 +1,12 @@
+ import { useEffect, useState, useMemo } from "react";
+-import { getEnv, nextTick, createSelectorQuery, getSystemInfoSync } from "@tarojs/taro";
++import { getEnv, nextTick, createSelectorQuery, getWindowInfo } from "@tarojs/taro";
+ import { getRect } from "../utils/dom/rect.js";
+ import useMemoizedFn from "./use-memoized-fn.js";
+ function useCanvas(canvasId, canvasRef, options = {}) {
+     const [loaded, setLoaded] = useState(false);
+     const [canvas, setCanvas] = useState(null);
+     const [ctx, setCtx] = useState(null);
+-    const ratio = useMemo(() => getSystemInfoSync().pixelRatio || 1, []);
++    const ratio = useMemo(() => getWindowInfo().pixelRatio || 1, []);
+     const { onLoaded: onLoadedProp } = options;
+     const onLoaded = useMemoizedFn((a, b) => onLoadedProp?.(a, b));
+     useEffect(() => {
+diff --git a/input/input.scss b/input/input.scss
+index bb0acae685e728ebab1e8b013e25aaadd689d6bc..0d58559474380d9a7d9cea48a602a482dd37b534 100644
+--- a/input/input.scss
++++ b/input/input.scss
+@@ -99,4 +99,3 @@
+     cursor: pointer;
+   }
+ }
+-
+diff --git a/safe-area/safe-area.js b/safe-area/safe-area.js
+index 733b45b5be78cdff5cc4d33a65dcd5166be3205f..854025d69c0a9a154fd431d61cf5a17ebd0fdc98 100644
+--- a/safe-area/safe-area.js
++++ b/safe-area/safe-area.js
+@@ -1,4 +1,4 @@
+-import { getSystemInfoSync } from "@tarojs/taro";
++import { getWindowInfo } from "@tarojs/taro";
+ import { View } from "@tarojs/components";
+ import classNames from "classnames";
+ import * as React from "react";
+@@ -6,7 +6,7 @@ import { useMemo } from "react";
+ import { prefixClassname } from "../styles/index.js";
+ function SafeArea(props) {
+     const { className, position, nativeSafeTop, style, ...restProps } = props;
+-    const { statusBarHeight } = getSystemInfoSync();
++    const { statusBarHeight } = getWindowInfo();
+     const customStyle = useMemo(() => {
+         if (position === "top" && nativeSafeTop) {
+             return {
 diff --git a/styles/_variables.scss b/styles/_variables.scss
-index a41d124c51d4aae7f4820e6790be4747fc1a0594..d9bf24dc1a2e1774a3fc91cb3aa51c9da762ac80 100644
+index a41d124c51d4aae7f4820e6790be4747fc1a0594..ba9f891c742d5b98cd24e85a886da69dca0f18a1 100644
 --- a/styles/_variables.scss
 +++ b/styles/_variables.scss
 @@ -17,6 +17,7 @@ $blue: #1989fa;
@@ -7,15 +128,65 @@ index a41d124c51d4aae7f4820e6790be4747fc1a0594..d9bf24dc1a2e1774a3fc91cb3aa51c9d
  $green: #07c160;
  $orange: #ff976a;
 +$rose: #930a41;
-
+ 
  $orange-dark: #ed6a0c;
  $orange-light: #fffbe8;
 @@ -29,7 +30,7 @@ $gradient-red: linear-gradient(to right, #ff6034, #ee0a24);
  $gradient-orange: linear-gradient(to right, #ffd01e, #ff8917);
-
+ 
  // Component Colors
 -$primary-color: var(--primary-color, $blue);
 +$primary-color: var(--primary-color, $rose);
  $info-color: var(--cyan, $cyan);
  $success-color: var(--green, $green);
  $warning-color: var(--orange, $orange);
+diff --git a/tabs/tabs-header.scss b/tabs/tabs-header.scss
+index 638d08f7c354524470caff390ca4b92f7dc842e6..4f947d7e1033a30db11f20dfc116b5735e1f5f52 100644
+--- a/tabs/tabs-header.scss
++++ b/tabs/tabs-header.scss
+@@ -88,4 +88,3 @@
+     }
+   }
+ }
+-
+diff --git a/utils/format/unit.js b/utils/format/unit.js
+index 4f57664bb616ca936f9af3e9322a81ce1f6e7501..ed0cbe0e01a46de73639b67436ecd4b82e4269a7 100644
+--- a/utils/format/unit.js
++++ b/utils/format/unit.js
+@@ -1,4 +1,4 @@
+-import { getSystemInfoSync } from "@tarojs/taro";
++import { getWindowInfo } from "@tarojs/taro";
+ import * as _ from "lodash";
+ export function addUnitPx(value) {
+     return value === undefined ? "" : `${unitToPx(value)}px`;
+@@ -31,7 +31,7 @@ function getRootFontSize() {
+ }
+ function convertRpx(value) {
+     value = value.replace(/rpx/g, "");
+-    const { windowWidth } = getSystemInfoSync();
++    const { windowWidth } = getWindowInfo();
+     const pixelRatio = 750 / windowWidth;
+     return +value / pixelRatio;
+ }
+diff --git a/watermark/watermark.js b/watermark/watermark.js
+index d585cfecb219ff3e62b199593ba4825026d07207..732dece6d029dd4904f97579c0ff5604bcc13333 100644
+--- a/watermark/watermark.js
++++ b/watermark/watermark.js
+@@ -1,7 +1,7 @@
+ import * as React from "react";
+ import { useMemo, useRef, useState, useEffect } from "react";
+ import { Canvas, View } from "@tarojs/components";
+-import { getEnv, getSystemInfoSync } from "@tarojs/taro";
++import { getEnv, getWindowInfo } from "@tarojs/taro";
+ import cls from "classnames";
+ import { useCanvas } from "../hooks/index.js";
+ import { prefixClassname } from "../styles/index.js";
+@@ -33,7 +33,7 @@ function Watermark(props) {
+                 image.src = imageProp;
+             }
+             else {
+-                const ratio = getSystemInfoSync().pixelRatio || 1;
++                const ratio = getWindowInfo().pixelRatio || 1;
+                 canvas.width = width * ratio;
+                 canvas.height = height * ratio;
+                 ctx.scale(ratio, ratio);
