@@ -1,64 +1,16 @@
 import {
-	manageGroupList,
 	manageUserPartialUpdate,
 	manageUserRead,
 	UserProfileManageUpdate,
 } from "@/api";
-import { Cell, Empty, Field, Popup, Input } from "@taroify/core";
+import { Empty, Field, Input } from "@taroify/core";
 import { View } from "@tarojs/components";
-import { useRouter, getWindowInfo, setNavigationBarTitle } from "@tarojs/taro";
+import { useRouter, setNavigationBarTitle } from "@tarojs/taro";
 import { useRequest } from "ahooks";
 import UserForm from "../components/UserForm";
-import Feeds from "@/components/Feeds";
-import withPopup from "@/components/withPopup";
-import { concat } from "lodash-es";
 import { FriendsOutlined } from "@taroify/icons";
 import { routeBack } from "@/shared/route";
-
-const PopupList = withPopup({
-	renderContent(params) {
-		const { onChange, onBlur, toggleOpen } = params;
-
-		const { windowHeight } = getWindowInfo();
-
-		const panelHeight = windowHeight * 0.7;
-
-		return (
-			<>
-				<View className="h-10">
-					<Popup.Close />
-				</View>
-				<Feeds
-					height={panelHeight}
-					disabledSearch
-					service={async (params) => {
-						const { results = [] } = await manageGroupList(params);
-						return concat(results);
-					}}
-					renderContent={(list) => (
-						<Cell.Group>
-							{list.map((group) => (
-								<Cell
-									key={group.id}
-									title={<View className="text-left">{group.name}</View>}
-									clickable
-									onClick={(e) => {
-										e.stopPropagation();
-										onChange?.(group);
-										onBlur?.(group);
-										toggleOpen(false);
-									}}
-								>
-									{group.grade.name}
-								</Cell>
-							))}
-						</Cell.Group>
-					)}
-				></Feeds>
-			</>
-		);
-	},
-});
+import GroupList from "../../manage/components/GroupList";
 
 export default function () {
 	const { params } = useRouter<{
@@ -104,9 +56,9 @@ export default function () {
 					>
 						{({ value, onChange, onBlur }) => {
 							return (
-								<PopupList value={value} onChange={onChange} onBlur={onBlur}>
+								<GroupList value={value} onChange={onChange} onBlur={onBlur}>
 									<Input placeholder="请选择" readonly value={value?.name} />
-								</PopupList>
+								</GroupList>
 							);
 						}}
 					</Field>

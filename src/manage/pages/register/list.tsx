@@ -5,12 +5,15 @@ import { useRouter, setNavigationBarTitle } from "@tarojs/taro";
 import { useMount, useRequest } from "ahooks";
 import { showLoading, hideLoading, showModal, showToast } from "@tarojs/taro";
 import { DeleteOutlined } from "@taroify/icons";
+import { routePush } from "@/shared/route";
+
+// TODO: 接口更新后开启
+const enableCreate = false;
 
 definePageConfig({
 	navigationBarTitleText: "注册管理",
 });
 
-// TODO: 编辑
 // TODO: 班级下钻
 export default function () {
 	const { params } = useRouter<{
@@ -62,7 +65,7 @@ export default function () {
 
 				return results;
 			}}
-			renderContent={(list, { mutate }) => {
+			renderContent={(list, { mutate, refresh }) => {
 				return (
 					<Cell.Group>
 						{list.map((user, index) => {
@@ -77,6 +80,15 @@ export default function () {
 											</Avatar>
 										}
 										align="center"
+										onClick={() =>
+											routePush(
+												"/manage/pages/register/form",
+												{
+													registerId: user.id,
+												},
+												refresh,
+											)
+										}
 									>
 										{user.group.name}
 									</Cell>
@@ -107,6 +119,10 @@ export default function () {
 						})}
 					</Cell.Group>
 				);
+			}}
+			enableCreate={enableCreate}
+			onCreateClick={(_, { refresh }) => {
+				routePush("/manage/pages/register/form", refresh);
 			}}
 		/>
 	);
