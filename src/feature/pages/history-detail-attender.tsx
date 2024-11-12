@@ -167,8 +167,7 @@ export default function () {
 						},
 					});
 				},
-				fail: (err) => {
-					console.error("文件写入失败:", err);
+				fail: () => {
 					throw new Error("文件写入失败");
 				},
 			});

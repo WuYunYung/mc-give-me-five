@@ -99,7 +99,6 @@ export default function () {
 				}
 			},
 		});
-		quitActv(Number(id));
 	};
 
 	//老师生成签到码
@@ -117,6 +116,13 @@ export default function () {
 		});
 	};
 
+	//老师更改活动信息
+	const handleChange = () => {
+		routePush("/manage/pages/create-activity", {
+			id: id,
+		});
+	};
+
 	const { user } = useStore();
 
 	const { isAdmin } = user || {};
@@ -124,7 +130,7 @@ export default function () {
 	const renderButtons = (
 		<>
 			{/* 学生-未报名活动 */}
-			{!isAdmin && activity?.is_signed && (
+			{!isAdmin && !activity?.is_attend && (
 				<View className="p-4">
 					<Button
 						color="primary"
@@ -141,6 +147,7 @@ export default function () {
 			{/* 学生-活动未开始 */}
 			{!isAdmin &&
 				activity &&
+				activity?.is_attend &&
 				dayjs(activity.start_time).valueOf() > dayjs().valueOf() && (
 					<View className="flex flex-col gap-4 p-4">
 						<Button block color="success" onClick={handleSigned}>
@@ -155,6 +162,7 @@ export default function () {
 			{/* 学生-活动已开始未结束 */}
 			{!isAdmin &&
 				activity &&
+				activity?.is_attend &&
 				dayjs(activity.start_time).valueOf() < dayjs().valueOf() &&
 				dayjs(activity.end_time).valueOf() > dayjs().valueOf() && (
 					<View className="flex flex-col gap-4 p-4">
@@ -167,6 +175,7 @@ export default function () {
 			{/* 学生-活动已结束 */}
 			{!isAdmin &&
 				activity &&
+				activity?.is_attend &&
 				dayjs(activity.end_time).valueOf() < dayjs().valueOf() && (
 					<View className="flex flex-col gap-4 p-4">
 						{activity.is_signed && (
@@ -197,7 +206,12 @@ export default function () {
 			{/* 老师-管理活动 */}
 			{isAdmin && activity && (
 				<View className="flex flex-col p-4 gap-4">
-					<Button block variant="outlined" color="primary">
+					<Button
+						block
+						variant="outlined"
+						color="primary"
+						onClick={handleChange}
+					>
 						编辑活动
 					</Button>
 					<Button
