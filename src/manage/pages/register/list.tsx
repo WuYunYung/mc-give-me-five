@@ -9,9 +9,6 @@ import { routePush } from "@/shared/route";
 import RegisterEntries from "../../components/RegisterEntries";
 import { ElementRef, useMemo, useRef } from "react";
 
-// TODO: 接口更新后开启
-const enableCreate = false;
-
 definePageConfig({
 	navigationBarTitleText: "注册管理",
 	disableScroll: true,
@@ -125,10 +122,6 @@ export default function () {
 					</Cell.Group>
 				);
 			}}
-			enableCreate={enableCreate}
-			onCreateClick={(_, { refresh }) => {
-				routePush("/manage/pages/register/form", refresh);
-			}}
 		/>
 	);
 
@@ -136,10 +129,10 @@ export default function () {
 		<>
 			{feeds}
 			<RegisterEntries
-				onRefreshImportUsers={() => feedsRef.current?.refresh()}
+				onRefresh={() => feedsRef.current?.refresh()}
 				groupId={groupId}
 				groupName={innerGroupName}
-				disableRegistInfoEntry
+				disableRegisterInfoEntry
 			/>
 		</>
 	);

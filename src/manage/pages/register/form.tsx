@@ -24,41 +24,41 @@ definePageConfig({
 export default function () {
 	const { params } = useRouter<{
 		registerId?: string;
+		groupId?: string;
+		groupName?: string;
 	}>();
 
-	const { registerId: queryId } = params;
+	const { registerId: queryId, groupId, groupName } = params;
 
-	const isCreatiion = isNil(queryId);
+	const queryGroup: Group | null =
+		groupId && groupName
+			? { id: +groupId, name: decodeURIComponent(groupName) }
+			: null;
+
+	const isCreation = isNil(queryId);
 
 	const id = Number(queryId);
 
 	const { data: detail } = useRequest(() => manageRegisterRead(id), {
-		ready: !isCreatiion && !Number.isNaN(id),
+		ready: !isCreation && !Number.isNaN(id),
 		onSuccess({ name }) {
 			setNavigationBarTitle({ title: name });
 		},
 	});
 
 	useLayoutEffect(() => {
-		if (isCreatiion) {
+		if (isCreation) {
 			setNavigationBarTitle({ title: "新建注册信息" });
 		}
 	});
 
-	const { run: create } = useRequest(manageRegisterCreate, {
-		ready: isCreatiion,
-		manual: true,
-		onSuccess() {
-			routeBack({
-				shouldRefresh: true,
-			});
-		},
-	});
-	const { run: update } = useRequest(
+	const { run } = useRequest(
 		(register: Omit<RegisterUpdate, "id">) =>
-			manageRegisterPartialUpdate(id, register),
+			isCreation
+				? manageRegisterCreate(register)
+				: manageRegisterPartialUpdate(id, register),
 		{
-			ready: !Number.isNaN(id),
+			ready: isCreation || !Number.isNaN(id),
 			manual: true,
 			onSuccess() {
 				routeBack({
@@ -77,15 +77,7 @@ export default function () {
 					group: Group;
 				};
 
-				if (isCreatiion) {
-					return create({
-						name,
-						username,
-						group: group,
-					});
-				}
-
-				update({
+				run({
 					name,
 					username,
 					group: group.id!,
@@ -125,7 +117,7 @@ export default function () {
 			<Field
 				label="班级"
 				name="group"
-				defaultValue={detail?.group}
+				defaultValue={detail?.group || queryGroup}
 				rules={[
 					{
 						required: true,
@@ -135,7 +127,12 @@ export default function () {
 			>
 				{({ value, onChange, onBlur }) => {
 					return (
-						<GroupList value={value} onChange={onChange} onBlur={onBlur}>
+						<GroupList
+							value={value}
+							onChange={onChange}
+							onBlur={onBlur}
+							disabled={!!queryGroup}
+						>
 							<Input placeholder="请选择" readonly value={value?.name} />
 						</GroupList>
 					);
@@ -149,5 +146,5 @@ export default function () {
 		</Form>
 	);
 
-	return <View>{isCreatiion ? form : detail ? form : null}</View>;
+	return <View>{isCreation ? form : detail ? form : null}</View>;
 }

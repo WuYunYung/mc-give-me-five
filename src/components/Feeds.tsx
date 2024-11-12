@@ -125,7 +125,7 @@ function Feeds<T>(props: FeedsProps<T>, ref: Ref<Option<T>>): ReactElement {
 		update();
 	});
 
-	const searchBarId = useCreation(() => uniqueId("feads-search-bar-"), []);
+	const searchBarId = useCreation(() => uniqueId("feeds-search-bar-"), []);
 	const searchBarHeight = useRef(0);
 	const windowHeight = useMemo(() => {
 		const { windowHeight } = getWindowInfo();
@@ -271,7 +271,6 @@ function Feeds<T>(props: FeedsProps<T>, ref: Ref<Option<T>>): ReactElement {
 		setReachTop(innerReachTop);
 	});
 
-	// TODO：下拉回调
 	const listWithPullRefresh = (
 		<PullRefresh
 			reachTop={reachTop}

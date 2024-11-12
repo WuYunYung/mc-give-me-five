@@ -7,11 +7,10 @@ import { showActionSheet } from "@tarojs/taro";
 export default function RegisterEntries(props: {
 	groupId?: string | number;
 	groupName?: string;
-	onRefreshImportUsers?: () => void;
-	disableRegistInfoEntry?: boolean;
+	onRefresh?: () => void;
+	disableRegisterInfoEntry?: boolean;
 }) {
-	const { groupId, groupName, onRefreshImportUsers, disableRegistInfoEntry } =
-		props;
+	const { groupId, groupName, onRefresh, disableRegisterInfoEntry } = props;
 
 	return (
 		<FloatingBubble
@@ -19,9 +18,9 @@ export default function RegisterEntries(props: {
 			magnetic="x"
 			icon={<AppsOutlined />}
 			onClick={() => {
-				const menus = ["导入注册信息"];
+				const menus = ["新建注册信息", "导入注册信息"];
 
-				if (!disableRegistInfoEntry) {
+				if (!disableRegisterInfoEntry) {
 					menus.push("查看注册信息");
 				}
 
@@ -31,14 +30,23 @@ export default function RegisterEntries(props: {
 						switch (result.tapIndex) {
 							case 0:
 								return routePush(
+									"/manage/pages/register/form",
+									{
+										groupId,
+										groupName,
+									},
+									() => onRefresh?.(),
+								);
+							case 1:
+								return routePush(
 									"/feature/pages/group-import-users",
 									{
 										groupId,
 										groupName,
 									},
-									() => onRefreshImportUsers?.(),
+									() => onRefresh?.(),
 								);
-							case 1:
+							case 2:
 								return routePush("/manage/pages/register/list", {
 									groupId,
 									groupName,

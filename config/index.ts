@@ -7,8 +7,6 @@ import dayjs from "dayjs";
 
 const { UnifiedWebpackPluginV5 } = require("weapp-tailwindcss/webpack");
 
-// TODO analyzer 插件
-
 // https://taro-docs.jd.com/docs/next/config#defineconfig-辅助函数
 export default defineConfig<"webpack5">(async (merge) => {
 	const baseConfig: UserConfigExport<"webpack5"> = {
