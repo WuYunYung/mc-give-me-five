@@ -13,8 +13,6 @@ async function fetchData(
 		// 将响应的 JSON 数据写入指定文件
 		await fs.outputFile(outputPath, JSON.stringify(response.data, null, 2));
 
-		// TODO operationId 去重
-
 		// biome-ignore lint/suspicious/noConsoleLog: <explanation>
 		console.log(`数据已成功写入文件: ${outputPath}`);
 	} catch (error) {

@@ -1,12 +1,20 @@
 import { Popup } from "@taroify/core";
 import { PopupProps } from "@taroify/core/popup/popup";
 import { View } from "@tarojs/components";
-import { FC, PropsWithChildren, useState, ReactNode } from "react";
+import {
+	FC,
+	PropsWithChildren,
+	useState,
+	ReactNode,
+	isValidElement,
+	cloneElement,
+} from "react";
 
 export type FormControlProps = {
 	value?: any;
 	onChange?: (value: any) => void;
 	onBlur?: (value: any) => void;
+	disabled?: boolean;
 };
 
 const withPopup = <Props,>(
@@ -22,7 +30,7 @@ const withPopup = <Props,>(
 	const component: FC<PropsWithChildren<Props & FormControlProps>> = (
 		props,
 	) => {
-		const { children } = props;
+		const { children, disabled } = props;
 
 		const [open, setOpen] = useState(false);
 
@@ -52,6 +60,14 @@ const withPopup = <Props,>(
 				})}
 			</Popup>
 		);
+
+		if (disabled) {
+			return isValidElement(children)
+				? cloneElement(children, {
+						disabled: true,
+					} as any)
+				: children;
+		}
 
 		return (
 			<>
