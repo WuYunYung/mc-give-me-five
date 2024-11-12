@@ -14,6 +14,7 @@ const enableCreate = false;
 
 definePageConfig({
 	navigationBarTitleText: "注册管理",
+	disableScroll: true,
 });
 
 export default function () {

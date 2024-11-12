@@ -1555,8 +1555,8 @@ export const manageRegisterList = (
  * @request POST:/manage/register/
  * @secure
  */
-export const manageRegisterCreate = (data: Register, params: RequestParams = {}) =>
-  new HttpClient().request<Register, any>({
+export const manageRegisterCreate = (data: RegisterUpdate, params: RequestParams = {}) =>
+  new HttpClient().request<RegisterUpdate, any>({
     path: `/manage/register/`,
     method: "POST",
     body: data,
@@ -1579,6 +1579,7 @@ export const manageRegisterBatchRegister = (data: Register, params: RequestParam
     method: "POST",
     body: data,
     secure: true,
+    type: ContentType.Json,
     format: "json",
     ...params,
   });

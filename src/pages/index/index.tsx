@@ -9,9 +9,11 @@ import useActivityCountByType from "@/hooks/useActivityCountByType";
 import { usePageScroll } from "@tarojs/taro";
 import { useRef, useState } from "react";
 import { Theme } from "@/shared/constants";
+import useStore from "@/shared/store";
 
 definePageConfig({
 	navigationBarTitleText: "首页",
+	disableScroll: true,
 });
 
 type Type = "0" | "1" | "2" | "3";
@@ -19,15 +21,21 @@ type Type = "0" | "1" | "2" | "3";
 const imageUrl = [banner1, banner2, banner3, banner4];
 
 export default function Index() {
+	const { user } = useStore();
+
+	const { isAdmin } = user || {};
+
+	const { data, forceRefreshAsync, loading, now } = useActivityCountByType({
+		queryByNow: isAdmin ? undefined : true,
+		ready: !!user,
+	});
+
 	const handleNavigateTo = (type: Type) => {
 		routePush("/activity/pages/activity-list", {
 			type: type,
+			start_time: isAdmin ? undefined : now.valueOf(),
 		});
 	};
-
-	const { data, forceRefreshAsync, loading } = useActivityCountByType({
-		queryByNow: true,
-	});
 
 	const renderMap = (
 		<View className="flex flex-col p-4 gap-4">
@@ -41,7 +49,9 @@ export default function Index() {
 				>
 					<View className="relative w-full">
 						<View className="absolute flex top-4 right-4 w-6 h-6 bg-primary-900">
-							<Text className="m-auto text-white font-bold">{item.total}</Text>
+							<Text className="m-auto text-white font-bold">
+								{isAdmin ? item.total : item.running}
+							</Text>
 						</View>
 					</View>
 					<Image className="box-border w-full h-40" src={imageUrl[item.type]} />
