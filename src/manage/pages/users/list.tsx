@@ -19,9 +19,12 @@ export default function () {
 		groupId?: string;
 		gradeId?: string;
 		groupName?: string;
+		isAdmin?: "0" | "1";
 	}>();
 
-	const { groupId, gradeId, groupName } = params;
+	const { groupId, gradeId, groupName, isAdmin } = params;
+
+	const innerIsAdmin = isAdmin === "1";
 
 	const innerGroupName = useMemo(
 		() => (groupName ? decodeURIComponent(groupName) : ""),
@@ -29,11 +32,20 @@ export default function () {
 	);
 
 	useMount(() => {
-		innerGroupName &&
-			setNavigationBarTitle({ title: decodeURIComponent(innerGroupName) });
+		if (!innerGroupName) return;
+		setNavigationBarTitle({
+			get title() {
+				const baseName = decodeURIComponent(innerGroupName);
+				if (innerIsAdmin) {
+					return `${baseName}（管理员）`;
+				}
+				return baseName;
+			},
+		});
 	});
 
 	const { runAsync: deleteUser } = useRequest(manageUserDelete, {
+		ready: !innerIsAdmin,
 		manual: true,
 		onBefore() {
 			showLoading();
@@ -55,7 +67,7 @@ export default function () {
 				const requestParams: Exclude<
 					Parameters<typeof manageUserList>[0],
 					undefined
-				> = { ...params, isAdmin: "false" };
+				> = { ...params, isAdmin: innerIsAdmin ? "true" : "false" };
 
 				if (gradeId) {
 					requestParams.group__grade_id = gradeId;
@@ -74,7 +86,7 @@ export default function () {
 					<Cell.Group>
 						{list.map((user, index) => {
 							return (
-								<SwipeCell key={user.id}>
+								<SwipeCell key={user.id} disabled={innerIsAdmin}>
 									<Cell
 										title={user.name}
 										brief={user.username}
@@ -84,8 +96,9 @@ export default function () {
 											</Avatar>
 										}
 										align="center"
-										isLink
+										isLink={!innerIsAdmin}
 										onClick={() =>
+											!innerIsAdmin &&
 											routePush("/user/pages/detail", {
 												userId: user.id,
 											})

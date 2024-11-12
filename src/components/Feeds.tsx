@@ -213,6 +213,17 @@ function Feeds<T>(props: FeedsProps<T>, ref: Ref<Option<T>>): ReactElement {
 		[],
 	);
 
+	const listPlaceholder = useMemo(() => {
+		const showLoading = !pullDownRefreshLoading.current && loading;
+
+		return (
+			<List.Placeholder>
+				{showLoading && <Loading>加载中...</Loading>}
+				{!showLoading && !isEmpty(list.current) && !hasMore && "没有更多了"}
+			</List.Placeholder>
+		);
+	}, [hasMore, loading]);
+
 	const renderList = (
 		<List
 			style={{
@@ -248,12 +259,7 @@ function Feeds<T>(props: FeedsProps<T>, ref: Ref<Option<T>>): ReactElement {
 				</Empty>
 			)}
 
-			<List.Placeholder>
-				{!pullDownRefreshLoading.current && loading && (
-					<Loading>加载中...</Loading>
-				)}
-				{!isEmpty(list.current) && !hasMore && "没有更多了"}
-			</List.Placeholder>
+			{listPlaceholder}
 
 			{!disableSaveArea && <SafeArea position="bottom" />}
 		</List>

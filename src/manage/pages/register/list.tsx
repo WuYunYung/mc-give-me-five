@@ -132,7 +132,8 @@ export default function () {
 				onRefresh={() => feedsRef.current?.refresh()}
 				groupId={groupId}
 				groupName={innerGroupName}
-				disableRegisterInfoEntry
+				disabledRegisterInfoEntry
+				disabledAdminEntry
 			/>
 		</>
 	);
