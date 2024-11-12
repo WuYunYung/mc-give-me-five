@@ -10,6 +10,7 @@ import { DeleteOutlined, Edit } from "@taroify/icons";
 
 definePageConfig({
 	navigationBarTitleText: "班级管理",
+	disableScroll: true,
 });
 
 export default function () {

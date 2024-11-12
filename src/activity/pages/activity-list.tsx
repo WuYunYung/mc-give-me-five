@@ -1,12 +1,17 @@
 import { activityList } from "@/api";
 import { View } from "@tarojs/components";
-import { useRouter } from "@tarojs/taro";
+import { useRouter, setNavigationBarTitle } from "@tarojs/taro";
 import ActivityCard from "../../components/ActivityCard";
 import Feeds from "@/components/Feeds";
 import { ActivityStatus, DateFormat } from "@/shared/constants";
 import dayjs from "dayjs";
-import { useCreation } from "ahooks";
+import { useCreation, useMount } from "ahooks";
 import useStore from "@/shared/store";
+
+definePageConfig({
+	disableScroll: true,
+	navigationBarTitleText: "活动",
+});
 
 type Type = "0" | "1" | "2" | "3";
 
@@ -17,6 +22,14 @@ export default function () {
 		start_time?: string;
 		end_time?: string;
 	}>();
+
+	useMount(() => {
+		const { type } = routeQuery || {};
+
+		if (type) {
+			setNavigationBarTitle({ title: `类型${type}` });
+		}
+	});
 
 	const { user } = useStore();
 
@@ -51,7 +64,6 @@ export default function () {
 						DateFormat.Remote,
 					);
 				}
-
 				if (!Number.isNaN(Number(queryStartTime))) {
 					innerParams.start_time = dayjs(Number(queryStartTime)).format(
 						DateFormat.Remote,

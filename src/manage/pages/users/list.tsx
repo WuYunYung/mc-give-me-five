@@ -11,6 +11,7 @@ import { useMemo } from "react";
 
 definePageConfig({
 	navigationBarTitleText: "学生管理",
+	disableScroll: true,
 });
 
 export default function () {

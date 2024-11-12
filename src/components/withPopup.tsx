@@ -41,7 +41,9 @@ const withPopup = <Props,>(
 			<Popup
 				open={open}
 				placement="bottom"
-				onClose={() => setOpen(false)}
+				onClose={(e) => {
+					setOpen(e);
+				}}
 				rounded
 			>
 				{renderContent({

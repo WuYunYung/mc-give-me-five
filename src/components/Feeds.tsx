@@ -15,6 +15,7 @@ import {
 	useDidHide,
 	useDidShow,
 	getWindowInfo,
+	usePageScroll,
 } from "@tarojs/taro";
 import { useCreation, useMemoizedFn, useRequest, useUpdate } from "ahooks";
 import { concat, isEmpty, isFunction, isNil, merge, uniqueId } from "lodash-es";
@@ -28,6 +29,7 @@ import {
 	useLayoutEffect,
 	useMemo,
 	useRef,
+	useState,
 } from "react";
 import { Draft, produce } from "immer";
 
@@ -257,10 +259,22 @@ function Feeds<T>(props: FeedsProps<T>, ref: Ref<Option<T>>): ReactElement {
 		</List>
 	);
 
-	// TODO：性能优化
+	const [reachTop, setReachTop] = useState(true);
+
+	usePageScroll(({ scrollTop }) => {
+		const baseHeight = searchBarHeight.current;
+
+		const innerReachTop = scrollTop <= Math.ceil(baseHeight);
+
+		if (innerReachTop === reachTop) return;
+
+		setReachTop(innerReachTop);
+	});
+
 	// TODO：下拉回调
 	const listWithPullRefresh = (
 		<PullRefresh
+			reachTop={reachTop}
 			loading={pullDownRefreshLoading.current && loading}
 			onRefresh={async () => {
 				pullDownRefreshLoading.current = true;

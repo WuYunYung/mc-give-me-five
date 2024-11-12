@@ -7,6 +7,7 @@ import { ActivityStatus } from "@/shared/constants";
 
 definePageConfig({
 	navigationBarTitleText: "历史",
+	disableScroll: true,
 });
 
 export default function History() {

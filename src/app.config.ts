@@ -47,11 +47,13 @@ export default defineAppConfig({
 		navigationBarBackgroundColor: Theme.Color.Primary,
 		navigationBarTitleText: "GiveMeFive",
 		navigationBarTextStyle: "white",
+		enablePullDownRefresh: false,
+		backgroundColor: Theme.Color.Background,
 	},
 	tabBar: {
 		color: "#8a8a8a",
 		selectedColor: Theme.Color.Primary,
-		backgroundColor: "#fafafa",
+		backgroundColor: Theme.Color.Tabbar,
 		borderStyle: "black",
 		list: [
 			{

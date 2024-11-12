@@ -19,6 +19,8 @@ export const PLACEHOLDER = "请输入";
 export namespace Theme {
 	export namespace Color {
 		export const Primary = "#930a41";
-		export const White = "#f9f9f9";
+		export const White = "#fff";
+		export const Tabbar = "#fafafa";
+		export const Background = White;
 	}
 }
