@@ -1,4 +1,10 @@
-import { Avatar, Cell, Input } from "@taroify/core";
+import {
+	Avatar,
+	Cell,
+	ConfigProvider,
+	Input,
+	PullRefresh,
+} from "@taroify/core";
 import { View } from "@tarojs/components";
 import { NotesOutlined } from "@taroify/icons";
 import { routePush } from "@/shared/route";
@@ -6,15 +12,17 @@ import { Group } from "@/api";
 import { isNil } from "lodash-es";
 import useStore from "@/shared/store";
 import classNames from "classnames";
-import { ActivityStatus } from "@/shared/constants";
+import { ActivityStatus, Theme } from "@/shared/constants";
 import { maskPhoneNumber } from "@/shared/utils";
+import { usePageScroll } from "@tarojs/taro";
+import { useState } from "react";
 
 definePageConfig({
 	navigationBarTitleText: "我的",
 });
 
 export default function User() {
-	const { user } = useStore();
+	const { user, loadUser } = useStore();
 
 	const { name = "访客", username, group, isAdmin, phone } = user || {};
 
@@ -128,10 +136,44 @@ export default function User() {
 		</Cell.Group>
 	);
 
-	return (
+	const content = (
 		<View className="flex flex-col h-screen">
 			{avatar}
 			{hasBeenRegister ? registerEntries : unregisterEntries}
 		</View>
+	);
+
+	const [reachTop, setReachTop] = useState(true);
+	const [loading, setLoading] = useState(false);
+
+	usePageScroll(({ scrollTop }) => setReachTop(scrollTop === 0));
+
+	return (
+		<>
+			<View className="bg-primary-900 h-[50vh]"></View>
+			<ConfigProvider
+				theme={{
+					pullRefreshHeadColor: Theme.Color.White,
+					loadingColor: Theme.Color.White,
+					loadingTextColor: Theme.Color.White,
+				}}
+			>
+				<PullRefresh
+					className="fixed left-0 top-0 w-full"
+					loading={loading}
+					reachTop={reachTop}
+					onRefresh={async () => {
+						setLoading(true);
+						try {
+							await loadUser();
+						} finally {
+							setLoading(false);
+						}
+					}}
+				>
+					{content}
+				</PullRefresh>
+			</ConfigProvider>
+		</>
 	);
 }
