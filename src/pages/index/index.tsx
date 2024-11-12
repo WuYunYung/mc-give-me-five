@@ -1,23 +1,23 @@
 import { routePush } from "@/shared/route";
-import { Text, View } from "@tarojs/components";
+import { ScrollView, Text, View } from "@tarojs/components";
 import banner1 from "../../static/banner/banner1.svg";
 import banner2 from "../../static/banner/banner2.svg";
 import banner3 from "../../static/banner/banner3.svg";
 import banner4 from "../../static/banner/banner4.svg";
-import scan1 from "../../static/scan/scanCode.svg";
-import { ConfigProvider, Image, PullRefresh } from "@taroify/core";
+import { Button, ConfigProvider, Image, PullRefresh } from "@taroify/core";
 import useActivityCountByType from "@/hooks/useActivityCountByType";
 import {
-	usePageScroll,
 	scanCode,
 	showToast,
 	getMenuButtonBoundingClientRect,
+	getWindowInfo,
 } from "@tarojs/taro";
-import { useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { ActivityStatus, Theme } from "@/shared/constants";
 import useStore from "@/shared/store";
 import { useRequest } from "ahooks";
 import { activitySignin } from "@/api";
+import { Scan } from "@taroify/icons";
 
 definePageConfig({
 	// navigationBarTitleText: "首页",
@@ -98,34 +98,55 @@ export default function Index() {
 
 	const [reachTop, setReachTop] = useState(true);
 
-	usePageScroll(({ scrollTop }) => setReachTop(scrollTop === 0));
+	const { statusBarHeight, headerHeight } = useMemo(() => {
+		const { statusBarHeight = 0 } = getWindowInfo();
 
-	return (
+		const { height, top } = getMenuButtonBoundingClientRect();
+
+		const menuVerticalMargin = top - statusBarHeight;
+
+		const headerHeight = menuVerticalMargin * 2 + height;
+
+		return { statusBarHeight, headerHeight };
+	}, []);
+
+	const header = (
 		<View
-			className="w-full h-screen overflow-scroll"
+			className="bg-primary-900 w-full relative"
 			style={{
-				background: `linear-gradient(${Theme.Color.Primary}, ${Theme.Color.White})`,
+				paddingTop: statusBarHeight,
 			}}
 		>
 			<View
-				className="sticky top-0 w-full bg-[#930a41] flex justify-center z-50"
+				className="flex justify-center items-center "
 				style={{
-					height: `${getMenuButtonBoundingClientRect().top + getMenuButtonBoundingClientRect().height + 6.4}px`,
+					height: headerHeight,
 				}}
 			>
-				<View className="relative left-0 bottom-0 w-0">
-					<View
-						className="absolute bottom-0 w-7 h-7 ml-2 mb-[0.4rem] mt-auto bg-[#930a41]"
-						onClick={handleSigned}
-					>
-						<Image className="w-7 h-7" src={scan1}></Image>
-					</View>
-				</View>
+				<Button
+					className="text-white absolute left-0"
+					icon={<Scan size={20} />}
+					variant="text"
+					onClick={handleSigned}
+					shape="square"
+				></Button>
 
-				<View className="mx-auto mb-3 mt-auto">
-					<Text className="text-white">GiveMeFive</Text>
-				</View>
+				<Text className="text-white">GiveMeFive</Text>
 			</View>
+		</View>
+	);
+
+	const content = (
+		<ScrollView
+			className="w-full overflow-scroll flex-1"
+			style={{
+				background: `linear-gradient(${Theme.Color.Primary}, ${Theme.Color.White})`,
+			}}
+			onScroll={(e) => {
+				setReachTop(e.detail.scrollTop <= 10);
+			}}
+			scrollY
+		>
 			<ConfigProvider
 				theme={{
 					pullRefreshHeadColor: Theme.Color.White,
@@ -147,6 +168,14 @@ export default function Index() {
 					{renderMap}
 				</PullRefresh>
 			</ConfigProvider>
+		</ScrollView>
+	);
+
+	return (
+		<View className="w-full h-screen flex flex-col">
+			{header}
+
+			{content}
 		</View>
 	);
 }
