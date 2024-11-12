@@ -5,8 +5,7 @@ import ActivityCard from "../../components/ActivityCard";
 import Feeds from "@/components/Feeds";
 import { ActivityStatus, DateFormat } from "@/shared/constants";
 import dayjs from "dayjs";
-import { useCreation, useMount } from "ahooks";
-import useStore from "@/shared/store";
+import { useMount } from "ahooks";
 
 definePageConfig({
 	disableScroll: true,
@@ -30,12 +29,6 @@ export default function () {
 			setNavigationBarTitle({ title: `类型${type}` });
 		}
 	});
-
-	const { user } = useStore();
-
-	const { isAdmin } = user || {};
-
-	const startTime = useCreation(() => dayjs().format(DateFormat.Remote), []);
 
 	return (
 		<Feeds
@@ -68,8 +61,6 @@ export default function () {
 					innerParams.start_time = dayjs(Number(queryStartTime)).format(
 						DateFormat.Remote,
 					);
-				} else if (!isAdmin) {
-					innerParams.start_time = startTime;
 				}
 
 				const { results = [] } = await activityList({

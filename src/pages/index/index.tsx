@@ -8,7 +8,7 @@ import { ConfigProvider, Image, PullRefresh } from "@taroify/core";
 import useActivityCountByType from "@/hooks/useActivityCountByType";
 import { usePageScroll } from "@tarojs/taro";
 import { useRef, useState } from "react";
-import { Theme } from "@/shared/constants";
+import { ActivityStatus, Theme } from "@/shared/constants";
 import useStore from "@/shared/store";
 
 definePageConfig({
@@ -23,17 +23,14 @@ const imageUrl = [banner1, banner2, banner3, banner4];
 export default function Index() {
 	const { user } = useStore();
 
-	const { isAdmin } = user || {};
-
-	const { data, forceRefreshAsync, loading, now } = useActivityCountByType({
-		queryByNow: isAdmin ? undefined : true,
+	const { data, forceRefreshAsync, loading } = useActivityCountByType({
 		ready: !!user,
 	});
 
 	const handleNavigateTo = (type: Type) => {
 		routePush("/activity/pages/activity-list", {
 			type: type,
-			start_time: isAdmin ? undefined : now.valueOf(),
+			status: ActivityStatus.running,
 		});
 	};
 
@@ -50,7 +47,7 @@ export default function Index() {
 					<View className="relative w-full">
 						<View className="absolute flex top-4 right-4 w-6 h-6 bg-primary-900">
 							<Text className="m-auto text-white font-bold">
-								{isAdmin ? item.total : item.running}
+								{item.running}
 							</Text>
 						</View>
 					</View>

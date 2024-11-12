@@ -18,7 +18,7 @@ export default function User() {
 
 	const { name = "访客", username, group, isAdmin, phone } = user || {};
 
-	const registed = !isNil(user);
+	const hasBeenRegister = !isNil(user);
 
 	const innerGroup = group as Group | undefined;
 
@@ -37,7 +37,7 @@ export default function User() {
 		</View>
 	);
 
-	const unregistedEntries = (
+	const unregisterEntries = (
 		<Cell.Group>
 			<Cell
 				title="注册"
@@ -80,7 +80,7 @@ export default function User() {
 		</>
 	);
 
-	const studenEntries = (
+	const studentEntries = (
 		<>
 			<Cell
 				title="待签到的活动"
@@ -88,7 +88,6 @@ export default function User() {
 				onClick={() =>
 					routePush("/activity/pages/activity-list", {
 						status: ActivityStatus.unsigned,
-						end_time: Date.now(),
 					})
 				}
 			></Cell>
@@ -121,10 +120,10 @@ export default function User() {
 		</>
 	);
 
-	const registedEntries = (
+	const registerEntries = (
 		<Cell.Group>
 			{commonBeforeEntries}
-			{isAdmin ? teacherEntries : studenEntries}
+			{isAdmin ? teacherEntries : studentEntries}
 			{commonAfterEntries}
 		</Cell.Group>
 	);
@@ -132,7 +131,7 @@ export default function User() {
 	return (
 		<View className="flex flex-col h-screen">
 			{avatar}
-			{registed ? registedEntries : unregistedEntries}
+			{hasBeenRegister ? registerEntries : unregisterEntries}
 		</View>
 	);
 }
