@@ -4,15 +4,24 @@ import banner1 from "../../static/banner/banner1.svg";
 import banner2 from "../../static/banner/banner2.svg";
 import banner3 from "../../static/banner/banner3.svg";
 import banner4 from "../../static/banner/banner4.svg";
+import scan1 from "../../static/scan/scanCode.svg";
 import { ConfigProvider, Image, PullRefresh } from "@taroify/core";
 import useActivityCountByType from "@/hooks/useActivityCountByType";
-import { usePageScroll } from "@tarojs/taro";
+import {
+	usePageScroll,
+	scanCode,
+	showToast,
+	getMenuButtonBoundingClientRect,
+} from "@tarojs/taro";
 import { useRef, useState } from "react";
 import { ActivityStatus, Theme } from "@/shared/constants";
 import useStore from "@/shared/store";
+import { useRequest } from "ahooks";
+import { activitySignin } from "@/api";
 
 definePageConfig({
-	navigationBarTitleText: "首页",
+	// navigationBarTitleText: "首页",
+	navigationStyle: "custom",
 	disableScroll: true,
 });
 
@@ -27,10 +36,33 @@ export default function Index() {
 		ready: !!user,
 	});
 
+	const { run: signActv } = useRequest(activitySignin, {
+		manual: true,
+		onSuccess() {
+			//...
+			showToast({
+				title: "成功",
+				icon: "success",
+				duration: 2000,
+			});
+		},
+	});
+
 	const handleNavigateTo = (type: Type) => {
 		routePush("/activity/pages/activity-list", {
 			type: type,
 			status: ActivityStatus.running,
+		});
+	};
+
+	//用户签到
+	const handleSigned = () => {
+		scanCode({
+			// onlyFromCamera: true,
+			success: (res) => {
+				//通过扫码得到的内容发起请求
+				signActv(res.code);
+			},
 		});
 	};
 
@@ -75,6 +107,25 @@ export default function Index() {
 				background: `linear-gradient(${Theme.Color.Primary}, ${Theme.Color.White})`,
 			}}
 		>
+			<View
+				className="sticky top-0 w-full bg-[#930a41] flex justify-center z-50"
+				style={{
+					height: `${getMenuButtonBoundingClientRect().top + getMenuButtonBoundingClientRect().height + 6.4}px`,
+				}}
+			>
+				<View className="relative left-0 bottom-0 w-0">
+					<View
+						className="absolute bottom-0 w-7 h-7 ml-2 mb-[0.4rem] mt-auto bg-[#930a41]"
+						onClick={handleSigned}
+					>
+						<Image className="w-7 h-7" src={scan1}></Image>
+					</View>
+				</View>
+
+				<View className="mx-auto mb-3 mt-auto">
+					<Text className="text-white">GiveMeFive</Text>
+				</View>
+			</View>
 			<ConfigProvider
 				theme={{
 					pullRefreshHeadColor: Theme.Color.White,

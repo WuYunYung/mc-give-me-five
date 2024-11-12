@@ -23,9 +23,16 @@ import { View } from "@tarojs/components";
 import { useBoolean, useMemoizedFn, useRequest } from "ahooks";
 import dayjs from "dayjs";
 import { inRange, isNil } from "lodash-es";
-import { FC, ReactNode, useEffect } from "react";
-import { showToast, showActionSheet, reLaunch, useRouter } from "@tarojs/taro";
+import { FC, ReactNode, } from "react";
+import {
+	showToast,
+	showActionSheet,
+	reLaunch,
+	useRouter,
+	showModal,
+} from "@tarojs/taro";
 import { DateFormat } from "@/shared/constants";
+import { routeBack } from "@/shared/route";
 
 definePageConfig({
 	navigationBarTitleText: "创建活动",
@@ -56,7 +63,18 @@ const DatePicker: FC<
 		</Popup>
 	);
 
-	const trigger = <View onClick={setTrue}>{children}</View>;
+	const unchangeTip = () => {
+		showToast({
+			title: "不可更改",
+			icon: "error",
+			duration: 2000,
+		});
+		setFalse;
+	};
+
+	const trigger = (
+		<View onClick={rest.readonly ? unchangeTip : setTrue}>{children}</View>
+	);
 
 	return (
 		<>
@@ -73,19 +91,24 @@ export default function () {
 
 	const isCreatiion = isNil(id);
 
-	useEffect(() => {
-		if (id) {
-			findActv(Number(id));
-		}
-	}, [id]);
-
-	const { run: findActv, data } = useRequest(activityRead, {
+	const { data } = useRequest(activityRead, {
 		defaultParams: [Number(id)],
-		manual: true,
+		ready: !!id,
 	});
 
 	const { run: changeActv } = useRequest(manageActivityPartialUpdate, {
 		manual: true,
+		onSuccess() {
+			showToast({
+				title: "成功",
+				icon: "success",
+				duration: 1000,
+			});
+
+			setTimeout(() => {
+				routeBack();
+			}, 1000);
+		},
 	});
 
 	const { run } = useRequest(manageActivityCreate, {
@@ -99,7 +122,7 @@ export default function () {
 
 	const datePickerRender = useMemoizedFn<
 		Exclude<FieldProps["children"], ReactNode | undefined>
-	>(({ value, onChange, onBlur }) => {
+	>(({ value, disabled, onChange, onBlur }) => {
 		const innerValue = dayjs(value).isValid()
 			? dayjs(value).toDate()
 			: new Date();
@@ -116,6 +139,7 @@ export default function () {
 				min={new Date()}
 				max={dayjs().add(1, "year").toDate()}
 				onBlur={onBlur}
+				readonly={disabled}
 			>
 				<Input value={displayValue} readonly placeholder="请选择开始时间" />
 			</DatePicker>
@@ -131,13 +155,19 @@ export default function () {
 				const { start_time, end_time, capacity } = entity;
 
 				if (dayjs(start_time).isAfter(end_time, "minute")) {
-					showToast({ title: "请选择正确的结束时间" });
+					showModal({
+						title: "提示",
+						content: "请选择正确的结束时间",
+					});
 					return;
 				}
 
 				if (id) {
 					if (data?.get_attenders_count! > capacity) {
-						showToast({ title: "请修改活动名额以容纳已报名学生" });
+						showModal({
+							title: "提示",
+							content: "请修改活动名额以大于已报名学生数量",
+						});
 					} else {
 						changeActv(Number(id), entity);
 					}
@@ -213,7 +243,7 @@ export default function () {
 							message: "请输入正确的活动名额",
 						},
 					]}
-					defaultValue={data?.get_attenders_count || 10}
+					defaultValue={data?.capacity || 10}
 				>
 					<Stepper min={1} max={4294967295} precision={0} className="ml-auto">
 						<Stepper.Button />
@@ -246,7 +276,7 @@ export default function () {
 						},
 					]}
 					defaultValue={data?.start_time}
-					// disabled={dayjs().isBefore(dayjs(data?.end_time)) ? true : false}
+					disabled={dayjs().isAfter(dayjs(data?.end_time)) ? true : false}
 				>
 					{datePickerRender}
 				</Field>
@@ -261,6 +291,7 @@ export default function () {
 						},
 					]}
 					defaultValue={data?.end_time}
+					disabled={dayjs().isAfter(dayjs(data?.end_time)) ? true : false}
 				>
 					{datePickerRender}
 				</Field>
