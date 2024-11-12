@@ -1,14 +1,9 @@
-import {
-	activityAttend,
-	activityQuit,
-	activityRead,
-	activitySignin,
-} from "@/api";
+import { activityAttend, activityQuit, activityRead } from "@/api";
 import { View } from "@tarojs/components";
 import ActivityDetailCard from "../../components/ActivityDetailCard";
 import { Button, SafeArea } from "@taroify/core";
 import dayjs from "dayjs";
-import { useRouter, scanCode, showModal, showToast } from "@tarojs/taro";
+import { useRouter, showModal, showToast } from "@tarojs/taro";
 import { useRequest } from "ahooks";
 import { routePush } from "@/shared/route";
 import useStore from "@/shared/store";
@@ -40,13 +35,6 @@ export default function () {
 		},
 	});
 
-	const { run: signActivity } = useRequest(activitySignin, {
-		manual: true,
-		onSuccess() {
-			refresh();
-		},
-	});
-
 	const { run: quitActivity } = useRequest(activityQuit, {
 		manual: true,
 		onSuccess() {
@@ -64,17 +52,6 @@ export default function () {
 				duration: 2000,
 			});
 		}
-	};
-
-	//用户签到
-	const handleSigned = () => {
-		scanCode({
-			// onlyFromCamera: true,
-			success: (res) => {
-				//通过扫码得到的内容发起请求
-				signActivity(res.code);
-			},
-		});
 	};
 
 	//用户取消报名
@@ -139,8 +116,8 @@ export default function () {
 				activity?.is_attend &&
 				dayjs(activity.start_time).valueOf() > dayjs().valueOf() && (
 					<View className="flex flex-col gap-4 p-4">
-						<Button block color="success" onClick={handleSigned}>
-							等待签到确认
+						<Button block color="success">
+							已报名
 						</Button>
 						<Button block color="default" onClick={handleQuit}>
 							取消报名
@@ -155,8 +132,8 @@ export default function () {
 				dayjs(activity.start_time).valueOf() < dayjs().valueOf() &&
 				dayjs(activity.end_time).valueOf() > dayjs().valueOf() && (
 					<View className="flex flex-col gap-4 p-4">
-						<Button block color="success" onClick={handleSigned}>
-							等待签到确认
+						<Button block color="success">
+							已报名
 						</Button>
 					</View>
 				)}
@@ -181,20 +158,12 @@ export default function () {
 					</View>
 				)}
 
-			{/* 老师-活动未结束 */}
-			{isAdmin &&
-				activity &&
-				dayjs(activity.end_time).valueOf() > dayjs().valueOf() && (
-					<View className="flex flex-col gap-4 px-4 pt-4">
-						<Button block color="primary" onClick={handleFindCode}>
-							生成签到码
-						</Button>
-					</View>
-				)}
-
 			{/* 老师-管理活动 */}
 			{isAdmin && activity && (
 				<View className="flex flex-col p-4 gap-4">
+					<Button block color="primary" onClick={handleFindCode}>
+						生成签到码
+					</Button>
 					<Button
 						block
 						variant="outlined"
