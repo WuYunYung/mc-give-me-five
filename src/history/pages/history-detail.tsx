@@ -2,33 +2,31 @@ import {
 	activityAttend,
 	activityQuit,
 	activityRead,
-	ActivityReadDetail,
 	activitySignin,
 } from "@/api";
 import { View } from "@tarojs/components";
 import ActivityDetailCard from "../../components/ActivityDetailCard";
 import { Button, SafeArea } from "@taroify/core";
 import dayjs from "dayjs";
-import {
-	useRouter,
-	scanCode,
-	showModal,
-	showToast,
-	useDidShow,
-} from "@tarojs/taro";
-import { useState } from "react";
+import { useRouter, scanCode, showModal, showToast } from "@tarojs/taro";
 import { useRequest } from "ahooks";
 import { routePush } from "@/shared/route";
 import useStore from "@/shared/store";
+import useBackShow from "@/hooks/useBackShow";
 
 export default function () {
 	const { params } = useRouter();
 
 	const { id } = params;
 
-	const [activity, setactivity] = useState<ActivityReadDetail>();
+	const { data: activity, refresh } = useRequest(activityRead, {
+		defaultParams: [Number(id)],
+		ready: !!id,
+	});
 
-	const { run: attendActv } = useRequest(activityAttend, {
+	useBackShow(refresh);
+
+	const { run: attendActivity } = useRequest(activityAttend, {
 		manual: true,
 		defaultParams: [Number(id)],
 		onSuccess() {
@@ -38,36 +36,27 @@ export default function () {
 				duration: 2000,
 			});
 
-			findActv(Number(id));
+			refresh();
 		},
 	});
 
-	const { run: findActv } = useRequest(activityRead, {
-		defaultParams: [Number(id)],
-		onSuccess(res) {
-			setactivity(res);
-		},
-	});
-
-	const { run: signActv } = useRequest(activitySignin, {
+	const { run: signActivity } = useRequest(activitySignin, {
 		manual: true,
 		onSuccess() {
-			//...
-			findActv(Number(id));
+			refresh();
 		},
 	});
 
-	const { run: quitActv } = useRequest(activityQuit, {
+	const { run: quitActivity } = useRequest(activityQuit, {
 		manual: true,
 		onSuccess() {
-			//...
-			findActv(Number(id));
+			refresh();
 		},
 	});
 
 	const handleAttendActivity = (id: number) => {
 		if (activity && activity?.get_attenders_count < activity?.capacity) {
-			attendActv(id);
+			attendActivity(id);
 		} else {
 			showToast({
 				title: "人数已满",
@@ -83,7 +72,7 @@ export default function () {
 			// onlyFromCamera: true,
 			success: (res) => {
 				//通过扫码得到的内容发起请求
-				signActv(res.code);
+				signActivity(res.code);
 			},
 		});
 	};
@@ -95,7 +84,7 @@ export default function () {
 			content: "确定取消报名吗？",
 			success: function (res) {
 				if (res.confirm) {
-					quitActv(Number(id));
+					quitActivity(Number(id));
 				}
 			},
 		});
@@ -226,10 +215,6 @@ export default function () {
 			)}
 		</>
 	);
-
-	useDidShow(() => {
-		findActv(Number(id));
-	});
 
 	return (
 		<View className="flex flex-col">
