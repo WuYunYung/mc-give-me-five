@@ -75,6 +75,20 @@ async function triggerRejection(error: Error) {
 	);
 }
 
+function getErrorMessage(data: any) {
+	let message: string | undefined;
+
+	if (Array.isArray(data) && isString(data.at(0))) {
+		message = data.at(0);
+	} else if (isString(data?.message)) {
+		message = data.message;
+	} else if (isString(data.detail)) {
+		message = data.detail;
+	}
+
+	return message;
+}
+
 const adapter: AxiosAdapter = async (config) => {
 	const wrappedConfig = await getWrappedConfig(config);
 
@@ -131,7 +145,7 @@ const adapter: AxiosAdapter = async (config) => {
 	if (!inRange(response.status, 200, 299)) {
 		const error: Error & {
 			response?: typeof response;
-		} = new Error(data.message || data.detail);
+		} = new Error(getErrorMessage(data));
 
 		error.response = response;
 
