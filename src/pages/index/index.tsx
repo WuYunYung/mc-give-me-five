@@ -39,7 +39,6 @@ export default function Index() {
 	const { run: signActv } = useRequest(activitySignin, {
 		manual: true,
 		onSuccess(res) {
-			console.log("singOK=>", res);
 			//...
 			showToast({
 				title: "成功",
@@ -53,9 +52,6 @@ export default function Index() {
 				});
 			}, 1000);
 		},
-		onError(err) {
-			console.log("err response=>", err);
-		},
 	});
 
 	const handleNavigateTo = (type: Type) => {
@@ -68,9 +64,8 @@ export default function Index() {
 	//用户签到
 	const handleSigned = () => {
 		scanCode({
-			// onlyFromCamera: true,
+			onlyFromCamera: true,
 			success: (res) => {
-				console.log("qrcode=>", res.result);
 				//通过扫码得到的内容发起请求
 				signActv(res.result);
 			},
