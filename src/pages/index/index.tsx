@@ -38,13 +38,19 @@ export default function Index() {
 
 	const { run: signActv } = useRequest(activitySignin, {
 		manual: true,
-		onSuccess() {
+		onSuccess(res) {
 			//...
 			showToast({
 				title: "成功",
 				icon: "success",
-				duration: 2000,
+				duration: 1000,
 			});
+
+			setTimeout(() => {
+				routePush("/history/pages/history-detail", {
+					id: res.id,
+				});
+			}, 1000);
 		},
 	});
 
@@ -58,10 +64,10 @@ export default function Index() {
 	//用户签到
 	const handleSigned = () => {
 		scanCode({
-			// onlyFromCamera: true,
+			onlyFromCamera: true,
 			success: (res) => {
 				//通过扫码得到的内容发起请求
-				signActv(res.code);
+				signActv(res.result);
 			},
 		});
 	};
