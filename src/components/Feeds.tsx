@@ -12,8 +12,6 @@ import { Plus } from "@taroify/icons";
 import { ITouchEvent, View } from "@tarojs/components";
 import {
 	createSelectorQuery,
-	useDidHide,
-	useDidShow,
 	getWindowInfo,
 	usePageScroll,
 } from "@tarojs/taro";
@@ -32,6 +30,7 @@ import {
 	useState,
 } from "react";
 import { Draft, produce } from "immer";
+import useBackShow from "@/hooks/useBackShow";
 
 type Mutate<T> = (updater: T[] | ((prevList: Draft<T>[]) => void)) => void;
 
@@ -126,14 +125,14 @@ function Feeds<T>(props: FeedsProps<T>, ref: Ref<Option<T>>): ReactElement {
 	});
 
 	const searchBarId = useCreation(() => uniqueId("feeds-search-bar-"), []);
-	const searchBarHeight = useRef(0);
+	const listMarginTop = useRef(0);
 	const windowHeight = useMemo(() => {
 		const { windowHeight } = getWindowInfo();
 
 		return windowHeight;
 	}, []);
 
-	const listHeight = propHeight ?? windowHeight - searchBarHeight.current;
+	const listHeight = propHeight ?? windowHeight - listMarginTop.current;
 
 	useLayoutEffect(() => {
 		if (ready.current || !isNil(propHeight) || disabledSearch) {
@@ -146,14 +145,12 @@ function Feeds<T>(props: FeedsProps<T>, ref: Ref<Option<T>>): ReactElement {
 			.select(`#${searchBarId}`)
 			.boundingClientRect((result) => {
 				const rect = Array.isArray(result) ? result[0] : result;
-				searchBarHeight.current = rect.height;
+				listMarginTop.current = rect.top;
 				ready.current = true;
 				update();
 			})
 			.exec();
 	}, [searchBarId, update, disabledSearch, propHeight]);
-
-	const shouldDidShowAutoRefresh = useRef(false);
 
 	const refreshList = useMemoizedFn(async () => {
 		const innerList = await runAsync({
@@ -163,34 +160,26 @@ function Feeds<T>(props: FeedsProps<T>, ref: Ref<Option<T>>): ReactElement {
 		update();
 	});
 
-	useDidShow(() => {
-		if (!shouldDidShowAutoRefresh.current) return;
-
-		!disabledAutoRefresh && refreshList();
-	});
-
-	useDidHide(() => {
-		shouldDidShowAutoRefresh.current = true;
-	});
+	useBackShow(() => !disabledAutoRefresh && refreshList());
 
 	const renderSearch = (
-		<View id={searchBarId}>
-			<Search
-				shape="rounded"
-				ref={searchRef}
-				placeholder="请输入搜索关键词"
-				onSearch={async (e) => {
-					const content = e.detail.value;
-					if (content === search.current) return;
-					search.current = content;
-					const innerList = await runAsync({ offset: 0 });
-					list.current = innerList || [];
-					update();
-				}}
-				onClear={handleClear}
-			/>
-		</View>
+		<Search
+			shape="rounded"
+			ref={searchRef}
+			placeholder="请输入搜索关键词"
+			onSearch={async (e) => {
+				const content = e.detail.value;
+				if (content === search.current) return;
+				search.current = content;
+				const innerList = await runAsync({ offset: 0 });
+				list.current = innerList || [];
+				update();
+			}}
+			onClear={handleClear}
+		/>
 	);
+
+	const anchor = <View id={searchBarId}></View>;
 
 	const mutate = useMemoizedFn<Mutate<T>>((updater) => {
 		let result: T[];
@@ -268,7 +257,7 @@ function Feeds<T>(props: FeedsProps<T>, ref: Ref<Option<T>>): ReactElement {
 	const [reachTop, setReachTop] = useState(true);
 
 	usePageScroll(({ scrollTop }) => {
-		const baseHeight = searchBarHeight.current;
+		const baseHeight = listMarginTop.current;
 
 		const innerReachTop = scrollTop <= Math.ceil(baseHeight);
 
@@ -305,6 +294,8 @@ function Feeds<T>(props: FeedsProps<T>, ref: Ref<Option<T>>): ReactElement {
 	return (
 		<>
 			{!disabledSearch && renderSearch}
+
+			{anchor}
 
 			{ready.current && listWithPullRefresh}
 

@@ -1,4 +1,5 @@
 import { routePush } from "@/shared/route";
+import { wrapPromiseWith } from "@/shared/utils";
 import { FloatingBubble } from "@taroify/core";
 import { AppsOutlined } from "@taroify/icons";
 import { showActionSheet } from "@tarojs/taro";
@@ -10,17 +11,10 @@ export default function RegisterEntries(props: {
 	groupName?: string;
 	onRefresh?: () => void;
 	disabledRegisterInfoEntry?: boolean;
-	disabledAdminEntry?: boolean;
 }) {
-	const {
-		groupId,
-		groupName,
-		onRefresh,
-		disabledRegisterInfoEntry,
-		disabledAdminEntry,
-	} = props;
+	const { groupId, groupName, onRefresh, disabledRegisterInfoEntry } = props;
 
-	const handleClick = useMemoizedFn(() => {
+	const handleClick = useMemoizedFn(async () => {
 		const options: {
 			name: string;
 			path: string;
@@ -43,42 +37,35 @@ export default function RegisterEntries(props: {
 				path: "/manage/pages/register/list",
 				disabled: disabledRegisterInfoEntry,
 			},
-			{
-				name: "管理员",
-				path: "/manage/pages/users/list",
-				query: {
-					isAdmin: "1",
-				},
-				disabled: disabledAdminEntry,
-			},
 		];
 
 		const validOptions = options.filter(({ disabled }) => !disabled);
 
 		const menus = validOptions.map(({ name }) => name);
 
-		showActionSheet({
+		const [error, result] = await wrapPromiseWith(showActionSheet)({
 			itemList: menus,
-			success(result) {
-				const option = validOptions.at(result.tapIndex);
-
-				if (!option) return;
-
-				routePush(
-					option.path,
-					{
-						groupId,
-						groupName,
-						...option.query,
-					},
-					() => {
-						if (option.shouldRefresh) {
-							onRefresh?.();
-						}
-					},
-				);
-			},
 		});
+
+		if (error) return;
+
+		const option = validOptions.at(result.tapIndex);
+
+		if (!option) return;
+
+		routePush(
+			option.path,
+			{
+				groupId,
+				groupName,
+				...option.query,
+			},
+			() => {
+				if (option.shouldRefresh) {
+					onRefresh?.();
+				}
+			},
+		);
 	});
 
 	return (
