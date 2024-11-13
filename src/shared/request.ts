@@ -170,6 +170,7 @@ export function registerInterceptors() {
 				if (error.message.length <= 6) {
 					showToast({
 						title: error.message,
+						icon: "error",
 					});
 				} else {
 					showModal({

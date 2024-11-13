@@ -38,13 +38,23 @@ export default function Index() {
 
 	const { run: signActv } = useRequest(activitySignin, {
 		manual: true,
-		onSuccess() {
+		onSuccess(res) {
+			console.log("singOK=>", res);
 			//...
 			showToast({
 				title: "成功",
 				icon: "success",
-				duration: 2000,
+				duration: 1000,
 			});
+
+			setTimeout(() => {
+				routePush("/history/pages/history-detail", {
+					id: res.id,
+				});
+			}, 1000);
+		},
+		onError(err) {
+			console.log("err response=>", err);
 		},
 	});
 
@@ -60,8 +70,9 @@ export default function Index() {
 		scanCode({
 			// onlyFromCamera: true,
 			success: (res) => {
+				console.log("qrcode=>", res.result);
 				//通过扫码得到的内容发起请求
-				signActv(res.code);
+				signActv(res.result);
 			},
 		});
 	};

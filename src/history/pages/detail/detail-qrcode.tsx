@@ -11,9 +11,9 @@ export default function () {
 	const { id } = params;
 
 	const { data, loading: findCodeLoading } = useRequest(
-		manageActivityGenerateCode,
+		() => manageActivityGenerateCode(Number(id), 10),
 		{
-			defaultParams: [Number(id)],
+			ready: !!id,
 			pollingInterval: 10000,
 			pollingWhenHidden: false,
 		},
