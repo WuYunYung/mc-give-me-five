@@ -10,9 +10,9 @@ namespace CloudRequestConfig {
 	export const X_WX_SERVICE = "django-9h64";
 }
 
-type WechatCloudRequest = typeof cloud.callContainer;
+type WeChatCloudRequest = typeof cloud.callContainer;
 
-type RequestParams = Parameters<WechatCloudRequest>[0];
+type RequestParams = Parameters<WeChatCloudRequest>[0];
 
 type Methods = Exclude<RequestParams["method"], undefined>;
 
@@ -63,7 +63,7 @@ async function getWrappedConfig(config: Config) {
 	return innerConfig;
 }
 
-async function tiggerRejection(error: Error) {
+async function triggerRejection(error: Error) {
 	const handlers = getInterceptorsRequestHandlers();
 
 	await Promise.all(
@@ -131,11 +131,11 @@ const adapter: AxiosAdapter = async (config) => {
 	if (!inRange(response.status, 200, 299)) {
 		const error: Error & {
 			response?: typeof response;
-		} = new Error(data.detail);
+		} = new Error(data.message || data.detail);
 
 		error.response = response;
 
-		await tiggerRejection(error);
+		await triggerRejection(error);
 
 		return Promise.reject(error);
 	}
@@ -147,7 +147,10 @@ export function registerAdapter() {
 }
 
 export function registerInterceptors() {
-	const gotoRegist = debounce(() => routeRedirect("/user/pages/register"), 200);
+	const gotoRegister = debounce(
+		() => routeRedirect("/user/pages/register"),
+		200,
+	);
 
 	axios.interceptors.request.use(
 		(config) => {
@@ -160,7 +163,7 @@ export function registerInterceptors() {
 			const { response } = error;
 
 			if (response.status === 403) {
-				return gotoRegist();
+				return gotoRegister();
 			}
 
 			if (error.message) {
