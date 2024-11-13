@@ -16,8 +16,9 @@ import { useMemo, useRef, useState } from "react";
 import { ActivityStatus, Theme } from "@/shared/constants";
 import useStore from "@/shared/store";
 import { useRequest } from "ahooks";
-import { activitySignin } from "@/api";
+import { ActivityRead, activitySignin } from "@/api";
 import { Scan } from "@taroify/icons";
+import { wrapPromiseWith } from "@/shared/utils";
 
 definePageConfig({
 	// navigationBarTitleText: "首页",
@@ -36,23 +37,25 @@ export default function Index() {
 		ready: !!user,
 	});
 
-	const { run: signActv } = useRequest(activitySignin, {
-		manual: true,
-		onSuccess(res) {
-			//...
-			showToast({
-				title: "成功",
-				icon: "success",
-				duration: 1000,
-			});
-
-			setTimeout(() => {
-				routePush("/history/pages/history-detail", {
-					id: res.id,
+	const { run: signActivity } = useRequest(
+		activitySignin as unknown as ({ code: string }) => Promise<ActivityRead>,
+		{
+			manual: true,
+			onSuccess(res) {
+				showToast({
+					title: "成功",
+					icon: "success",
+					duration: 1000,
 				});
-			}, 1000);
+
+				setTimeout(() => {
+					routePush("/history/pages/history-detail", {
+						id: res.id,
+					});
+				}, 1000);
+			},
 		},
-	});
+	);
 
 	const handleNavigateTo = (type: Type) => {
 		routePush("/activity/pages/activity-list", {
@@ -62,14 +65,15 @@ export default function Index() {
 	};
 
 	//用户签到
-	const handleSigned = () => {
-		scanCode({
+	const handleSigned = async () => {
+		const [, res] = await wrapPromiseWith(scanCode)({
 			onlyFromCamera: true,
-			success: (res) => {
-				//通过扫码得到的内容发起请求
-				signActv(res.result);
-			},
 		});
+
+		if (res) {
+			//通过扫码得到的内容发起请求
+			signActivity({ code: res.result });
+		}
 	};
 
 	const renderMap = (
