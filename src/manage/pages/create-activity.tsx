@@ -23,7 +23,7 @@ import { View } from "@tarojs/components";
 import { useBoolean, useMemoizedFn, useRequest } from "ahooks";
 import dayjs from "dayjs";
 import { inRange, isNil } from "lodash-es";
-import { FC, ReactNode, } from "react";
+import { FC, ReactNode } from "react";
 import {
 	showToast,
 	showActionSheet,
@@ -33,6 +33,7 @@ import {
 } from "@tarojs/taro";
 import { DateFormat } from "@/shared/constants";
 import { routeBack } from "@/shared/route";
+import { wrapPromiseWith } from "@/shared/utils";
 
 definePageConfig({
 	navigationBarTitleText: "创建活动",
@@ -210,19 +211,21 @@ export default function () {
 								placeholder="请选择活动类型"
 								readonly
 								value={value}
-								onClick={() =>
-									showActionSheet({
+								onClick={async () => {
+									const [error, result] = await wrapPromiseWith(
+										showActionSheet,
+									)({
 										itemList: [0, 1, 2, 3].map((num) => num.toString()),
-										success(result) {
-											const value = result.tapIndex;
-											onChange?.(value);
-											onBlur?.(value);
-										},
-										fail() {
-											onBlur?.(value);
-										},
-									})
-								}
+									});
+
+									if (error) {
+										onBlur?.(value);
+										return;
+									}
+									const { tapIndex } = result;
+									onChange?.(tapIndex);
+									onBlur?.(tapIndex);
+								}}
 							/>
 						);
 					}}

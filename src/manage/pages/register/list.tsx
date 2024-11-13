@@ -133,7 +133,6 @@ export default function () {
 				groupId={groupId}
 				groupName={innerGroupName}
 				disabledRegisterInfoEntry
-				disabledAdminEntry
 			/>
 		</>
 	);

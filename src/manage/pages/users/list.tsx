@@ -1,7 +1,7 @@
 import { manageUserDelete, manageUserList } from "@/api";
 import Feeds from "@/components/Feeds";
 import { routePush } from "@/shared/route";
-import { Avatar, Button, Cell, SwipeCell } from "@taroify/core";
+import { Avatar, Button, Cell, SwipeCell, Tabs } from "@taroify/core";
 import { useRouter, setNavigationBarTitle } from "@tarojs/taro";
 import { useMount, useRequest } from "ahooks";
 import { showLoading, hideLoading, showModal, showToast } from "@tarojs/taro";
@@ -19,12 +19,9 @@ export default function () {
 		groupId?: string;
 		gradeId?: string;
 		groupName?: string;
-		isAdmin?: "0" | "1";
 	}>();
 
-	const { groupId, gradeId, groupName, isAdmin } = params;
-
-	const innerIsAdmin = isAdmin === "1";
+	const { groupId, gradeId, groupName } = params;
 
 	const innerGroupName = useMemo(
 		() => (groupName ? decodeURIComponent(groupName) : ""),
@@ -36,16 +33,13 @@ export default function () {
 		setNavigationBarTitle({
 			get title() {
 				const baseName = decodeURIComponent(innerGroupName);
-				if (innerIsAdmin) {
-					return `${baseName}（管理员）`;
-				}
+
 				return baseName;
 			},
 		});
 	});
 
 	const { runAsync: deleteUser } = useRequest(manageUserDelete, {
-		ready: !innerIsAdmin,
 		manual: true,
 		onBefore() {
 			showLoading();
@@ -61,85 +55,94 @@ export default function () {
 		},
 	});
 
-	const feeds = (
-		<Feeds
-			service={async (params) => {
-				const requestParams: Exclude<
-					Parameters<typeof manageUserList>[0],
-					undefined
-				> = { ...params, isAdmin: innerIsAdmin ? "true" : "false" };
+	const getFeeds = (params: { isAdmin: boolean }) => {
+		const { isAdmin } = params;
 
-				if (gradeId) {
-					requestParams.group__grade_id = gradeId;
-				}
+		return (
+			<Feeds
+				service={async (params) => {
+					const requestParams: Exclude<
+						Parameters<typeof manageUserList>[0],
+						undefined
+					> = { ...params, isAdmin: isAdmin ? "true" : "false" };
 
-				if (groupId) {
-					requestParams.group_id = groupId;
-				}
+					if (gradeId) {
+						requestParams.group__grade_id = gradeId;
+					}
 
-				const { results = [] } = await manageUserList(requestParams);
+					if (groupId) {
+						requestParams.group_id = groupId;
+					}
 
-				return results;
-			}}
-			renderContent={(list, { mutate }) => {
-				return (
-					<Cell.Group>
-						{list.map((user, index) => {
-							return (
-								<SwipeCell key={user.id} disabled={innerIsAdmin}>
-									<Cell
-										title={user.name}
-										brief={user.username}
-										icon={
-											<Avatar className="mr-2">
-												{user.name.at(0)?.toUpperCase()}
-											</Avatar>
-										}
-										align="center"
-										isLink={!innerIsAdmin}
-										onClick={() =>
-											!innerIsAdmin &&
-											routePush("/user/pages/detail", {
-												userId: user.id,
-											})
-										}
-									>
-										{user.group.name}
-									</Cell>
-									<SwipeCell.Actions side="right">
-										<Button
-											className="h-full"
-											variant="text"
-											shape="square"
-											color="primary"
-											onClick={async () => {
-												const { confirm } = await showModal({
-													content: `确定要删除 ${user.name} 吗？`,
-												});
+					const { results = [] } = await manageUserList(requestParams);
 
-												if (!confirm) return;
+					return results;
+				}}
+				renderContent={(list, { mutate }) => {
+					return (
+						<Cell.Group>
+							{list.map((user, index) => {
+								return (
+									<SwipeCell key={user.id}>
+										<Cell
+											title={user.name}
+											brief={user.username}
+											icon={
+												<Avatar className="mr-2">
+													{user.name.at(0)?.toUpperCase()}
+												</Avatar>
+											}
+											align="center"
+											onClick={() =>
+												routePush("/user/pages/detail", {
+													userId: user.id,
+												})
+											}
+										>
+											{user.group.name}
+										</Cell>
+										<SwipeCell.Actions side="right">
+											<Button
+												className="h-full"
+												variant="text"
+												shape="square"
+												color="primary"
+												onClick={async () => {
+													const { confirm } = await showModal({
+														content: `确定要删除 ${user.name} 吗？`,
+													});
 
-												await deleteUser(user.id!);
+													if (!confirm) return;
 
-												mutate((list) => {
-													list.splice(index, 1);
-												});
-											}}
-											icon={<DeleteOutlined />}
-										></Button>
-									</SwipeCell.Actions>
-								</SwipeCell>
-							);
-						})}
-					</Cell.Group>
-				);
-			}}
-		/>
+													await deleteUser(user.id!);
+
+													mutate((list) => {
+														list.splice(index, 1);
+													});
+												}}
+												icon={<DeleteOutlined />}
+											></Button>
+										</SwipeCell.Actions>
+									</SwipeCell>
+								);
+							})}
+						</Cell.Group>
+					);
+				}}
+			/>
+		);
+	};
+
+	const tabs = (
+		<Tabs animated>
+			<Tabs.TabPane title="学生">{getFeeds({ isAdmin: false })}</Tabs.TabPane>
+			<Tabs.TabPane title="管理员">{getFeeds({ isAdmin: true })}</Tabs.TabPane>
+		</Tabs>
 	);
 
 	return (
 		<>
-			{feeds}
+			{tabs}
 			<RegisterEntries groupId={groupId} groupName={innerGroupName} />
 		</>
 	);
