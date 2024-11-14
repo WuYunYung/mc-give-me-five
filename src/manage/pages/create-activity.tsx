@@ -2,6 +2,7 @@ import {
 	ActivityCreate,
 	activityRead,
 	manageActivityCreate,
+	manageActivityDelete,
 	manageActivityPartialUpdate,
 } from "@/api";
 import {
@@ -58,11 +59,7 @@ const DatePicker: FC<
 		</Popup>
 	);
 
-	const trigger = rest.readonly ? (
-		<View onClick={setTrue}>{children}</View>
-	) : (
-		children
-	);
+	const trigger = <View onClick={setTrue}>{children}</View>;
 
 	return (
 		<>
@@ -88,11 +85,23 @@ export default function () {
 		manual: true,
 		async onSuccess() {
 			await showToastAsync({
-				title: "成功",
+				title: "更新成功",
 				icon: "success",
 			});
 
 			routeBack();
+		},
+	});
+
+	const { run: deleteActv } = useRequest(manageActivityDelete, {
+		manual: true,
+		async onSuccess() {
+			await showToastAsync({
+				title: "删除成功",
+				icon: "success",
+			});
+
+			routeBack({ step: 2 });
 		},
 	});
 
@@ -107,7 +116,7 @@ export default function () {
 
 	const datePickerRender = useMemoizedFn<
 		Exclude<FieldProps["children"], ReactNode | undefined>
-	>(({ value, disabled, onChange, onBlur }) => {
+	>(({ value, onChange, onBlur }) => {
 		const innerValue = dayjs(value).isValid()
 			? dayjs(value).toDate()
 			: new Date();
@@ -124,12 +133,23 @@ export default function () {
 				min={new Date()}
 				max={dayjs().add(1, "year").toDate()}
 				onBlur={onBlur}
-				readonly={disabled}
 			>
 				<Input value={displayValue} readonly placeholder="请选择开始时间" />
 			</DatePicker>
 		);
 	});
+
+	const handleDeleteActv = () => {
+		showModal({
+			title: "提示",
+			content: `确定删除活动：${data?.name}吗`,
+			success: function (res) {
+				if (res.confirm) {
+					deleteActv(Number(id));
+				}
+			},
+		});
+	};
 
 	const form = (
 		<Form
@@ -263,7 +283,6 @@ export default function () {
 						},
 					]}
 					defaultValue={data?.start_time}
-					disabled={dayjs().isAfter(dayjs(data?.end_time)) ? true : false}
 				>
 					{datePickerRender}
 				</Field>
@@ -278,7 +297,6 @@ export default function () {
 						},
 					]}
 					defaultValue={data?.end_time}
-					disabled={dayjs().isAfter(dayjs(data?.end_time)) ? true : false}
 				>
 					{datePickerRender}
 				</Field>
@@ -302,10 +320,22 @@ export default function () {
 					/>
 				</Field>
 			</Cell.Group>
-			<View className="p-4">
+			<View className="p-4 flex flex-col gap-4">
 				<Button block color="primary" formType="submit">
 					提交
 				</Button>
+
+				{!isCreation && (
+					<Button
+						block
+						color="danger"
+						formType="button"
+						variant="outlined"
+						onClick={handleDeleteActv}
+					>
+						删除
+					</Button>
+				)}
 			</View>
 		</Form>
 	);
