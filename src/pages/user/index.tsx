@@ -19,6 +19,8 @@ import { useState } from "react";
 
 definePageConfig({
 	navigationBarTitleText: "我的",
+	disableScroll: true,
+	backgroundColor: Theme.Color.Background,
 });
 
 export default function User() {
@@ -139,7 +141,9 @@ export default function User() {
 	const content = (
 		<View className="flex flex-col h-screen">
 			{avatar}
-			{hasBeenRegister ? registerEntries : unregisterEntries}
+			<View className="flex-1 bg-white">
+				{hasBeenRegister ? registerEntries : unregisterEntries}
+			</View>
 		</View>
 	);
 
@@ -150,7 +154,6 @@ export default function User() {
 
 	return (
 		<>
-			<View className="bg-primary-900 h-[50vh]"></View>
 			<ConfigProvider
 				theme={{
 					pullRefreshHeadColor: Theme.Color.White,
@@ -159,7 +162,7 @@ export default function User() {
 				}}
 			>
 				<PullRefresh
-					className="fixed left-0 top-0 w-full"
+					className="w-full bg-primary-900"
 					loading={loading}
 					reachTop={reachTop}
 					onRefresh={async () => {

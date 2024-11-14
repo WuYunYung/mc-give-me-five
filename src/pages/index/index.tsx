@@ -28,7 +28,6 @@ import { wrapPromiseWith } from "@/shared/utils";
 import { isEmpty } from "lodash-es";
 
 definePageConfig({
-	// navigationBarTitleText: "首页",
 	navigationStyle: "custom",
 	disableScroll: true,
 });

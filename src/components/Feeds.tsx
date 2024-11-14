@@ -69,8 +69,7 @@ const LIMIT = 10;
 /**
  * 列表组件
  *
- * 集成搜索、上拉加载、空状态
- * @TODO 下拉更新
+ * 集成搜索、上拉加载、空状态、下拉刷新
  */
 function Feeds<T>(props: FeedsProps<T>, ref: Ref<Option<T>>): ReactElement {
 	const {
