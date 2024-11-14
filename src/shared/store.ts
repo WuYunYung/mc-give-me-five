@@ -10,6 +10,7 @@ import {
 	showLoading,
 	hideLoading,
 } from "@tarojs/taro";
+import { wrapPromiseWith } from "./utils";
 
 type Store = {
 	/**
@@ -43,27 +44,22 @@ const useStore = create<Store>()(
 						state.visitor = false;
 					});
 				},
-				/**
-				 * 加载用户信息
-				 *
-				 * @TODO 考虑没有注册时的跳转问题
-				 */
+				/** 加载用户信息 */
 				loadUser: async () => {
-					const { user } = get();
+					const { user: storeUser } = get();
 
-					const shouldShowLoading = isNil(user);
+					const shouldShowLoading = isNil(storeUser);
 
-					try {
-						shouldShowLoading && showLoading();
-						const user = await userProfileRead();
+					shouldShowLoading && showLoading();
+					const [, user] = await wrapPromiseWith(userProfileRead)();
 
-						user &&
-							set((state) => {
-								state.user = user as unknown as UserProfileUpdate;
-							});
-					} finally {
-						shouldShowLoading && hideLoading();
+					if (user) {
+						set((state) => {
+							state.user = user as unknown as UserProfileUpdate;
+						});
 					}
+
+					shouldShowLoading && hideLoading();
 				},
 			};
 		}),
