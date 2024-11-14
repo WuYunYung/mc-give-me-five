@@ -3,12 +3,10 @@ import { PropsWithChildren } from "react";
 import "./app.css";
 import { registerInterceptors, registerAdapter } from "./shared/request";
 import useStore from "./shared/store";
-import {
-	getUpdateManager,
-	useLaunch,
-	showModal,
-	useDidShow,
-} from "@tarojs/taro";
+import { getUpdateManager, showModal, useDidShow } from "@tarojs/taro";
+import { useRequest } from "ahooks";
+import useBackShow from "./hooks/useBackShow";
+import { AxiosError } from "axios";
 
 registerAdapter();
 registerInterceptors();
@@ -33,8 +31,21 @@ function checkUpdate() {
 function App({ children }: PropsWithChildren<any>) {
 	const { loadUser } = useStore();
 
-	useLaunch(() => {
-		loadUser();
+	const { refresh } = useRequest(
+		async () => {
+			const [error, user] = await loadUser();
+
+			if (error ? (error as AxiosError)?.response?.status !== 403 : !user) {
+				return Promise.reject();
+			}
+		},
+		{
+			retryCount: 5,
+		},
+	);
+
+	useBackShow(() => {
+		refresh();
 	});
 
 	useDidShow(() => {

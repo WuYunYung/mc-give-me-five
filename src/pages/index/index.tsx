@@ -43,7 +43,9 @@ export default function Index() {
 	});
 
 	const { run: signActivity } = useRequest(
-		activitySignin as unknown as ({ code: string }) => Promise<ActivityRead>,
+		activitySignin as unknown as (query: {
+			code: string;
+		}) => Promise<ActivityRead>,
 		{
 			manual: true,
 			async onSuccess(res) {
