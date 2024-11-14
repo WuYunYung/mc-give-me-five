@@ -7,7 +7,6 @@ export default defineAppConfig({
 		{
 			root: "user",
 			pages: [
-				"pages/identity",
 				"pages/register",
 				"pages/summary",
 				"pages/mobile",

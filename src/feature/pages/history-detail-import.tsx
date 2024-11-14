@@ -4,7 +4,8 @@ import { Button, Cell } from "@taroify/core";
 import { View, Text } from "@tarojs/components";
 import { useRouter, chooseMessageFile, showModal } from "@tarojs/taro";
 import { useMemoizedFn, useRequest } from "ahooks";
-import { getTableMatrixByFile, readFile } from "../utils";
+import { getTableMatrixByFile, PromiseLike } from "../utils";
+import { showToastAsync } from "@/shared/utils";
 
 export default function () {
 	const { params } = useRouter<{
@@ -15,7 +16,7 @@ export default function () {
 
 	const guide = (
 		<Cell.Group bordered={false}>
-			<Cell title="名单导入:" brief={"请选择一个excel文件"} />
+			<Cell title="名单导入:" brief="请选择一个excel文件" />
 			<View className="px-4">
 				<Text className="text-sm text-gray-500">
 					注意事项:文件大小限制为2MB，记录条数限制为300条，文件格式要求第一列为用户学号，学号必须是在6到10位的纯数字，其他非法学号将被忽略。
@@ -26,7 +27,11 @@ export default function () {
 
 	const { run } = useRequest(manageAttenderCreate, {
 		manual: true,
-		onSuccess() {
+		async onSuccess() {
+			await showToastAsync({
+				title: "导入成功",
+				icon: "success",
+			});
 			routeBack();
 		},
 	});
@@ -38,7 +43,7 @@ export default function () {
 			extension: ["xls", "xlsx"],
 		});
 
-		const fileData = await readFile(tempFiles.at(0)?.path!);
+		const fileData = await PromiseLike.readFile(tempFiles.at(0)?.path!);
 
 		// 获取工作表的所有行，转换为矩阵
 		const matrix = await getTableMatrixByFile(fileData.data as ArrayBuffer);

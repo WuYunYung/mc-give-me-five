@@ -24,16 +24,10 @@ import { useBoolean, useMemoizedFn, useRequest } from "ahooks";
 import dayjs from "dayjs";
 import { inRange, isNil } from "lodash-es";
 import { FC, ReactNode } from "react";
-import {
-	showToast,
-	showActionSheet,
-	reLaunch,
-	useRouter,
-	showModal,
-} from "@tarojs/taro";
+import { showActionSheet, reLaunch, useRouter, showModal } from "@tarojs/taro";
 import { DateFormat } from "@/shared/constants";
 import { routeBack } from "@/shared/route";
-import { wrapPromiseWith } from "@/shared/utils";
+import { showToastAsync, wrapPromiseWith } from "@/shared/utils";
 
 definePageConfig({
 	navigationBarTitleText: "创建活动",
@@ -64,17 +58,10 @@ const DatePicker: FC<
 		</Popup>
 	);
 
-	const unchangeTip = () => {
-		showToast({
-			title: "不可更改",
-			icon: "error",
-			duration: 2000,
-		});
-		setFalse;
-	};
-
-	const trigger = (
-		<View onClick={rest.readonly ? unchangeTip : setTrue}>{children}</View>
+	const trigger = rest.readonly ? (
+		<View onClick={setTrue}>{children}</View>
+	) : (
+		children
 	);
 
 	return (
@@ -90,25 +77,22 @@ export default function () {
 
 	const { id } = params;
 
-	const isCreatiion = isNil(id);
+	const isCreation = isNil(id);
 
 	const { data } = useRequest(activityRead, {
 		defaultParams: [Number(id)],
 		ready: !!id,
 	});
 
-	const { run: changeActv } = useRequest(manageActivityPartialUpdate, {
+	const { run: updateActivity } = useRequest(manageActivityPartialUpdate, {
 		manual: true,
-		onSuccess() {
-			showToast({
+		async onSuccess() {
+			await showToastAsync({
 				title: "成功",
 				icon: "success",
-				duration: 1000,
 			});
 
-			setTimeout(() => {
-				routeBack();
-			}, 1000);
+			routeBack();
 		},
 	});
 
@@ -170,7 +154,7 @@ export default function () {
 							content: "请修改活动名额以大于已报名学生数量",
 						});
 					} else {
-						changeActv(Number(id), entity);
+						updateActivity(Number(id), entity);
 					}
 				} else {
 					run(entity);
@@ -326,5 +310,5 @@ export default function () {
 		</Form>
 	);
 
-	return <View>{isCreatiion ? form : data ? form : <Empty />}</View>;
+	return <View>{isCreation ? form : data ? form : <Empty />}</View>;
 }

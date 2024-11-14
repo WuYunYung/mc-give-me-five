@@ -5,22 +5,13 @@ import useStore from "@/shared/store";
 import { Button, Cell, Field, Form, Image, Input } from "@taroify/core";
 import { ContactOutlined, Edit, PhoneOutlined } from "@taroify/icons";
 import { View } from "@tarojs/components";
-import {
-	useRouter,
-	showModal,
-	showLoading,
-	hideLoading,
-	reLaunch,
-} from "@tarojs/taro";
+import { showModal, showLoading, hideLoading, reLaunch } from "@tarojs/taro";
 import { useRequest } from "ahooks";
 
 const LOGO_PATH = "https://cmc.szu.edu.cn/images/logo.png";
 
 export default function () {
-	const { params } = useRouter();
-	const { toggleVisitor } = useStore();
-
-	const isTeacher = params.isTeacher === "1";
+	const { toggleVisitor, loadUser } = useStore();
 
 	const logo = (
 		<View className="bg-primary-900 px-4 flex justify-center items-center h-1s5 overflow-hidden w-full">
@@ -28,12 +19,11 @@ export default function () {
 		</View>
 	);
 
-	const idFieldName = isTeacher ? "校园卡号" : "学号";
-
 	const { run } = useRequest(userRegister, {
 		manual: true,
-		onSuccess() {
+		async onSuccess() {
 			toggleVisitor(false);
+			await loadUser();
 			reLaunch({
 				url: "/pages/index/index",
 			});
@@ -73,20 +63,20 @@ export default function () {
 						<Input placeholder={PLACEHOLDER} />
 					</Field>
 					<Field
-						label={idFieldName}
+						label="学号"
 						name="username"
 						icon={<Edit />}
 						rules={[
 							{
 								pattern: Pattern.userName,
-								message: `请输入正确的${idFieldName}`,
+								message: "请输入正确的学号",
 							},
 						]}
 					>
 						<Input placeholder={PLACEHOLDER} />
 					</Field>
 					<Field
-						label={"电话"}
+						label="电话"
 						name="phone"
 						icon={<PhoneOutlined />}
 						rules={[

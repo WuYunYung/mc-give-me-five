@@ -4,11 +4,16 @@ import banner1 from "../../static/banner/banner1.svg";
 import banner2 from "../../static/banner/banner2.svg";
 import banner3 from "../../static/banner/banner3.svg";
 import banner4 from "../../static/banner/banner4.svg";
-import { Button, ConfigProvider, Image, PullRefresh } from "@taroify/core";
+import {
+	Button,
+	ConfigProvider,
+	Image,
+	PullRefresh,
+	Skeleton,
+} from "@taroify/core";
 import useActivityCountByType from "@/hooks/useActivityCountByType";
 import {
 	scanCode,
-	showToast,
 	getMenuButtonBoundingClientRect,
 	getWindowInfo,
 } from "@tarojs/taro";
@@ -18,10 +23,10 @@ import useStore from "@/shared/store";
 import { useRequest } from "ahooks";
 import { ActivityRead, activitySignin } from "@/api";
 import { Scan } from "@taroify/icons";
-import { wrapPromiseWith } from "@/shared/utils";
+import { showToastAsync, wrapPromiseWith } from "@/shared/utils";
+import { isEmpty } from "lodash-es";
 
 definePageConfig({
-	// navigationBarTitleText: "首页",
 	navigationStyle: "custom",
 	disableScroll: true,
 });
@@ -41,18 +46,15 @@ export default function Index() {
 		activitySignin as unknown as ({ code: string }) => Promise<ActivityRead>,
 		{
 			manual: true,
-			onSuccess(res) {
-				showToast({
+			async onSuccess(res) {
+				await showToastAsync({
 					title: "成功",
 					icon: "success",
-					duration: 1000,
 				});
 
-				setTimeout(() => {
-					routePush("/history/pages/history-detail", {
-						id: res.id,
-					});
-				}, 1000);
+				routePush("/history/pages/history-detail", {
+					id: res.id,
+				});
 			},
 		},
 	);
@@ -76,31 +78,37 @@ export default function Index() {
 		}
 	};
 
+	const renderSkeleton = new Array(4)
+		.fill(null)
+		.map((_, index) => (
+			<Skeleton key={index} className="h-40 w-full rounded-lg opacity-70" />
+		));
+
+	const renderContent = data.map((item) => (
+		<View
+			key={item.type}
+			className="w-full box-border h-40 bg-white flex flex-col border-solid border-gray-300 rounded-lg"
+			onClick={() => {
+				handleNavigateTo(item.type as Type);
+			}}
+		>
+			<View className="relative w-full">
+				<View className="absolute flex top-4 right-4 w-6 h-6 bg-primary-900">
+					<Text className="m-auto text-white font-bold">{item.running}</Text>
+				</View>
+			</View>
+			<Image className="box-border w-full h-40" src={imageUrl[item.type]} />
+			<View className="relative bottom-8">
+				<Text className="absolute ml-4 font-bold text-lg text-black">
+					{`类型${item.type}`}
+				</Text>
+			</View>
+		</View>
+	));
+
 	const renderMap = (
 		<View className="flex flex-col p-4 gap-4">
-			{data.map((item) => (
-				<View
-					key={item.type}
-					className="w-full box-border h-40 bg-white flex flex-col border-solid border-gray-300 rounded-lg"
-					onClick={() => {
-						handleNavigateTo(item.type as Type);
-					}}
-				>
-					<View className="relative w-full">
-						<View className="absolute flex top-4 right-4 w-6 h-6 bg-primary-900">
-							<Text className="m-auto text-white font-bold">
-								{item.running}
-							</Text>
-						</View>
-					</View>
-					<Image className="box-border w-full h-40" src={imageUrl[item.type]} />
-					<View className="relative bottom-8">
-						<Text className="absolute ml-4 font-bold text-lg text-black">
-							{`类型${item.type}`}
-						</Text>
-					</View>
-				</View>
-			))}
+			{isEmpty(data) ? renderSkeleton : renderContent}
 		</View>
 	);
 

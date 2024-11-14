@@ -56,7 +56,7 @@ const UserForm: FC<UserFormProps> = (props) => {
 						<Input placeholder={PLACEHOLDER} />
 					</Field>
 					<Field
-						label={"电话"}
+						label="电话"
 						name="phone"
 						icon={<PhoneOutlined />}
 						rules={[
