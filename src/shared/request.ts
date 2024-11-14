@@ -3,6 +3,7 @@ import axios, { AxiosResponse, type AxiosAdapter } from "axios";
 import { debounce, inRange, isString } from "lodash-es";
 import queryString from "query-string";
 import { routeRedirect } from "./route";
+import { wrapPromiseWith } from "./utils";
 
 namespace CloudRequestConfig {
 	export const CLOUD_ENV = "prod-0gefozow13dd7576";
@@ -187,7 +188,7 @@ export function registerInterceptors() {
 						icon: "error",
 					});
 				} else {
-					showModal({
+					wrapPromiseWith(showModal)({
 						content: error.message,
 					});
 				}
