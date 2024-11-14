@@ -3,12 +3,13 @@ import { View } from "@tarojs/components";
 import ActivityDetailCard from "../../components/ActivityDetailCard";
 import { Button, SafeArea } from "@taroify/core";
 import dayjs from "dayjs";
-import { useRouter, showModal } from "@tarojs/taro";
+import { useRouter, showModal, setNavigationBarTitle } from "@tarojs/taro";
 import { useRequest } from "ahooks";
 import { routePush } from "@/shared/route";
 import useStore from "@/shared/store";
 import useBackShow from "@/hooks/useBackShow";
 import { showToastAsync } from "@/shared/utils";
+import { useEffect } from "react";
 
 export default function () {
 	const { params } = useRouter();
@@ -20,6 +21,12 @@ export default function () {
 		ready: !!id,
 	});
 
+	useEffect(() => {
+		if (activity) {
+			setNavigationBarTitle({ title: `${activity.name}` });
+		}
+	}, [activity]);
+
 	useBackShow(refresh);
 
 	const { run: attendActivity } = useRequest(activityAttend, {
@@ -27,7 +34,7 @@ export default function () {
 		defaultParams: [Number(id)],
 		onSuccess() {
 			showToastAsync({
-				title: "成功",
+				title: "签到成功",
 				icon: "success",
 			});
 
@@ -44,7 +51,15 @@ export default function () {
 
 	const handleAttendActivity = (id: number) => {
 		if (activity && activity?.get_attenders_count < activity?.capacity) {
-			attendActivity(id);
+			showModal({
+				title: "提示",
+				content: "确定报名吗？",
+				success: function (res) {
+					if (res.confirm) {
+						attendActivity(id);
+					}
+				},
+			});
 		} else {
 			showToastAsync({
 				title: "人数已满",
@@ -132,7 +147,7 @@ export default function () {
 				dayjs(activity.end_time).valueOf() > dayjs().valueOf() && (
 					<View className="flex flex-col gap-4 p-4">
 						<Button block color="success">
-							已报名
+							{activity.is_signed ? "已签到" : "已报名"}
 						</Button>
 					</View>
 				)}
@@ -145,7 +160,7 @@ export default function () {
 					<View className="flex flex-col gap-4 p-4">
 						{activity.is_signed && (
 							<Button block color="primary">
-								已参加
+								已签到
 							</Button>
 						)}
 
