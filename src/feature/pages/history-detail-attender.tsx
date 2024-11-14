@@ -1,4 +1,5 @@
 import {
+	activityRead,
 	manageAttenderCreate,
 	manageAttenderDelete,
 	manageAttenderList,
@@ -60,6 +61,11 @@ export default function () {
 		setOpen(!open);
 	};
 
+	const { data: activity } = useRequest(activityRead, {
+		defaultParams: [Number(id)],
+		ready: !!id,
+	});
+
 	const {
 		run: findAttender,
 		data: attenders,
@@ -108,12 +114,12 @@ export default function () {
 
 	const exportToExcel = async () => {
 		const transformedAttendees = attenders?.results?.map((item) => ({
-			grade: item.user.group.grade.name,
-			group: item.user.group.name,
-			name: item.user.name,
-			phone: item.user.phone,
-			username: item.user.username,
-			status: item.status,
+			年级: item.user.group.grade.name,
+			班级: item.user.group.name,
+			学生姓名: item.user.name,
+			学生电话: item.user.phone,
+			学生学号: item.user.username,
+			活动状态: item.status ? "已签到" : "未签到",
 		}));
 
 		if (!transformedAttendees) {
@@ -146,7 +152,7 @@ export default function () {
 		if (res) {
 			shareFileMessage({
 				filePath: tempFilePath,
-				fileName: "test.xlsx",
+				fileName: `${activity?.name}.xlsx`,
 			});
 		}
 	};
