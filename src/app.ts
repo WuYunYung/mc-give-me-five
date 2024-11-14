@@ -3,7 +3,7 @@ import { PropsWithChildren } from "react";
 import "./app.css";
 import { registerInterceptors, registerAdapter } from "./shared/request";
 import useStore from "./shared/store";
-import { useLoad } from "@tarojs/taro";
+import { useDidShow } from "@tarojs/taro";
 
 registerAdapter();
 registerInterceptors();
@@ -11,7 +11,7 @@ registerInterceptors();
 function App({ children }: PropsWithChildren<any>) {
 	const { loadUser } = useStore();
 
-	useLoad(() => {
+	useDidShow(() => {
 		loadUser();
 	});
 

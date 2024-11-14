@@ -18,7 +18,7 @@ const LOGO_PATH = "https://cmc.szu.edu.cn/images/logo.png";
 
 export default function () {
 	const { params } = useRouter();
-	const { toggleVisitor } = useStore();
+	const { toggleVisitor, loadUser } = useStore();
 
 	const isTeacher = params.isTeacher === "1";
 
@@ -32,8 +32,9 @@ export default function () {
 
 	const { run } = useRequest(userRegister, {
 		manual: true,
-		onSuccess() {
+		async onSuccess() {
 			toggleVisitor(false);
+			await loadUser();
 			reLaunch({
 				url: "/pages/index/index",
 			});
