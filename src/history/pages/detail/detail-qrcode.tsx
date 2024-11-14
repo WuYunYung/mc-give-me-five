@@ -67,10 +67,9 @@ export default function () {
 							setisSetting(false);
 						}}
 					>
-						<Form.Item name="spacingTime" defaultValue={10}>
+						<Form.Item name="spacingTime" defaultValue={settingSpacing}>
 							<Form.Control>
 								<Stepper
-									defaultValue={10}
 									min={1}
 									max={4294967295}
 									precision={0}

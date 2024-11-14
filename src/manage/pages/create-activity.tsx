@@ -282,7 +282,7 @@ export default function () {
 							message: "请选择正确的开始时间",
 						},
 					]}
-					defaultValue={data?.start_time} // disabled={dayjs().isAfter(dayjs(data?.end_time)) ? true : false}
+					defaultValue={data?.start_time}
 				>
 					{datePickerRender}
 				</Field>
@@ -296,7 +296,7 @@ export default function () {
 							message: "请选择正确的结束时间",
 						},
 					]}
-					defaultValue={data?.end_time} // disabled={dayjs().isAfter(dayjs(data?.end_time)) ? true : false}
+					defaultValue={data?.end_time}
 				>
 					{datePickerRender}
 				</Field>

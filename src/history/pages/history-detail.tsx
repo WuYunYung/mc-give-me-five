@@ -9,7 +9,6 @@ import { routePush } from "@/shared/route";
 import useStore from "@/shared/store";
 import useBackShow from "@/hooks/useBackShow";
 import { showToastAsync } from "@/shared/utils";
-import { useEffect } from "react";
 
 export default function () {
 	const { params } = useRouter();
@@ -19,13 +18,10 @@ export default function () {
 	const { data: activity, refresh } = useRequest(activityRead, {
 		defaultParams: [Number(id)],
 		ready: !!id,
-	});
-
-	useEffect(() => {
-		if (activity) {
+		onSuccess() {
 			setNavigationBarTitle({ title: `${activity.name}` });
-		}
-	}, [activity]);
+		},
+	});
 
 	useBackShow(refresh);
 
