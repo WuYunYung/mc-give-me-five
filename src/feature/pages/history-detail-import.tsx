@@ -5,6 +5,7 @@ import { View, Text } from "@tarojs/components";
 import { useRouter, chooseMessageFile, showModal } from "@tarojs/taro";
 import { useMemoizedFn, useRequest } from "ahooks";
 import { getTableMatrixByFile, readFile } from "../utils";
+import { showToastAsync } from "@/shared/utils";
 
 export default function () {
 	const { params } = useRouter<{
@@ -26,7 +27,12 @@ export default function () {
 
 	const { run } = useRequest(manageAttenderCreate, {
 		manual: true,
-		onSuccess() {
+		async onSuccess() {
+			await showToastAsync({
+				title: "导入成功",
+				icon: "success",
+				duration: 2000,
+			});
 			routeBack();
 		},
 	});

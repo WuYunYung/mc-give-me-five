@@ -15,6 +15,7 @@ import { useMemo } from "react";
 import GroupList from "@/components/GroupList";
 import classNames from "classnames";
 import { getTableMatrixByFile, readFile } from "../utils";
+import { showToastAsync, wrapPromiseWith } from "@/shared/utils";
 
 definePageConfig({
 	navigationBarTitleText: "名单导入",
@@ -60,7 +61,12 @@ export default function () {
 			} as any),
 		{
 			manual: true,
-			onSuccess() {
+			async onSuccess() {
+				await showToastAsync({
+					title: "导入成功",
+					icon: "success",
+					duration: 2000,
+				});
 				routeRedirect("/manage/pages/users/list", {
 					groupId,
 				});
@@ -69,18 +75,20 @@ export default function () {
 	);
 
 	const handleImport = useMemoizedFn(async (groupId: number) => {
-		const { tempFiles } = await chooseMessageFile({
+		const [, file] = await wrapPromiseWith(chooseMessageFile)({
 			count: 1,
 			type: "file",
 			extension: ["xls", "xlsx"],
 		});
 
-		const fileData = await readFile(tempFiles.at(0)?.path!);
+		if (!file) return;
+
+		const fileData = await readFile(file.tempFiles.at(0)?.path!);
 
 		// 获取工作表的所有行，转换为矩阵
 		const matrix = await getTableMatrixByFile(fileData.data as ArrayBuffer);
 
-		const validMatirx = matrix.filter((row) => {
+		const validMatrix = matrix.filter((row) => {
 			const [userName, name] = row;
 
 			if (
@@ -97,9 +105,9 @@ export default function () {
 			return true;
 		});
 
-		if (!validMatirx.length) return;
+		if (!validMatrix.length) return;
 
-		if (validMatirx.length > 300) {
+		if (validMatrix.length > 300) {
 			showModal({
 				content: "记录条数限制为300条",
 			});
@@ -107,7 +115,7 @@ export default function () {
 		}
 
 		return run(
-			validMatirx.reduce(
+			validMatrix.reduce(
 				(store, row) => {
 					const [userName, name] = row;
 

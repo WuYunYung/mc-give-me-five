@@ -1,3 +1,4 @@
+import { showToast } from "@tarojs/taro";
 export function maskPhoneNumber(number) {
 	// 将数字转换为字符串，确保其为字符串格式
 	let str = number.toString();
@@ -19,4 +20,24 @@ export function wrapPromiseWith<P extends any[], T>(
 			return [error, null]; // 错误时返回 [error, null]
 		}
 	};
+}
+
+export async function sleep(wait: number): Promise<void> {
+	return new Promise((resolve) => {
+		setTimeout(() => resolve(), wait);
+	});
+}
+
+export async function showToastAsync(
+	params?: Omit<
+		Exclude<Parameters<typeof showToast>[0], undefined>,
+		"complete" | "fail" | "success"
+	>,
+): Promise<void> {
+	const { duration } = params || {};
+	showToast(params);
+
+	if (duration) {
+		await sleep(duration);
+	}
 }
