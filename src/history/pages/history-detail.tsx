@@ -30,7 +30,7 @@ export default function () {
 		defaultParams: [Number(id)],
 		onSuccess() {
 			showToastAsync({
-				title: "签到成功",
+				title: "报名成功",
 				icon: "success",
 			});
 
