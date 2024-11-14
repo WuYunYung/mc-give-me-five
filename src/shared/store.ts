@@ -23,7 +23,7 @@ type Store = {
 
 	user: UserProfileUpdate | null;
 	setupUser: (user: Partial<UserProfileUpdate>) => void;
-	loadUser: () => Promise<void>;
+	loadUser: () => Promise<[Error, null] | [null, UserProfileUpdate]>;
 };
 
 const useStore = create<Store>()(
@@ -51,15 +51,21 @@ const useStore = create<Store>()(
 					const shouldShowLoading = isNil(storeUser);
 
 					shouldShowLoading && showLoading();
-					const [, user] = await wrapPromiseWith(userProfileRead)();
+					const result = await wrapPromiseWith(
+						userProfileRead as unknown as () => Promise<UserProfileUpdate>,
+					)();
+
+					const [, user] = result;
 
 					if (user) {
 						set((state) => {
-							state.user = user as unknown as UserProfileUpdate;
+							state.user = user;
 						});
 					}
 
 					shouldShowLoading && hideLoading();
+
+					return result;
 				},
 			};
 		}),
