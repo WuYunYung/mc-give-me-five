@@ -103,6 +103,9 @@
 				"noLabelVar": "error",
 				"noShadowRestrictedNames": "error",
 				"noConsoleLog": "warn"
+			},
+			"nursery": {
+				"useConsistentCurlyBraces": "error"
 			}
 		}
 	},

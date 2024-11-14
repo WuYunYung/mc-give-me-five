@@ -40,7 +40,7 @@ export default function () {
 
 	const guide = (
 		<Cell.Group bordered={false}>
-			<Cell title="名单导入:" brief={"请选择一个excel文件"} />
+			<Cell title="名单导入:" brief="请选择一个excel文件" />
 			<View className="px-4">
 				<Text className="text-sm text-gray-500">
 					注意事项:文件大小限制为2MB，记录条数限制为300条，文件格式要求第一列为用户学号，第二列为用户姓名，其中学号必须是在6到10位的纯数字，其他非法学号将被忽略，学号如果不重复将进行新增,重复将进行更新。

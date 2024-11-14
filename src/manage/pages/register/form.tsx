@@ -87,7 +87,7 @@ export default function () {
 		>
 			<Cell.Group>
 				<Field
-					label={"学号"}
+					label="学号"
 					name="username"
 					rules={[
 						{
