@@ -4,6 +4,7 @@ import {
 	manageAttenderList,
 } from "@/api";
 import { routePush } from "@/shared/route";
+import { showToastAsync, wrapPromiseWith } from "@/shared/utils";
 import {
 	ActionSheet,
 	Button,
@@ -16,7 +17,6 @@ import { AppsOutlined } from "@taroify/icons";
 import { Text, View } from "@tarojs/components";
 import {
 	env,
-	getFileSystemManager,
 	shareFileMessage,
 	showModal,
 	showToast,
@@ -26,7 +26,7 @@ import {
 import { useRequest } from "ahooks";
 import { produce } from "immer";
 import { useMemo, useState } from "react";
-import { utils, write } from "xlsx";
+import { getExcelFileByTableMatrix, PromiseLike } from "../utils";
 
 const enum SelectType {
 	Leading = 0,
@@ -45,17 +45,12 @@ export default function () {
 			{
 				name: "导入",
 				value: SelectType.Leading,
-				subname: "导入参与活动学生列表",
+				subTitle: "导入参与活动学生列表",
 			},
-			// {
-			// 	name: "删除",
-			// 	value: SelectType.delete,
-			// 	subname: "全量删除该活动学生列表",
-			// },
 			{
 				name: "导出",
 				value: SelectType.export,
-				subname: "全量导出学生签到信息",
+				subTitle: "全量导出学生签到信息",
 			},
 		],
 		[],
@@ -74,10 +69,9 @@ export default function () {
 	const { run: deleteAttender } = useRequest(manageAttenderDelete, {
 		manual: true,
 		onSuccess(_, [id]) {
-			showToast({
+			showToastAsync({
 				title: "删除成功",
 				icon: "success",
-				duration: 2000,
 			});
 
 			mutate((prev) => {
@@ -93,10 +87,9 @@ export default function () {
 	const { run: updateAttender } = useRequest(manageAttenderCreate, {
 		manual: true,
 		onSuccess(_, [{ usernames }]) {
-			showToast({
+			showToastAsync({
 				title: "修改成功",
 				icon: "success",
-				duration: 2000,
 			});
 
 			mutate((prev) => {
@@ -114,66 +107,47 @@ export default function () {
 	});
 
 	const exportToExcel = async () => {
-		try {
-			const transformAttendee = (item) => ({
-				grade: item.user.group.grade.name,
-				group: item.user.group.name,
-				name: item.user.name,
-				phone: item.user.phone,
-				username: item.user.username,
-				status: item.status,
+		const transformedAttendees = attenders?.results?.map((item) => ({
+			grade: item.user.group.grade.name,
+			group: item.user.group.name,
+			name: item.user.name,
+			phone: item.user.phone,
+			username: item.user.username,
+			status: item.status,
+		}));
+
+		if (!transformedAttendees) {
+			showToast({
+				title: "暂无数据",
 			});
+			return;
+		}
 
-			const transformedAttendees = attenders?.results?.map(transformAttendee);
+		const buffer = getExcelFileByTableMatrix(transformedAttendees!);
 
-			// 创建工作簿
-			const workbook = utils.book_new();
+		// 生成临时文件路径
+		const tempFilePath = `${env.USER_DATA_PATH}/temp.xlsx`;
 
-			// 创建工作表
-			const worksheet = utils.json_to_sheet(transformedAttendees!);
+		// 使用微信小程序的 writeFile 方法写入文件
+		const [error] = await wrapPromiseWith(PromiseLike.writeFile)(
+			tempFilePath,
+			buffer,
+		);
 
-			// 将工作表添加到工作簿
-			utils.book_append_sheet(workbook, worksheet, "Sheet1");
-
-			// 将工作簿写入二进制字符串
-			const wbout = write(workbook, { bookType: "xlsx", type: "binary" });
-
-			// 将二进制字符串转换为ArrayBuffer
-			const s2ab = (s) => {
-				const buf = new ArrayBuffer(s.length);
-				const view = new Uint8Array(buf);
-				for (let i = 0; i !== s.length; ++i) view[i] = s.charCodeAt(i) & 0xff;
-				return buf;
-			};
-
-			const buffer = s2ab(wbout);
-
-			// 生成临时文件路径
-			const tempFilePath = `${env.USER_DATA_PATH}/temp.xlsx`;
-
-			// 使用微信小程序的 writeFile 方法写入文件
-			getFileSystemManager().writeFile({
-				filePath: tempFilePath,
-				data: buffer,
-				encoding: "binary",
-				success: () => {
-					showModal({
-						content: "导出成功，分享至好友",
-						success() {
-							shareFileMessage({
-								filePath: tempFilePath,
-								fileName: "test.xlsx",
-							});
-						},
-					});
-				},
-				fail: () => {
-					throw new Error("文件写入失败");
-				},
-			});
-		} catch (error) {
+		if (error) {
 			showToast({ title: "导出失败", icon: "none" });
-			console.error("导出文件失败:", error);
+			return;
+		}
+
+		const [, res] = await wrapPromiseWith(showModal)({
+			content: "导出成功，分享至好友",
+		});
+
+		if (res) {
+			shareFileMessage({
+				filePath: tempFilePath,
+				fileName: "test.xlsx",
+			});
 		}
 	};
 

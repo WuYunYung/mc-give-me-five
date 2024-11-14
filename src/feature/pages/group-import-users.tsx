@@ -14,7 +14,7 @@ import { isString } from "lodash-es";
 import { useMemo } from "react";
 import GroupList from "@/components/GroupList";
 import classNames from "classnames";
-import { getTableMatrixByFile, readFile } from "../utils";
+import { getTableMatrixByFile, PromiseLike } from "../utils";
 import { showToastAsync, wrapPromiseWith } from "@/shared/utils";
 
 definePageConfig({
@@ -65,7 +65,6 @@ export default function () {
 				await showToastAsync({
 					title: "导入成功",
 					icon: "success",
-					duration: 2000,
 				});
 				routeRedirect("/manage/pages/users/list", {
 					groupId,
@@ -83,7 +82,7 @@ export default function () {
 
 		if (!file) return;
 
-		const fileData = await readFile(file.tempFiles.at(0)?.path!);
+		const fileData = await PromiseLike.readFile(file.tempFiles.at(0)?.path!);
 
 		// 获取工作表的所有行，转换为矩阵
 		const matrix = await getTableMatrixByFile(fileData.data as ArrayBuffer);

@@ -3,11 +3,12 @@ import { View } from "@tarojs/components";
 import ActivityDetailCard from "../../components/ActivityDetailCard";
 import { Button, SafeArea } from "@taroify/core";
 import dayjs from "dayjs";
-import { useRouter, showModal, showToast } from "@tarojs/taro";
+import { useRouter, showModal } from "@tarojs/taro";
 import { useRequest } from "ahooks";
 import { routePush } from "@/shared/route";
 import useStore from "@/shared/store";
 import useBackShow from "@/hooks/useBackShow";
+import { showToastAsync } from "@/shared/utils";
 
 export default function () {
 	const { params } = useRouter();
@@ -25,10 +26,9 @@ export default function () {
 		manual: true,
 		defaultParams: [Number(id)],
 		onSuccess() {
-			showToast({
+			showToastAsync({
 				title: "成功",
 				icon: "success",
-				duration: 2000,
 			});
 
 			refresh();
@@ -46,10 +46,9 @@ export default function () {
 		if (activity && activity?.get_attenders_count < activity?.capacity) {
 			attendActivity(id);
 		} else {
-			showToast({
+			showToastAsync({
 				title: "人数已满",
 				icon: "error",
-				duration: 2000,
 			});
 		}
 	};

@@ -4,7 +4,7 @@ import { Button, Cell } from "@taroify/core";
 import { View, Text } from "@tarojs/components";
 import { useRouter, chooseMessageFile, showModal } from "@tarojs/taro";
 import { useMemoizedFn, useRequest } from "ahooks";
-import { getTableMatrixByFile, readFile } from "../utils";
+import { getTableMatrixByFile, PromiseLike } from "../utils";
 import { showToastAsync } from "@/shared/utils";
 
 export default function () {
@@ -31,7 +31,6 @@ export default function () {
 			await showToastAsync({
 				title: "导入成功",
 				icon: "success",
-				duration: 2000,
 			});
 			routeBack();
 		},
@@ -44,7 +43,7 @@ export default function () {
 			extension: ["xls", "xlsx"],
 		});
 
-		const fileData = await readFile(tempFiles.at(0)?.path!);
+		const fileData = await PromiseLike.readFile(tempFiles.at(0)?.path!);
 
 		// 获取工作表的所有行，转换为矩阵
 		const matrix = await getTableMatrixByFile(fileData.data as ArrayBuffer);

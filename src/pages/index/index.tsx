@@ -14,7 +14,6 @@ import {
 import useActivityCountByType from "@/hooks/useActivityCountByType";
 import {
 	scanCode,
-	showToast,
 	getMenuButtonBoundingClientRect,
 	getWindowInfo,
 } from "@tarojs/taro";
@@ -24,7 +23,7 @@ import useStore from "@/shared/store";
 import { useRequest } from "ahooks";
 import { ActivityRead, activitySignin } from "@/api";
 import { Scan } from "@taroify/icons";
-import { wrapPromiseWith } from "@/shared/utils";
+import { showToastAsync, wrapPromiseWith } from "@/shared/utils";
 import { isEmpty } from "lodash-es";
 
 definePageConfig({
@@ -47,18 +46,15 @@ export default function Index() {
 		activitySignin as unknown as ({ code: string }) => Promise<ActivityRead>,
 		{
 			manual: true,
-			onSuccess(res) {
-				showToast({
+			async onSuccess(res) {
+				await showToastAsync({
 					title: "成功",
 					icon: "success",
-					duration: 1000,
 				});
 
-				setTimeout(() => {
-					routePush("/history/pages/history-detail", {
-						id: res.id,
-					});
-				}, 1000);
+				routePush("/history/pages/history-detail", {
+					id: res.id,
+				});
 			},
 		},
 	);

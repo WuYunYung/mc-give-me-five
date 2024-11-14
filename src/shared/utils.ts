@@ -34,8 +34,8 @@ export async function showToastAsync(
 		"complete" | "fail" | "success"
 	>,
 ): Promise<void> {
-	const { duration } = params || {};
-	showToast(params);
+	const { duration = 1500 } = params || {};
+	await showToast(params);
 
 	if (duration) {
 		await sleep(duration);

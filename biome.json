@@ -111,7 +111,7 @@
 	},
 	"javascript": {
 		"formatter": { "quoteStyle": "double" },
-		"globals": ["definePageConfig", "defineAppConfig"]
+		"globals": ["definePageConfig", "defineAppConfig", "TaroGeneral"]
 	},
 	"overrides": [
 		{
