@@ -52,7 +52,7 @@ export default function User() {
 				isLink
 				icon={<NotesOutlined />}
 				onClick={() => {
-					routePush("/user/pages/identity");
+					routePush("/user/pages/register");
 				}}
 			/>
 		</Cell.Group>
