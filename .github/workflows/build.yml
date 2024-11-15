@@ -31,6 +31,14 @@ jobs:
           node-version: 20
           cache: 'pnpm'
 
+      - name: Cache Webpack cache
+        uses: actions/cache@v3
+        with:
+          path: node_modules/.cache
+          key: ${{ runner.os }}-webpack-cache-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-webpack-cache-
+
       - run: pnpm install --frozen-lockfile
 
       - run: pnpm build
