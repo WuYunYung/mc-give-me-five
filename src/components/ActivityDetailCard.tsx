@@ -30,7 +30,7 @@ export default function ActivityDetailCard({
 					)}
 				</View>
 			</View>
-			<Cell.Group>
+			<Cell.Group bordered={false}>
 				<Cell title="负责人">
 					{activityDetail ? activityDetail.creator.name : contentSkeleton}
 				</Cell>

@@ -93,7 +93,7 @@ export default function () {
 		},
 	});
 
-	const { run: deleteActv } = useRequest(manageActivityDelete, {
+	const { run: deleteActivity } = useRequest(manageActivityDelete, {
 		manual: true,
 		async onSuccess() {
 			await showToastAsync({
@@ -139,13 +139,13 @@ export default function () {
 		);
 	});
 
-	const handleDeleteActv = () => {
+	const handleDeleteActivity = () => {
 		showModal({
 			title: "提示",
 			content: `确定删除活动：${data?.name}吗`,
 			success: function (res) {
 				if (res.confirm) {
-					deleteActv(Number(id));
+					deleteActivity(Number(id));
 				}
 			},
 		});
@@ -328,15 +328,16 @@ export default function () {
 				{!isCreation && (
 					<Button
 						block
-						color="danger"
+						color="primary"
 						formType="button"
 						variant="outlined"
-						onClick={handleDeleteActv}
+						onClick={handleDeleteActivity}
 					>
 						删除
 					</Button>
 				)}
 			</View>
+			<SafeArea position="bottom" />
 		</Form>
 	);
 

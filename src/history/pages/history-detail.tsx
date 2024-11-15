@@ -1,13 +1,12 @@
 import { activityAttend, activityQuit, activityRead } from "@/api";
-import { View } from "@tarojs/components";
-import { Button, Divider, PullRefresh, SafeArea } from "@taroify/core";
+import { ScrollView, View } from "@tarojs/components";
+import { Button, PullRefresh, SafeArea } from "@taroify/core";
 import dayjs from "dayjs";
 import {
 	useRouter,
 	showModal,
 	setNavigationBarTitle,
 	showToast,
-	usePageScroll,
 } from "@tarojs/taro";
 import { useRequest } from "ahooks";
 import { routePush } from "@/shared/route";
@@ -15,7 +14,7 @@ import useStore from "@/shared/store";
 import useBackShow from "@/hooks/useBackShow";
 import { showToastAsync } from "@/shared/utils";
 import { FC, PropsWithChildren, useMemo, useRef, useState } from "react";
-import { Checked, Warning } from "@taroify/icons";
+import { Checked, Edit, FriendsOutlined, Warning } from "@taroify/icons";
 import ActivityDetailCard from "@/components/ActivityDetailCard";
 
 definePageConfig({
@@ -39,12 +38,13 @@ const ActivityStatus: FC<
 		);
 
 	return (
-		<Divider>
-			<View className="flex gap-2 items-center">
-				{icon}
-				{children}
-			</View>
-		</Divider>
+		<Button
+			icon={icon}
+			variant="text"
+			className="pointer-events-none whitespace-nowrap"
+		>
+			{children}
+		</Button>
 	);
 };
 
@@ -167,11 +167,15 @@ export default function () {
 			{/* 学生-活动未开始 */}
 			{!activityStatus.started && (
 				<>
-					<ActivityStatus type="success">已报名</ActivityStatus>
-
-					<Button block color="default" onClick={handleQuit}>
+					<Button
+						color="primary"
+						variant="text"
+						onClick={handleQuit}
+						shape="square"
+					>
 						取消报名
 					</Button>
+					<ActivityStatus type="success">已报名</ActivityStatus>
 				</>
 			)}
 
@@ -199,13 +203,15 @@ export default function () {
 		<>
 			{/* 学生-未报名活动 */}
 			{!activity?.is_attend ? (
-				<Button
-					color="primary"
-					block
-					onClick={() => handleAttendActivity(Number(id))}
-				>
-					报名
-				</Button>
+				<View className="w-full p-4 py-2">
+					<Button
+						color="primary"
+						block
+						onClick={() => handleAttendActivity(Number(id))}
+					>
+						报名
+					</Button>
+				</View>
 			) : (
 				studentAttendEntries
 			)}
@@ -213,50 +219,42 @@ export default function () {
 	);
 
 	const renderButtons = (
-		<View className="flex flex-col p-4 gap-4">
+		<View className="flex flex-row-reverse flex-nowrap border-solid border-0 border-t border-t-gray-400 items-center justify-evenly">
 			{!isAdmin && studentEntries}
 
 			{/* 老师-管理活动 */}
 			{isAdmin && activity && (
 				<>
-					<Button block color="primary" onClick={handleFindCode}>
+					<Button block color="primary" shape="square" onClick={handleFindCode}>
 						生成签到码
 					</Button>
+
 					<Button
-						block
-						variant="outlined"
+						shape="square"
+						variant="text"
 						color="primary"
 						onClick={handleChange}
-					>
-						编辑活动
-					</Button>
+						icon={<Edit size="20" />}
+					></Button>
+
 					<Button
-						block
-						variant="outlined"
+						shape="square"
+						variant="text"
 						color="primary"
 						onClick={handleNavigateToAttender}
-					>
-						查看详情
-					</Button>
+						icon={<FriendsOutlined size="20" />}
+					></Button>
 				</>
 			)}
 		</View>
 	);
 
 	const content = (
-		<>
-			<ActivityDetailCard activityDetail={activity}></ActivityDetailCard>
-
-			{renderButtons}
-
-			<SafeArea position="bottom" />
-		</>
+		<ActivityDetailCard activityDetail={activity}></ActivityDetailCard>
 	);
 
 	const pullDownRefreshLoading = useRef(false);
 	const [reachTop, setReachTop] = useState(true);
-
-	usePageScroll(({ scrollTop }) => setReachTop(scrollTop === 0));
 
 	const contentWithPullDownRefresh = (
 		<PullRefresh
@@ -272,5 +270,19 @@ export default function () {
 		</PullRefresh>
 	);
 
-	return <View className="flex flex-col">{contentWithPullDownRefresh}</View>;
+	return (
+		<View className="flex flex-col h-screen">
+			<ScrollView
+				scrollY
+				className="overflow-y-auto flex-1"
+				onScroll={(e) => {
+					setReachTop(e.detail.scrollTop <= 10);
+				}}
+			>
+				{contentWithPullDownRefresh}
+			</ScrollView>
+			{renderButtons}
+			<SafeArea position="bottom" />
+		</View>
+	);
 }
