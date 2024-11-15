@@ -1,6 +1,5 @@
 import { activityAttend, activityQuit, activityRead } from "@/api";
 import { View } from "@tarojs/components";
-import ActivityDetailCard from "../../components/ActivityDetailCard";
 import { Button, Divider, SafeArea } from "@taroify/core";
 import dayjs from "dayjs";
 import {
@@ -16,6 +15,7 @@ import useBackShow from "@/hooks/useBackShow";
 import { showToastAsync } from "@/shared/utils";
 import { FC, PropsWithChildren, useMemo } from "react";
 import { Checked, Warning } from "@taroify/icons";
+import ActivityDetailCard from "@/components/ActivityDetailCard";
 
 const ActivityStatus: FC<
 	PropsWithChildren<{
@@ -235,9 +235,7 @@ export default function () {
 
 	return (
 		<View className="flex flex-col">
-			{activity && (
-				<ActivityDetailCard activityDetail={activity}></ActivityDetailCard>
-			)}
+			<ActivityDetailCard activityDetail={activity}></ActivityDetailCard>
 
 			{renderButtons}
 
