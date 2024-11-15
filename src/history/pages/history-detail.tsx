@@ -1,21 +1,26 @@
 import { activityAttend, activityQuit, activityRead } from "@/api";
 import { View } from "@tarojs/components";
-import { Button, Divider, SafeArea } from "@taroify/core";
+import { Button, Divider, PullRefresh, SafeArea } from "@taroify/core";
 import dayjs from "dayjs";
 import {
 	useRouter,
 	showModal,
 	setNavigationBarTitle,
 	showToast,
+	usePageScroll,
 } from "@tarojs/taro";
 import { useRequest } from "ahooks";
 import { routePush } from "@/shared/route";
 import useStore from "@/shared/store";
 import useBackShow from "@/hooks/useBackShow";
 import { showToastAsync } from "@/shared/utils";
-import { FC, PropsWithChildren, useMemo } from "react";
+import { FC, PropsWithChildren, useMemo, useRef, useState } from "react";
 import { Checked, Warning } from "@taroify/icons";
 import ActivityDetailCard from "@/components/ActivityDetailCard";
+
+definePageConfig({
+	disableScroll: true,
+});
 
 const ActivityStatus: FC<
 	PropsWithChildren<{
@@ -48,7 +53,12 @@ export default function () {
 
 	const { id } = params;
 
-	const { data: activity, refresh } = useRequest(activityRead, {
+	const {
+		data: activity,
+		refresh,
+		loading,
+		refreshAsync,
+	} = useRequest(activityRead, {
 		defaultParams: [Number(id)],
 		ready: !!id,
 		onSuccess(res) {
@@ -233,13 +243,34 @@ export default function () {
 		</View>
 	);
 
-	return (
-		<View className="flex flex-col">
+	const content = (
+		<>
 			<ActivityDetailCard activityDetail={activity}></ActivityDetailCard>
 
 			{renderButtons}
 
 			<SafeArea position="bottom" />
-		</View>
+		</>
 	);
+
+	const pullDownRefreshLoading = useRef(false);
+	const [reachTop, setReachTop] = useState(true);
+
+	usePageScroll(({ scrollTop }) => setReachTop(scrollTop === 0));
+
+	const contentWithPullDownRefresh = (
+		<PullRefresh
+			reachTop={reachTop}
+			loading={pullDownRefreshLoading.current && loading}
+			onRefresh={async () => {
+				pullDownRefreshLoading.current = true;
+				await refreshAsync();
+				pullDownRefreshLoading.current = false;
+			}}
+		>
+			{content}
+		</PullRefresh>
+	);
+
+	return <View className="flex flex-col">{contentWithPullDownRefresh}</View>;
 }
