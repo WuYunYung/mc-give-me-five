@@ -1,5 +1,5 @@
 import { activityAttend, activityQuit, activityRead } from "@/api";
-import { View } from "@tarojs/components";
+import { ScrollView, View } from "@tarojs/components";
 import { Button, Divider, PullRefresh, SafeArea } from "@taroify/core";
 import dayjs from "dayjs";
 import {
@@ -7,7 +7,6 @@ import {
 	showModal,
 	setNavigationBarTitle,
 	showToast,
-	usePageScroll,
 } from "@tarojs/taro";
 import { useRequest } from "ahooks";
 import { routePush } from "@/shared/route";
@@ -248,15 +247,12 @@ export default function () {
 			<ActivityDetailCard activityDetail={activity}></ActivityDetailCard>
 
 			{renderButtons}
-
 			<SafeArea position="bottom" />
 		</>
 	);
 
 	const pullDownRefreshLoading = useRef(false);
 	const [reachTop, setReachTop] = useState(true);
-
-	usePageScroll(({ scrollTop }) => setReachTop(scrollTop === 0));
 
 	const contentWithPullDownRefresh = (
 		<PullRefresh
@@ -272,5 +268,15 @@ export default function () {
 		</PullRefresh>
 	);
 
-	return <View className="flex flex-col">{contentWithPullDownRefresh}</View>;
+	return (
+		<ScrollView
+			scrollY
+			className="h-screen overflow-y-auto"
+			onScroll={(e) => {
+				setReachTop(e.detail.scrollTop <= 10);
+			}}
+		>
+			{contentWithPullDownRefresh}
+		</ScrollView>
+	);
 }
