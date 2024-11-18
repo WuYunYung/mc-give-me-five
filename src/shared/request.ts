@@ -4,6 +4,7 @@ import { debounce, inRange, isString } from "lodash-es";
 import queryString from "query-string";
 import { routeRedirect } from "./route";
 import { wrapPromiseWith } from "./utils";
+import { DEFAULT_REQUEST_TIMEOUT } from "./constants";
 
 namespace CloudRequestConfig {
 	export const CLOUD_ENV = "prod-0gefozow13dd7576";
@@ -171,6 +172,8 @@ export function registerInterceptors() {
 		(config) => {
 			config.headers["Content-Type"] = "application/json";
 			config.headers["X-WX-SERVICE"] = CloudRequestConfig.X_WX_SERVICE;
+
+			config.timeout = config.timeout ?? DEFAULT_REQUEST_TIMEOUT;
 
 			return config;
 		},
