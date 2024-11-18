@@ -24,3 +24,5 @@ export namespace Theme {
 		export const Background = White;
 	}
 }
+
+export const DEFAULT_REQUEST_TIMEOUT = 5000;

@@ -25,6 +25,7 @@ import { ActivityRead, activitySignin } from "@/api";
 import { Scan } from "@taroify/icons";
 import { showToastAsync, wrapPromiseWith } from "@/shared/utils";
 import { isEmpty } from "lodash-es";
+import useBackShow from "@/hooks/useBackShow";
 
 definePageConfig({
 	navigationStyle: "custom",
@@ -38,8 +39,12 @@ const imageUrl = [banner1, banner2, banner3, banner4];
 export default function Index() {
 	const { user } = useStore();
 
-	const { data, forceRefreshAsync, loading } = useActivityCountByType({
+	const { data, forceRefreshAsync, loading, refresh } = useActivityCountByType({
 		ready: !!user,
+	});
+
+	useBackShow(() => {
+		isEmpty(data) && refresh();
 	});
 
 	const { run: signActivity } = useRequest(

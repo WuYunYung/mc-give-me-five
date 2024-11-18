@@ -19,7 +19,7 @@ export default function useActivityCountByType(params?: {
 
 	const cacheKey = classNames("[GET]/activity/count_by_type/");
 
-	const { data, loading, runAsync } = useRequest(() => activityCountByType(), {
+	const { data, runAsync, ...rest } = useRequest(() => activityCountByType(), {
 		ready,
 		cacheKey,
 		staleTime: 60 * 1000 * 5,
@@ -46,7 +46,7 @@ export default function useActivityCountByType(params?: {
 	});
 
 	return {
-		loading,
+		...rest,
 		data: innerData,
 		forceRefreshAsync,
 	};

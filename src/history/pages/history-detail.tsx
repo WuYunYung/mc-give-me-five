@@ -258,6 +258,7 @@ export default function () {
 
 	const contentWithPullDownRefresh = (
 		<PullRefresh
+			className="min-h-full"
 			reachTop={reachTop}
 			loading={pullDownRefreshLoading.current && loading}
 			onRefresh={async () => {
