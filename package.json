@@ -105,7 +105,8 @@
 		"typescript": "^5.4.5",
 		"vite": "^4.5.5",
 		"weapp-tailwindcss": "^3.6.2",
-		"webpack": "^5.96.1"
+		"webpack": "^5.96.1",
+		"webpack-bundle-analyzer": "^4.10.2"
 	},
 	"pnpm": {
 		"patchedDependencies": {
