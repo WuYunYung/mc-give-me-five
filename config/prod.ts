@@ -1,6 +1,7 @@
 import type { UserConfigExport } from "@tarojs/cli";
 import * as path from "node:path";
 import { UnifiedWebpackPluginV5 } from "weapp-tailwindcss/webpack";
+import { BundleAnalyzerPlugin } from "webpack-bundle-analyzer";
 
 export default {
 	compiler: "webpack5",
@@ -30,17 +31,27 @@ export default {
 			enable: true,
 		},
 		webpackChain(chain) {
-			chain.merge({
-				plugin: {
-					"unified-webpack-plugin-v5": {
-						plugin: UnifiedWebpackPluginV5,
-						args: [
-							{
-								appType: "taro", // 设置应用类型为 Taro
-							},
-						],
-					},
+			const { ANALYZE = "0" } = process.env;
+
+			const plugins = {
+				"unified-webpack-plugin-v5": {
+					plugin: UnifiedWebpackPluginV5,
+					args: [
+						{
+							appType: "taro", // 设置应用类型为 Taro
+						},
+					],
 				},
+			};
+
+			if (ANALYZE === "1") {
+				plugins["webpack-bundle-analyzer"] = {
+					plugin: BundleAnalyzerPlugin,
+				};
+			}
+
+			chain.merge({
+				plugin: plugins,
 			});
 		},
 	},
